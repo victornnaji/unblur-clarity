@@ -1,5 +1,6 @@
-import { GeistSans } from "geist/font/sans";
-import "./globals.css";
+import { Space_Grotesk } from "next/font/google";
+import "@/styles/globals.css";
+import { config } from "@/config";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -7,9 +8,11 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: config.title,
+  description: config.description,
 };
+
+const SG = Space_Grotesk({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -17,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={GeistSans.className}>
-      <body className="bg-background text-foreground">
+    <html lang="en" className={SG.className}>
+      <body className="_grid bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center">
           {children}
         </main>

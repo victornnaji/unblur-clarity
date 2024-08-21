@@ -24,4 +24,22 @@
   * {
     @apply border-foreground/20;
   }
+  :root {
+    --cols: 12;
+    --gridSize: calc(100vw / var(--cols));
+  }
+}
+
+._grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--gridSize));
+  grid-gap: 0px;
+}
+
+._grid > * {
+  grid-column: 2/-2;
+}
+
+._col-full {
+  grid-column: 1 / -1;
 }
