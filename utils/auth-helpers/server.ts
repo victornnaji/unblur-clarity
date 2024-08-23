@@ -73,6 +73,23 @@ export async function signInWithMagiclink(formData: FormData) {
   return redirectPath;
 }
 
+export async function SignOut(formData: FormData) {
+  const pathName = String(formData.get('pathName')).trim();
+
+  const supabase = createClient();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    return getErrorRedirect(
+      pathName,
+      'Hmm... Something went wrong.',
+      'You could not be signed out.'
+    );
+  }
+
+  return '/signin';
+}
+
 export async function updateEmail(formData: FormData) {
   const user = getServerUser();
 

@@ -1,6 +1,7 @@
 import { Space_Grotesk } from "next/font/google";
 import "@/styles/globals.css";
 import { config } from "@/config";
+import Navbar from "@/components/UI/Navbar";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -22,7 +23,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={SG.className}>
       <body className="_grid bg-background text-foreground">
-        <main className="min-h-screen flex flex-col items-center">
+        <Navbar />
+        <main className="min-h-screen flex flex-col items-center" id="skip">
           {children}
         </main>
       </body>

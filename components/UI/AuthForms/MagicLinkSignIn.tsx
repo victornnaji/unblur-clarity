@@ -9,28 +9,21 @@ import Button from "@/components/UI/Button";
 const MagicLinkSignIn = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [email, setEmail] = React.useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
     setIsSubmitting(true);
     await handleRequest(e, signInWithMagiclink, router);
     setIsSubmitting(false);
   };
 
   return (
-    <form
-      noValidate={true}
-      className="mb-4 mt-2"
-      onSubmit={(e) => handleSubmit(e)}
-    >
+    <form noValidate={true} className="mb-4 mt-2" onSubmit={handleSubmit}>
       <TextInput
+        id="email"
         label="Email Address"
         type="email"
         name="email"
         placeholder="name@example.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
         disabled={isSubmitting}
       />
       <Button
