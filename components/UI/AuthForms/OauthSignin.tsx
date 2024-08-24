@@ -22,9 +22,9 @@ export default function OauthSignIn() {
   ];
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true); // Disable the button while the request is being handled
+    setIsSubmitting(true);
     await signInWithOAuth(e);
     setIsSubmitting(false);
   };
