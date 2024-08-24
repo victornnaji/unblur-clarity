@@ -53,11 +53,12 @@ export async function signInWithMagiclink(formData: FormData) {
     redirectPath = getErrorRedirect(
       "/signin",
       "You could not be signed in.",
-      error.message
+      "Please check your email address and try again."
     );
   } else if (data) {
     redirectPath = getStatusRedirect(
       "/signin",
+      "success",
       "Success!",
       "Please check your email for a magic link. You may now close this tab.",
       true
@@ -74,7 +75,7 @@ export async function signInWithMagiclink(formData: FormData) {
 }
 
 export async function SignOut(formData: FormData) {
-  const pathName = String(formData.get('pathName')).trim();
+  const pathName = String(formData.get("pathName")).trim();
 
   const supabase = createClient();
   const { error } = await supabase.auth.signOut();
@@ -82,12 +83,17 @@ export async function SignOut(formData: FormData) {
   if (error) {
     return getErrorRedirect(
       pathName,
-      'Hmm... Something went wrong.',
-      'You could not be signed out.'
+      "Hmm... Something went wrong.",
+      "You could not be signed out."
     );
   }
 
-  return '/signin';
+  return getStatusRedirect(
+    pathName,
+    "success",
+    "You have been signed out.",
+    "Sign in to access your account."
+  );
 }
 
 export async function updateEmail(formData: FormData) {
@@ -112,7 +118,12 @@ export async function updateEmail(formData: FormData) {
   }
 
   const callbackUrl = getURL(
-    getStatusRedirect("/account", "Success!", `Your email has been updated.`)
+    getStatusRedirect(
+      "/account",
+      "success",
+      "Success!",
+      `Your email has been updated.`
+    )
   );
 
   const supabase = createClient();
@@ -133,6 +144,7 @@ export async function updateEmail(formData: FormData) {
   } else {
     return getStatusRedirect(
       "/account",
+      "success",
       "Confirmation emails sent.",
       "You will need to confirm the update by clicking the links sent to both the old and new email addresses."
     );

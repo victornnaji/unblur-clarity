@@ -2,6 +2,8 @@ import { Space_Grotesk } from "next/font/google";
 import "@/styles/globals.css";
 import { config } from "@/config";
 import Navbar from "@/components/UI/Navbar";
+import { Suspense } from "react";
+import HotToast from "@/components/UI/HotToast";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -27,6 +29,9 @@ export default function RootLayout({
         <main className="min-h-screen flex flex-col items-center" id="skip">
           {children}
         </main>
+        <Suspense>
+          <HotToast />
+        </Suspense>
       </body>
     </html>
   );

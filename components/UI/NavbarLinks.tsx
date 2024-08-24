@@ -59,18 +59,10 @@ const NavbarLinks = ({ user }: { user: any }) => {
                   href={"/products"}
                   className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 data-[focus]:bg-gray-300"
                 >
-                  Buy Tokens
+                  Buy credits
                 </Link>
               </MenuItem>
               <MenuItem>
-                {/* <button
-                  //   onClick={() => supabaseClient.auth.signOut()}
-                  type="submit"
-                  className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 data-[focus]:bg-gray-300"
-                >
-                  Sign out
-                </button> */}
-
                 <form onSubmit={(e) => handleRequest(e, SignOut, router)}>
                   <input type="hidden" name="pathName" value={usePathname()} />
                   <button className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 data-[focus]:bg-gray-300">

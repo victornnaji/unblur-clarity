@@ -1,3 +1,5 @@
+import { ToastVariants } from "@/components/UI/HotToast";
+
 export const getURL = (path: string = "") => {
   // Check if NEXT_PUBLIC_SITE_URL is set and non-empty. Set this to your site URL in production env.
   let url =
@@ -22,27 +24,27 @@ export const getURL = (path: string = "") => {
   return path ? `${url}/${path}` : url;
 };
 
-const toastKeyMap: { [key: string]: string[] } = {
-  status: ["status", "status_description"],
-  error: ["error", "error_description"],
-};
-
-const getToastRedirect = (
-  path: string,
-  toastType: string,
-  toastName: string,
-  toastDescription: string = "",
-  disableButton: boolean = false,
-  arbitraryParams: string = ""
-): string => {
-  const [nameKey, descriptionKey] = toastKeyMap[toastType];
-
-  let redirectPath = `${path}?${nameKey}=${encodeURIComponent(toastName)}`;
+export const getToastRedirect = ({
+  path,
+  toastType,
+  toastTitle,
+  toastDescription = "",
+  disableButton = false,
+  arbitraryParams = "",
+}: {
+  path: string;
+  toastType: ToastVariants;
+  toastTitle: string;
+  toastDescription: string;
+  disableButton: boolean;
+  arbitraryParams: string;
+}): string => {
+  let redirectPath = `${path}?status=${toastType}&title=${encodeURIComponent(
+    toastTitle
+  )}`;
 
   if (toastDescription) {
-    redirectPath += `&${descriptionKey}=${encodeURIComponent(
-      toastDescription
-    )}`;
+    redirectPath += `&description=${encodeURIComponent(toastDescription)}`;
   }
 
   if (disableButton) {
@@ -63,27 +65,28 @@ export const getErrorRedirect = (
   disableButton: boolean = false,
   arbitraryParams: string = ""
 ) =>
-  getToastRedirect(
+  getToastRedirect({
     path,
-    "error",
-    errorName,
-    errorDescription,
+    toastType: "error",
+    toastTitle: errorName,
+    toastDescription: errorDescription,
     disableButton,
-    arbitraryParams
-  );
+    arbitraryParams,
+  });
 
 export const getStatusRedirect = (
   path: string,
+  status: ToastVariants,
   statusName: string,
   statusDescription: string = "",
   disableButton: boolean = false,
   arbitraryParams: string = ""
 ) =>
-  getToastRedirect(
+  getToastRedirect({
     path,
-    "status",
-    statusName,
-    statusDescription,
+    toastType: status,
+    toastTitle: statusName,
+    toastDescription: statusDescription,
     disableButton,
-    arbitraryParams
-  );
+    arbitraryParams,
+  });
