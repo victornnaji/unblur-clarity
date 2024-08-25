@@ -2,10 +2,22 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [
-      "lh3.googleusercontent.com",
-      "replicate.deliver",
-      "replicate.delivery",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "replicate.deliver",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "replicate.delivery",
+        port: "",
+      },
     ],
   },
 };

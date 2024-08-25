@@ -90,3 +90,21 @@ export const getStatusRedirect = (
     disableButton,
     arbitraryParams,
   });
+
+export function shortenFileName(
+  fileName: string,
+  maxLength: number = 20
+): string {
+  const extension = fileName.split(".").pop();
+  const nameWithoutExtension = fileName.slice(0, -extension!.length - 1);
+
+  if (nameWithoutExtension.length <= maxLength) {
+    return fileName;
+  }
+
+  const shortenedName = `${nameWithoutExtension.slice(
+    0,
+    maxLength - 3
+  )}...${extension}`;
+  return shortenedName;
+}

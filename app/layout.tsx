@@ -24,11 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={SG.className}>
-      <body className="_grid bg-background text-foreground">
+      <body className="_grid grid-rows-[auto,1fr] bg-background text-foreground min-h-screen">
         <Navbar />
-        <main className="min-h-screen flex flex-col items-center" id="skip">
-          {children}
-        </main>
+        <main id="skip">{children}</main>
         <Suspense>
           <HotToast />
         </Suspense>

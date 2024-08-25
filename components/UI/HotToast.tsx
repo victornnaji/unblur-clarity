@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast, Toaster, ToastBar } from "react-hot-toast";
 
-const DURATION = 20000;
+const DURATION = 15000;
 
 export type ToastVariants = "success" | "error";
 

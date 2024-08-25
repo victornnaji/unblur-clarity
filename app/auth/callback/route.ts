@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.redirect(
     getStatusRedirect(
-      `${requestUrl.origin}/`,
+      `${requestUrl.origin}/unblur`,
       "success",
       "Success!",
       "You are now signed in. Happy unblurring!"

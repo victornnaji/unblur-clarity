@@ -9,7 +9,7 @@ const UnblurLayout = ({
   title?: React.ReactNode | string;
 }) => {
   return (
-    <div className="mt-16 mb-6 text-center">
+    <div className="mt-12 mb-6 text-center">
       <h1 className="mb-12 text-2xl sm:text-4xl">
         {title ? (
           <Balancer>{title}</Balancer>
