@@ -1,5 +1,6 @@
 "use client";
 
+import { PhotoType } from "@/types";
 import { shortenFileName } from "@/utils/helpers";
 import clsx from "clsx";
 import Image from "next/image";
@@ -19,7 +20,10 @@ function imageValidator(file: File) {
   return null;
 }
 
-const Uploader = ({ handlePhoto }: any) => {
+interface UploaderProps {
+  handlePhoto: (photo: PhotoType) => void;
+}
+const Uploader = ({ handlePhoto }: UploaderProps) => {
   const [imageMetadata, setImageMetadata] = useState({
     preview: "",
     fileName: "",
@@ -56,7 +60,11 @@ const Uploader = ({ handlePhoto }: any) => {
       preview: "",
       fileName: "",
     });
-    handlePhoto(null);
+    handlePhoto({
+      name: "",
+      originalImage: "",
+      restoredImage: "",
+    });
   };
 
   useEffect(() => {
