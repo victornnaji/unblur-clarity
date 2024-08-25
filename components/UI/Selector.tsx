@@ -10,7 +10,7 @@ interface OptionType {
   label: string;
 }
 
-interface SelectorProps {
+interface SelectorProps extends React.HTMLProps<HTMLSelectElement> {
   id: string;
   name: string;
   label: string;
@@ -18,7 +18,7 @@ interface SelectorProps {
   tooltipContent?: string;
   options: OptionType[];
   defaultOption: OptionType;
-  handleSelect: (selectedOption: OptionType) => void;
+  handleSelect: (selectedOption: any) => void;
 }
 
 const Selector = ({

@@ -1,36 +1,60 @@
 import React from "react";
 import TextInput from "../TextInput";
 import Selector, { SelectorExtraInfo } from "../Selector";
-import { DEFAULT_UPSCALING_STYLE, imageUpscalingStyleOptions } from "@/config";
+import {
+  DEFAULT_UPSCALING_STYLE,
+  imageUpscalingStyleOptions,
+  tooltipText,
+} from "@/config";
+import { useAppStore } from "@/hooks/use-store";
+import { ImageUpscalingStyleOptionType } from "@/types";
 
 const ImageUpscaling = () => {
-  const [prompt, setPrompt] = React.useState("");
+  const { payload, setPayload } = useAppStore((state) => state);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setPrompt(e.currentTarget.prompt.value);
-  };
+  const handlePromptChange = React.useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      const prompt = e.currentTarget.prompt.value;
+      setPayload({ ...payload, prompt });
+    },
+    []
+  );
+
+  const handleSelectorChange = React.useCallback(
+    (selectedOption: ImageUpscalingStyleOptionType) => {
+      setPayload({ ...payload, upscaleStyle: selectedOption.value });
+    },
+    []
+  );
+
+  const selectedOption =
+    imageUpscalingStyleOptions.find(
+      (option) => option.value === payload.upscaleStyle
+    ) || DEFAULT_UPSCALING_STYLE;
+
   return (
     <form
       noValidate={true}
       className="mb-4 mt-2 max-w-full box-border"
-      onSubmit={handleSubmit}
+      onChange={handlePromptChange}
     >
       <TextInput
         type="textarea"
         label="Prompt (optional)"
         placeholder="Prompt"
         name="prompt"
-        tooltipContent="Add a prompt or leave empty to use system prompt. Make sure to add a prompt that is relevant to the image you are upscaling."
+        defaultValue={payload.prompt}
+        id="prompt"
+        tooltipContent={tooltipText.imageUpscalingInput}
       />
       <Selector
         label="Upscaling Style"
         options={imageUpscalingStyleOptions}
-        defaultOption={DEFAULT_UPSCALING_STYLE}
+        defaultOption={selectedOption}
         name="unblurStyle"
-        handleSelect={() => {}}
+        handleSelect={handleSelectorChange}
         id="unblurStyle"
-        tooltipContent="Add a style to change the way your image is upscaled. Leave default to match the original image style as close as possible."
+        tooltipContent={tooltipText.imageUpscalingSelector}
       >
         <SelectorExtraInfo
           link="/unblur-styles"
