@@ -8,7 +8,7 @@ import NavbarLinks from "./NavbarLinks";
 const Navbar = async () => {
   const user = await getServerUser();
   return (
-    <header className="flex items-center justify-between py-6">
+    <header className="flex items-center justify-between h-20 md:h-36">
       <a href="#skip" className="sr-only focus:not-sr-only">
         Skip to content
       </a>
