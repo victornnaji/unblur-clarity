@@ -10,6 +10,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        port: "",
+      },
+      {
+        protocol: "https",
         hostname: "replicate.deliver",
         port: "",
       },

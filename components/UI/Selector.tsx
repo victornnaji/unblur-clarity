@@ -43,8 +43,6 @@ const Selector = ({
       ...styles,
       backgroundColor: "#27272a",
       border: "1px solid #d4d4d8",
-      padding: "0",
-      margin: "0",
     }),
     control: (styles) => ({
       ...styles,
