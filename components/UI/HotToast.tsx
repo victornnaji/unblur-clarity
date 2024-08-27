@@ -25,7 +25,7 @@ const HotToast = () => {
         {
           id: status || id,
           duration: DURATION,
-          position: "bottom-right",
+          position: "bottom-right"
         }
       );
 
@@ -34,7 +34,7 @@ const HotToast = () => {
         "status",
         "title",
         "description",
-        "disable_button",
+        "disable_button"
       ];
       paramsToRemove.forEach((param) => newSearchParams.delete(param));
       const redirectPath = `${pathname}?${newSearchParams.toString()}`;
@@ -47,16 +47,16 @@ const HotToast = () => {
       toastOptions={{
         success: {
           style: {
-            border: "2px solid green",
-            boxShadow: "inset 0 0 5px green",
-          },
+            border: "2px solid var(--success)",
+            boxShadow: `inset 0 0 5px green`
+          }
         },
         error: {
           style: {
-            border: "1px solid red",
-            boxShadow: "inset 0 0 5px red",
-          },
-        },
+            border: "1px solid var(--error)",
+            boxShadow: `inset 0 0 5px red`
+          }
+        }
       }}
     >
       {(t) => (
@@ -84,7 +84,7 @@ const HotToast = () => {
 const ToastMessage = React.memo(
   ({
     title,
-    description,
+    description
   }: {
     title: string | null;
     description: string | null;

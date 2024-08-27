@@ -1,7 +1,7 @@
 import React from "react";
 import { getServerUser } from "@/utils/auth-helpers/server";
 import { redirect } from "next/navigation";
-import UnblurSidebar from "@/components/UI/UnblurSideBar";
+import UnblurSidebar from "@/components/UI/SideBar";
 import PreviewContainer from "@/components/UI/PreviewContainer";
 
 export default async function Unblur() {

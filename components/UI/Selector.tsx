@@ -29,7 +29,7 @@ const Selector = ({
   name,
   tooltipContent,
   children,
-  label,
+  label
 }: SelectorProps) => {
   const generated = useId();
   const appliedId = id || generated;
@@ -37,38 +37,38 @@ const Selector = ({
   const customStyles: StylesConfig = {
     singleValue: (styles) => ({
       ...styles,
-      color: "#d4d4d8",
+      color: "var(--zink)"
     }),
     menu: (styles) => ({
       ...styles,
-      backgroundColor: "#27272a",
-      border: "1px solid #d4d4d8",
+      backgroundColor: "var(--gray)",
+      border: "1px solid var(--zink)"
     }),
     control: (styles) => ({
       ...styles,
       height: "3.5rem",
       borderRadius: 0,
-      border: "1px solid #27272a",
+      border: "1px solid var(--gray)",
       cursor: "pointer",
-      backgroundColor: "#27272a",
+      backgroundColor: "var(--gray)"
     }),
     option: (styles, { isFocused, isSelected }) => ({
       ...styles,
       backgroundColor: isSelected
-        ? "#DEEBFF"
+        ? "var(--zink)"
         : isFocused
-        ? "#DEEBFF"
-        : "#27272a",
-      color: isSelected || isFocused ? "#27272a" : "#D1D5DB",
-      cursor: "pointer",
-    }),
+        ? "var(--zink)"
+        : "var(--gray)",
+      color: isSelected || isFocused ? "var(--gray)" : "var(--zink)",
+      cursor: "pointer"
+    })
   };
 
   return (
     <div className="block mx-auto mt-8 ">
       <label
         htmlFor={appliedId}
-        className="mb-2 text-zinc-300 flex items-center gap-2"
+        className="mb-2 text-zink flex items-center gap-2"
       >
         <span>{label}</span>
         {tooltipContent && (
@@ -106,15 +106,15 @@ interface SelectorExtraInfoProps {
 export const SelectorExtraInfo = ({
   text,
   link,
-  linkText,
+  linkText
 }: SelectorExtraInfoProps) => {
   return (
-    <span className="mb-6 text-sm text-left text-gray-500 flex flex-col">
+    <span className="mb-6 text-sm text-left text-zink flex flex-col">
       <span>{text}</span>
       <Link
         target="_blank"
         href={link}
-        className="inline-block text-blue-600 transition-all hover:underline"
+        className="inline-block text-purple transition-all hover:underline"
       >
         {linkText}
       </Link>

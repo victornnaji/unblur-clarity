@@ -4,30 +4,24 @@
 
 @layer base {
   :root {
-    --background: 200 50% 3%;
-    --btn-background: 200 10% 9%;
-    --btn-background-hover: 200 10% 12%;
+    --background: #121212;
     --foreground: 200 20% 96%;
+    --zink: #d4d4d8;
+    --gray: #27272a;
+    --milk: #DEEBFF;
+    --purple: #bb86fc;
+    --error: "#CF6679";
+    --success: "#03DAC6";
+    --surface: 200 50% 3%;
     --cols: 12;
     --gridSize: calc(100vw / var(--cols));
   }
+
   * {
     @apply border-foreground/20;
   }
 
 }
-/* 
-@layer base {
-  * {
-    @apply border-foreground/20;
-  }
-
-  :root {
-    --cols: 12;
-    --gridSize: calc(100vw / var(--cols));
-  }
-} */
-
 ._grid {
   display: grid;
   grid-template-columns: repeat(var(--cols), var(--gridSize));

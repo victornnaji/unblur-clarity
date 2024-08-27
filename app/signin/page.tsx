@@ -17,7 +17,7 @@ export default async function SignIn() {
       <div className="flex justify-center height-screen-helper">
         <div className="flex flex-col justify-between max-w-lg p-3 m-auto w-80 ">
           <p className="flex justify-center mb-4 text-md">
-            👋🏻 Hello there! please sign in to start deblurring your photos.
+            👋🏻 Hello there! please sign in to start enhancing your photos.
           </p>
           <div className="flex flex-col space-y-4 mt-4">
             <MagicLinkSignIn />
