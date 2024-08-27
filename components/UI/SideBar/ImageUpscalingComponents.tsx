@@ -4,12 +4,12 @@ import Selector, { SelectorExtraInfo } from "../Selector";
 import {
   DEFAULT_UPSCALING_STYLE,
   imageUpscalingStyleOptions,
-  tooltipText,
+  tooltipText
 } from "@/config";
 import { useAppStore } from "@/hooks/use-store";
 import { ImageUpscalingStyleOptionType } from "@/types";
 
-const ImageUpscaling = () => {
+const ImageUpscalingComponents = () => {
   const { payload, setPayload } = useAppStore((state) => state);
 
   const handlePromptChange = React.useCallback(
@@ -66,4 +66,4 @@ const ImageUpscaling = () => {
   );
 };
 
-export default ImageUpscaling;
+export default ImageUpscalingComponents;

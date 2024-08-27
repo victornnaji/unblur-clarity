@@ -13,13 +13,13 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: config.title,
-  description: config.description,
+  description: config.description
 };
 
 const SG = Space_Grotesk({ subsets: ["latin"] });
 
 export default function RootLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {

@@ -1,78 +1,138 @@
 "use client";
 import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
-} from "@headlessui/react";
-import clsx from "clsx";
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Avatar,
+  DropdownSection
+} from "@nextui-org/react";
+
 import Link from "next/link";
-import Image from "next/image";
-import React, { Fragment } from "react";
+import React, { useId } from "react";
 import { handleRequest } from "@/utils/auth-helpers/client";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOut } from "@/utils/auth-helpers/server";
 import Button from "./Button";
+import {
+  User as UserIcon,
+  ShoppingCart as ShoppingCartIcon,
+  LogOut as LogOutIcon,
+  Zap as ZapIcon
+} from "react-feather";
+import { shortenFileName } from "@/utils/helpers";
 
 const NavbarLinks = ({ user }: { user: any }) => {
-  const { avatar_url, name } = user?.user_metadata || {};
+  const { avatar_url, name, email } = user?.user_metadata || {};
   const router = useRouter();
+  const iconClasses =
+    "text-xl text-default-500 pointer-events-none flex-shrink-0";
+
+  const id = useId();
+  const menus = [
+    {
+      key: "account",
+      text: "Account",
+      href: "/",
+      description: shortenFileName(email),
+      icon: <UserIcon className={iconClasses} />
+    },
+    {
+      key: "unblur",
+      text: "Unblur",
+      href: "/unblur",
+      icon: <ZapIcon className={iconClasses} />
+    },
+    {
+      key: "buy-credit",
+      text: "Buy credits",
+      href: "/products",
+      icon: <ShoppingCartIcon className={iconClasses} />
+    }
+  ];
+
   return (
     <>
       {user ? (
-        <Menu as="div" className="relative ml-3">
-          <MenuButton className="relative flex w-8 h-8 text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-            <span className="sr-only">Open user menu</span>
-            <Image
-              className="rounded-full"
-              referrerPolicy="no-referrer"
-              src={avatar_url || ""}
-              alt={name || "User"}
-              fill
-              sizes="h-8 w-8"
+        <Dropdown
+          placement="bottom-end"
+          classNames={{
+            content: "py-1 px-1 bg-gray"
+          }}
+        >
+          <DropdownTrigger>
+            <Avatar
+              as="button"
+              src={avatar_url}
+              className="transition-transform"
+              name={name}
             />
-          </MenuButton>
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
+          </DropdownTrigger>
+          <DropdownMenu
+            variant="faded"
+            aria-label="Navigation"
+            disabledKeys={["credits"]}
           >
-            <MenuItems className="absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <MenuItem>
-                <Link
-                  href="/account"
-                  className={clsx(
-                    "data-[focus]:bg-gray-300",
-                    "block px-4 py-2 text-sm text-gray-700"
-                  )}
+            <DropdownSection
+              showDivider
+              classNames={{
+                divider: "bg-zink opacity-50"
+              }}
+              aria-label="credits"
+            >
+              <DropdownItem
+                textValue="credits"
+                key="credits"
+                as={"div"}
+                variant="bordered"
+              >
+                <span className="text-bold text-base text-foreground">
+                  Credits: 0
+                </span>
+              </DropdownItem>
+            </DropdownSection>
+            <DropdownSection
+              aria-label="Links"
+              showDivider
+              classNames={{
+                divider: "bg-zink opacity-50"
+              }}
+            >
+              {menus.map((menu) => (
+                <DropdownItem
+                  key={`${id}-${menu.key}`}
+                  as={Link}
+                  href={menu.href}
+                  onClick={() => router.push(menu.href)}
+                  description={menu.description && menu.description}
+                  startContent={menu.icon}
                 >
-                  {name}
-                </Link>
-              </MenuItem>
-              <MenuItem>
-                <Link
-                  href={"/products"}
-                  className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 data-[focus]:bg-gray-300"
-                >
-                  Buy credits
-                </Link>
-              </MenuItem>
-              <MenuItem>
-                <form onSubmit={(e) => handleRequest(e, SignOut, router)}>
-                  <input type="hidden" name="pathName" value={usePathname()} />
-                  <button className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100 data-[focus]:bg-gray-300">
-                    Sign out
-                  </button>
-                </form>
-              </MenuItem>
-            </MenuItems>
-          </Transition>
-        </Menu>
+                  {menu.text}
+                </DropdownItem>
+              ))}
+            </DropdownSection>
+            <DropdownSection aria-label="sign out">
+              <DropdownItem
+                key="sign out"
+                color="danger"
+                className="w-full"
+                as="form"
+                onSubmit={(e) =>
+                  handleRequest(
+                    e as unknown as React.FormEvent<HTMLFormElement>,
+                    SignOut,
+                    router
+                  )
+                }
+                textValue="Sign out"
+                startContent={<LogOutIcon className={iconClasses} />}
+              >
+                <input type="hidden" name="pathName" value={usePathname()} />
+                <button className="w-full text-start">Sign out</button>
+              </DropdownItem>
+            </DropdownSection>
+          </DropdownMenu>
+        </Dropdown>
       ) : (
         <Button href="/signin" variant="slim">
           Sign in

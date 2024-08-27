@@ -2,13 +2,13 @@
 
 import React from "react";
 import Uploader from "./Uploader";
-import Button from "../Button";
-import ImageUpscaling from "./ImageUpscaling";
-import { useAppStore } from "@/hooks/use-store";
 import { PhotoType } from "@/types";
+import { useAppStore } from "@/hooks/use-store";
+import Button from "../Button";
+import ImageUpscalingComponents from "./ImageUpscalingComponents";
 import ModelSelector from "./ModelSelector";
 
-const UnblurSidebar = () => {
+const Sidebar = () => {
   const { photo, model, setPhoto } = useAppStore((state) => state);
 
   const handlePhotoChange = React.useCallback((photo: PhotoType) => {
@@ -23,7 +23,9 @@ const UnblurSidebar = () => {
       <Uploader handlePhoto={handlePhotoChange} />
       <ModelSelector />
       <div className="lg:h-80 overflow-scroll mb-5 p-1 box-border">
-        {model && model === "image_upscaling" ? <ImageUpscaling /> : null}
+        {model && model === "image_upscaling" ? (
+          <ImageUpscalingComponents />
+        ) : null}
       </div>
       <Button
         disabled={!photo.name}
@@ -36,4 +38,4 @@ const UnblurSidebar = () => {
   );
 };
 
-export default UnblurSidebar;
+export default Sidebar;

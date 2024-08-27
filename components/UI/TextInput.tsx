@@ -33,12 +33,12 @@ const TextInput = forwardRef<
   ) => {
     const generatedId = React.useId();
     const appliedId = id || generatedId;
-    const style = `w-full p-3 rounded-md bg-zinc-800 text-lightblue`;
+    const style = `w-full p-3 rounded-md bg-gray text-zink`;
     return (
       <>
         <label
           htmlFor={appliedId}
-          className="mb-2 text-md text-lightblue flex items-center gap-2"
+          className="mb-2 text-md text-zink flex items-center gap-2"
         >
           <span>{label}</span>
           {tooltipContent && (

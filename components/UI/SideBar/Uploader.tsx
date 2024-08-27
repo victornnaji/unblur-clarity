@@ -100,7 +100,7 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
             alt="Preview photo"
             onLoad={() => URL.revokeObjectURL(preview)}
           />
-          <div className="flex text-gray-500">
+          <div className="flex text-zink">
             <div className="mr-3">{shortenFileName(fileName)}</div>
             <button
               className="absolute top-2.5 left-2.5 cursor-pointer"
@@ -120,7 +120,7 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
       <div {...getRootProps({ className: "dropzone flex flex-col w-full" })}>
         <label
           htmlFor="uploader"
-          className="m-auto mb-2 transition-colors text-foreground cursor-pointer"
+          className="m-auto mb-2 transition-colors text-zink cursor-pointer"
         >
           <span className="flex items-center justify-center mb-2">
             <Upload />
