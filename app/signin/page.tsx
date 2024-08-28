@@ -1,9 +1,9 @@
-import UnblurLayout from "@/components/UnblurLayout";
-import MagicLinkSignIn from "@/components/UI/AuthForms/MagicLinkSignIn";
-import { getServerUser } from "@/utils/auth-helpers/server";
-import Separator from "@/components/UI/Separator";
-import OauthSignIn from "@/components/UI/AuthForms/OauthSignin";
 import { redirect } from "next/navigation";
+import { getServerUser } from "@/utils/auth-helpers/server";
+import UnblurLayout from "@/components/UnblurLayout";
+import Separator from "@/components/UI/Separator";
+import MagicLinkSignInForm from "@/components/UI/AuthForms/MagicLinkSignInForm";
+import OauthSignInForm from "@/components/UI/AuthForms/OauthSigninForm";
 
 export default async function SignIn() {
   const user = await getServerUser();
@@ -20,9 +20,9 @@ export default async function SignIn() {
             👋🏻 Hello there! please sign in to start enhancing your photos.
           </p>
           <div className="flex flex-col space-y-4 mt-4">
-            <MagicLinkSignIn />
+            <MagicLinkSignInForm />
             <Separator text="Third-party sign-in" />
-            <OauthSignIn />
+            <OauthSignInForm />
           </div>
         </div>
       </div>

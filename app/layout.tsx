@@ -26,8 +26,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={SG.className}>
       <body className="_grid grid-rows-[auto,1fr] bg-background text-foreground min-h-screen">
-        <Navbar />
         <AppStoreProvider>
+          <Navbar />
           <main id="skip">{children}</main>
         </AppStoreProvider>
         <Suspense>

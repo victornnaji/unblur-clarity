@@ -1,4 +1,11 @@
 "use client";
+
+import Link from "next/link";
+import React, { useId } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { handleRequest } from "@/utils/auth-helpers/client";
+import { SignOut } from "@/utils/auth-helpers/server";
+import Button from "./Button";
 import {
   Dropdown,
   DropdownTrigger,
@@ -7,13 +14,6 @@ import {
   Avatar,
   DropdownSection
 } from "@nextui-org/react";
-
-import Link from "next/link";
-import React, { useId } from "react";
-import { handleRequest } from "@/utils/auth-helpers/client";
-import { usePathname, useRouter } from "next/navigation";
-import { SignOut } from "@/utils/auth-helpers/server";
-import Button from "./Button";
 import {
   User as UserIcon,
   ShoppingCart as ShoppingCartIcon,
@@ -25,29 +25,30 @@ import { shortenFileName } from "@/utils/helpers";
 const NavbarLinks = ({ user }: { user: any }) => {
   const { avatar_url, name, email } = user?.user_metadata || {};
   const router = useRouter();
+  const id = useId();
+
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
-  const id = useId();
   const menus = [
     {
       key: "account",
       text: "Account",
       href: "/",
       description: shortenFileName(email),
-      icon: <UserIcon className={iconClasses} />
+      icon: UserIcon
     },
     {
       key: "unblur",
       text: "Unblur",
       href: "/unblur",
-      icon: <ZapIcon className={iconClasses} />
+      icon: ZapIcon
     },
     {
       key: "buy-credit",
       text: "Buy credits",
       href: "/products",
-      icon: <ShoppingCartIcon className={iconClasses} />
+      icon: ShoppingCartIcon
     }
   ];
 
@@ -98,16 +99,16 @@ const NavbarLinks = ({ user }: { user: any }) => {
                 divider: "bg-zink opacity-50"
               }}
             >
-              {menus.map((menu) => (
+              {menus.map(({ key, href, description, icon: Icon, text }) => (
                 <DropdownItem
-                  key={`${id}-${menu.key}`}
+                  key={`${id}-${key}`}
                   as={Link}
-                  href={menu.href}
-                  onClick={() => router.push(menu.href)}
-                  description={menu.description && menu.description}
-                  startContent={menu.icon}
+                  href={href}
+                  onClick={() => router.push(href)}
+                  description={description && description}
+                  startContent={<Icon className={iconClasses} />}
                 >
-                  {menu.text}
+                  {text}
                 </DropdownItem>
               ))}
             </DropdownSection>

@@ -12,7 +12,7 @@ type OAuthProviders = {
   icon: JSX.Element;
 };
 
-export default function OauthSignIn() {
+export default function OauthSignInForm() {
   const providers: OAuthProviders[] = [
     {
       name: "google",

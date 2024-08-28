@@ -1,6 +1,6 @@
 import React from "react";
 import TextInput from "../TextInput";
-import Selector, { SelectorExtraInfo } from "../Selector";
+import Selector from "../Selector";
 import {
   DEFAULT_UPSCALING_STYLE,
   imageUpscalingStyleOptions,
@@ -8,6 +8,7 @@ import {
 } from "@/config";
 import { useAppStore } from "@/hooks/use-store";
 import { ImageUpscalingStyleOptionType } from "@/types";
+import ExtraInfo from "../ExtraInfo";
 
 const ImageUpscalingComponents = () => {
   const { payload, setPayload } = useAppStore((state) => state);
@@ -56,7 +57,7 @@ const ImageUpscalingComponents = () => {
         id="unblurStyle"
         tooltipContent={tooltipText.imageUpscalingSelector}
       >
-        <SelectorExtraInfo
+        <ExtraInfo
           link="/unblur-styles"
           text="Choose a style for your image upscale."
           linkText="Learn what they mean &#8594;"

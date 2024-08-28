@@ -1,22 +1,32 @@
+import { useId } from "react";
 import {
   Tooltip as PrimitiveTooltip,
-  type TooltipProps as PrimitiveTooltipPropsƒ
+  type TooltipProps as PrimitiveTooltipProps
 } from "@nextui-org/react";
-import { useId } from "react";
+import { clsx } from "clsx";
 
-interface TooltipProps extends PrimitiveTooltipPropsƒ {
+interface TooltipProps extends PrimitiveTooltipProps {
   children: React.ReactNode;
   content: string;
+  className?: string;
 }
 
-export const Tooltip = ({ children, content, ...props }: TooltipProps) => {
+export const Tooltip = ({
+  children,
+  content,
+  className,
+  ...props
+}: TooltipProps) => {
   const id = useId();
   return (
     <PrimitiveTooltip
       key={id}
       showArrow={true}
       content={content}
-      className="bg-gray text-zink p-2 rounded-lg shadow-lg max-w-40 flex items-center border border-zink"
+      className={clsx(
+        "bg-gray text-zink p-2 rounded-lg shadow-lg max-w-40 flex items-center border border-zink",
+        className
+      )}
       {...props}
     >
       {children}

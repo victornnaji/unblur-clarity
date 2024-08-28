@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import Selector, { SelectorExtraInfo } from "@/components/UI/Selector";
+import Selector from "@/components/UI/Selector";
 import { DEFAULT_UNBLUR_OPTION, tooltipText, unblurOptions } from "@/config";
 import { useAppStore } from "@/hooks/use-store";
 import { UnblurOptionType } from "@/types";
+import ExtraInfo from "../ExtraInfo";
 
-const ModelSelector = () => {
+const SidebarModelSelector = () => {
   const { model, setModel } = useAppStore((state) => state);
 
   const handleSelectOptions = React.useCallback(
@@ -30,7 +31,7 @@ const ModelSelector = () => {
       handleSelect={handleSelectOptions}
       tooltipContent={tooltipText.modelSelector}
     >
-      <SelectorExtraInfo
+      <ExtraInfo
         link="/unblur-styles"
         text="Choose a style for your enhancement."
         linkText="Learn what they mean &#8594;"
@@ -39,4 +40,4 @@ const ModelSelector = () => {
   );
 };
 
-export default ModelSelector;
+export default SidebarModelSelector;

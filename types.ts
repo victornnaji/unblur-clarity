@@ -20,3 +20,5 @@ export interface PhotoType {
   originalImage: string;
   restoredImage: string;
 }
+
+export type ToastVariants = "success" | "error";
