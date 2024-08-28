@@ -8,19 +8,19 @@ type ClassNames = {
   base?: string;
   image?: string;
 };
-interface ZoomablePhotoProps {
+interface ZoomImageViewerProps {
   alt: string;
   caption?: string;
   src: string;
   classNames?: ClassNames;
 }
 
-const ZoomablePhoto = ({
+const ZoomImageViewer = ({
   alt,
   caption,
   src,
   classNames
-}: ZoomablePhotoProps) => {
+}: ZoomImageViewerProps) => {
   const id = useId();
   return (
     <figure className={clsx("w-full h-full", classNames?.base)} key={id}>
@@ -45,4 +45,4 @@ const ZoomablePhoto = ({
   );
 };
 
-export default ZoomablePhoto;
+export default ZoomImageViewer;

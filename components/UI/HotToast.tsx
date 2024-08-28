@@ -1,18 +1,17 @@
 "use client";
 
+import React, { useEffect, useId } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
 import { toast, Toaster, ToastBar } from "react-hot-toast";
+import { ToastVariants } from "@/types";
 
 const DURATION = 15000;
-
-export type ToastVariants = "success" | "error";
 
 const HotToast = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const id = React.useId();
+  const id = useId();
 
   useEffect(() => {
     const status = searchParams.get("status");

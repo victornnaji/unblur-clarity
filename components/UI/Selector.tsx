@@ -97,29 +97,4 @@ const Selector = ({
   );
 };
 
-interface SelectorExtraInfoProps {
-  text: string;
-  link: string;
-  linkText: string;
-}
-
-export const SelectorExtraInfo = ({
-  text,
-  link,
-  linkText
-}: SelectorExtraInfoProps) => {
-  return (
-    <span className="mb-6 text-sm text-left text-zink flex flex-col">
-      <span>{text}</span>
-      <Link
-        target="_blank"
-        href={link}
-        className="inline-block text-purple transition-all hover:underline"
-      >
-        {linkText}
-      </Link>
-    </span>
-  );
-};
-
 export default Selector;

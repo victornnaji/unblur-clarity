@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import PhotoCompare from "@/components/UI/PhotoCompare";
 import Toggle from "@/components/UI/Toggle";
-import ZoomablePhoto from "@/components/UI/PhotoZoomViewer/ZoomablePhoto";
+import ZoomImageViewer from "@/components/UI/ImageViewer/ZoomImageViewer";
 
 const PhotoPreviewer = () => {
   const [sideBySide, setSideBySide] = useState(false);
@@ -21,7 +21,7 @@ const PhotoPreviewer = () => {
       <div>
         {sideBySide ? (
           <div className="h-full lg:h-100 mt-6 flex flex-col items-start justify-between gap-6 sm:flex-row">
-            <ZoomablePhoto
+            <ZoomImageViewer
               classNames={{
                 base: "lg:h-100",
                 image: "mb-1 border"
@@ -30,7 +30,7 @@ const PhotoPreviewer = () => {
               alt="Left Image"
               src="https://raw.githubusercontent.com/nerdyman/stuff/main/libs/react-compare-slider/demo-images/sydney-opera-house-1.jpg"
             />
-            <ZoomablePhoto
+            <ZoomImageViewer
               classNames={{
                 base: "lg:h-100",
                 image: "mb-1 border"

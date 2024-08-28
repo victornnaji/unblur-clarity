@@ -3,7 +3,7 @@
 import React from "react";
 import PhotoPreviewer from "./PhotoPreviewer";
 import { useAppStore } from "@/hooks/use-store";
-import PreviewUserActions from "./PreviewUserActions";
+import PreviewContainerFooter from "./PreviewContainerFooter";
 
 const PreviewContainer = () => {
   const [photo] = useAppStore((state) => [state.photo]);
@@ -14,7 +14,7 @@ const PreviewContainer = () => {
         <div className="grid lg:grid-rows-[35rem_minmax(0,_1fr)] h-full">
           <PhotoPreviewer />
           <div className="mt-8 lg:mt-4">
-            <PreviewUserActions />
+            <PreviewContainerFooter />
           </div>
         </div>
       ) : null}

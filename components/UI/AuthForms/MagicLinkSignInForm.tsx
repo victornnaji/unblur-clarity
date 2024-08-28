@@ -6,7 +6,7 @@ import { signInWithMagiclink } from "@/utils/auth-helpers/server";
 import TextInput from "@/components/UI/TextInput";
 import Button from "@/components/UI/Button";
 
-const MagicLinkSignIn = () => {
+const MagicLinkSignInForm = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -38,4 +38,4 @@ const MagicLinkSignIn = () => {
   );
 };
 
-export default MagicLinkSignIn;
+export default MagicLinkSignInForm;
