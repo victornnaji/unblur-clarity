@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { AlertOctagon } from "react-feather";
 import { Tooltip } from "./Tooltip";
 import clsx from "clsx";
@@ -12,67 +12,68 @@ interface InputProps
   tooltipContent?: string;
   name: string;
   className?: string;
+  value?: string;
+  onChange?: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => void;
 }
 
-const TextInput = forwardRef<
-  HTMLInputElement | HTMLTextAreaElement,
-  InputProps
->(
-  (
-    {
-      id,
-      type,
-      placeholder,
-      name,
-      className,
-      label,
-      tooltipContent,
-      ...delegated
-    },
-    ref
-  ) => {
-    const generatedId = React.useId();
-    const appliedId = id || generatedId;
-    const style = `w-full p-3 rounded-md bg-gray text-zink`;
-    return (
-      <>
-        <label
-          htmlFor={appliedId}
-          className="mb-2 text-md text-zink flex items-center gap-2"
-        >
-          <span>{label}</span>
-          {tooltipContent && (
-            <Tooltip content={tooltipContent}>
-              <AlertOctagon size={16} className="cursor-pointer" />
-            </Tooltip>
-          )}
-        </label>
-        {type === "textarea" ? (
-          <textarea
-            ref={ref as React.Ref<HTMLTextAreaElement>}
-            id={appliedId}
-            placeholder={placeholder}
-            name={name}
-            className={clsx(style, className)}
-            {...delegated}
-          />
-        ) : (
-          <input
-            ref={ref as React.Ref<HTMLInputElement>}
-            id={appliedId}
-            placeholder={placeholder}
-            autoComplete={type}
-            name={name}
-            type={type}
-            autoCapitalize="none"
-            autoCorrect="off"
-            className={clsx(style, className)}
-            {...delegated}
-          />
+const TextInput: React.FC<InputProps> = ({
+  id,
+  type,
+  placeholder,
+  name,
+  className,
+  label,
+  value,
+  defaultValue,
+  onChange,
+  tooltipContent,
+  ...delegated
+}) => {
+  const generatedId = React.useId();
+  const appliedId = id || generatedId;
+  const style = `w-full p-3 rounded-md bg-gray text-zink`;
+  const isControlled = value !== undefined;
+  const textareaProps = isControlled ? { value, onChange } : { defaultValue };
+  return (
+    <>
+      <label
+        htmlFor={appliedId}
+        className="mb-2 text-md text-zink flex items-center gap-2"
+      >
+        <span>{label}</span>
+        {tooltipContent && (
+          <Tooltip content={tooltipContent}>
+            <AlertOctagon size={16} className="cursor-pointer" />
+          </Tooltip>
         )}
-      </>
-    );
-  }
-);
+      </label>
+      {type === "textarea" ? (
+        <textarea
+          id={appliedId}
+          placeholder={placeholder}
+          name={name}
+          className={clsx(style, className)}
+          {...textareaProps}
+          {...delegated}
+        />
+      ) : (
+        <input
+          id={appliedId}
+          placeholder={placeholder}
+          autoComplete={type}
+          name={name}
+          type={type}
+          autoCapitalize="none"
+          autoCorrect="off"
+          className={clsx(style, className)}
+          {...(isControlled ? { value, onChange } : {})}
+          {...delegated}
+        />
+      )}
+    </>
+  );
+};
 
-export default TextInput;
+export default React.memo(TextInput);

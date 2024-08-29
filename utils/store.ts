@@ -2,7 +2,7 @@ import { createStore } from "zustand/vanilla";
 import { DEFAULT_UNBLUR_OPTION, DEFAULT_UPSCALING_STYLE } from "@/config";
 import { PhotoType, UnblurModel, UpscalingStyle } from "@/types";
 
-type PayloadStore = {
+export type PayloadStore = {
   prompt: string;
   upscaleStyle: UpscalingStyle;
 };

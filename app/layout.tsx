@@ -24,7 +24,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={InterFont.className}>
+    <html
+      lang="en"
+      className={InterFont.className}
+      suppressHydrationWarning={true}
+    >
       <body className="_grid grid-rows-[auto,1fr] bg-background text-foreground min-h-screen">
         <AppStoreProvider>
           <Navbar />
