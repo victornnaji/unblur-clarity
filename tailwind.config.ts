@@ -17,6 +17,7 @@ module.exports = {
         milk: "var(--milk)",
         gray: "var(--gray)",
         zink: "var(--zink)",
+        darkzink: "var(--darkzink)",
         success: "var(--success)",
         surface: "hsl(var(--surface))"
       },

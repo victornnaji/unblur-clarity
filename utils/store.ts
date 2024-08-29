@@ -7,32 +7,43 @@ type PayloadStore = {
   upscaleStyle: UpscalingStyle;
 };
 
+type AppStatusStore = {
+  status: "idle" | "reset" | "processing" | "canceled" | "success" | "error";
+  message: string;
+};
+
 export type AppStoreState = {
   model: UnblurModel;
   photo: PhotoType;
   payload: PayloadStore;
+  appStatus: AppStatusStore;
 };
 
 export type AppStoreActions = {
   setModel: (model: UnblurModel) => void;
   setPhoto: (photo: PhotoType) => void;
   setPayload: (payload: PayloadStore) => void;
+  setAppStatus: (status: AppStatusStore) => void;
   reset: () => void;
 };
 
 export type AppStore = AppStoreState & AppStoreActions;
 
 export const defaultState: AppStoreState = {
+  appStatus: {
+    status: "idle",
+    message: ""
+  },
   model: DEFAULT_UNBLUR_OPTION.value,
   photo: {
     name: "",
     originalImage: "",
-    restoredImage: "",
+    restoredImage: ""
   },
   payload: {
     prompt: "",
-    upscaleStyle: DEFAULT_UPSCALING_STYLE.value,
-  },
+    upscaleStyle: DEFAULT_UPSCALING_STYLE.value
+  }
 };
 
 export const createAppStore = (initState: AppStoreState = defaultState) => {
@@ -40,8 +51,14 @@ export const createAppStore = (initState: AppStoreState = defaultState) => {
     ...initState,
     setModel: (model: UnblurModel) => set((state) => ({ ...state, model })),
     setPhoto: (photo: PhotoType) => set((state) => ({ ...state, photo })),
-    reset: () => set(() => ({ ...defaultState })),
+    setAppStatus: (appStatus: AppStatusStore) =>
+      set((state) => ({ ...state, appStatus })),
+    reset: () =>
+      set(() => ({
+        ...defaultState,
+        appStatus: { status: "reset", message: "" }
+      })),
     setPayload: (payload: PayloadStore) =>
-      set((state) => ({ ...state, payload })),
+      set((state) => ({ ...state, payload }))
   }));
 };

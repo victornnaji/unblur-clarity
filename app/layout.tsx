@@ -1,4 +1,4 @@
-import { Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { config } from "@/config";
 import Navbar from "@/components/UI/Navbar";
@@ -16,7 +16,7 @@ export const metadata = {
   description: config.description
 };
 
-const SG = Space_Grotesk({ subsets: ["latin"] });
+const InterFont = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={SG.className}>
+    <html lang="en" className={InterFont.className}>
       <body className="_grid grid-rows-[auto,1fr] bg-background text-foreground min-h-screen">
         <AppStoreProvider>
           <Navbar />

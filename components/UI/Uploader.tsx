@@ -1,5 +1,6 @@
 "use client";
 
+import { useAppStore } from "@/hooks/use-store";
 import { PhotoType } from "@/types";
 import { shortenFileName } from "@/utils/helpers";
 import clsx from "clsx";
@@ -14,7 +15,7 @@ function imageValidator(file: File) {
   if (fileSize > 900) {
     return {
       code: "file-too-large",
-      message: "File is too large. Please upload a file smaller than 1MB.",
+      message: "File is too large. Please upload a file smaller than 1MB."
     };
   }
   return null;
@@ -26,8 +27,19 @@ interface UploaderProps {
 const Uploader = ({ handlePhoto }: UploaderProps) => {
   const [imageMetadata, setImageMetadata] = useState({
     preview: "",
-    fileName: "",
+    fileName: ""
   });
+
+  const { appStatus, setAppStatus } = useAppStore((state) => state);
+
+  useEffect(() => {
+    if (appStatus.status === "reset") {
+      setImageMetadata({
+        preview: "",
+        fileName: ""
+      });
+    }
+  }, [appStatus.status]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
@@ -38,14 +50,18 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
       const reader = new FileReader();
 
       reader.onloadend = async () => {
+        setAppStatus({
+          ...appStatus,
+          status: "idle"
+        });
         setImageMetadata({
           preview: URL.createObjectURL(file),
-          fileName: file.name,
+          fileName: file.name
         });
         handlePhoto({
           name: file.name,
           originalImage: reader.result as string,
-          restoredImage: "",
+          restoredImage: ""
         });
       };
       if (file) {
@@ -58,12 +74,12 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
   const removeImage = () => {
     setImageMetadata({
       preview: "",
-      fileName: "",
+      fileName: ""
     });
     handlePhoto({
       name: "",
       originalImage: "",
-      restoredImage: "",
+      restoredImage: ""
     });
   };
 
@@ -79,11 +95,11 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
       accept: {
         "image/jpeg": [],
         "image/png": [],
-        "image/jpg": [],
+        "image/jpg": []
       },
       validator: imageValidator,
       maxFiles: 1,
-      maxSize: 900 * 1024,
+      maxSize: 900 * 1024
     });
 
   const { preview, fileName } = imageMetadata;
@@ -128,7 +144,7 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
           <span>Click to upload your Image</span>
           <input
             {...getInputProps({
-              "aria-label": "upload",
+              "aria-label": "upload"
             })}
             name="uploader"
             id="uploader"
@@ -147,7 +163,7 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
 
 const Zone = ({
   children,
-  className,
+  className
 }: {
   children: React.ReactNode;
   className?: string;
@@ -166,7 +182,7 @@ const Zone = ({
 
 const Message = ({
   fileRejections,
-  isDragActive,
+  isDragActive
 }: {
   fileRejections: FileRejection[];
   isDragActive: boolean;

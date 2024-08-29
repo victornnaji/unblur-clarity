@@ -52,6 +52,10 @@ const Selector = ({
       cursor: "pointer",
       backgroundColor: "var(--gray)"
     }),
+    input: (styles) => ({
+      ...styles,
+      color: "var(--zink)"
+    }),
     option: (styles, { isFocused, isSelected }) => ({
       ...styles,
       backgroundColor: isSelected
