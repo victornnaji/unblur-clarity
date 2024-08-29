@@ -22,3 +22,11 @@ export interface PhotoType {
 }
 
 export type ToastVariants = "success" | "error";
+export enum AppStatusEnum {
+  IDLE = "idle",
+  RESET = "reset",
+  PROCESSING = "processing",
+  CANCELED = "canceled",
+  SUCCESS = "success",
+  ERROR = "error",
+}

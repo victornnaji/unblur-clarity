@@ -1,17 +1,13 @@
 "use client";
 
-import React, {
-  forwardRef,
-  useRef,
-  ButtonHTMLAttributes,
-  AnchorHTMLAttributes,
-} from "react";
+import React, { forwardRef, useRef, ButtonHTMLAttributes } from "react";
 import { mergeRefs } from "react-merge-refs";
 
 import styles from "./Button.module.css";
 import clsx from "clsx";
 import LoadingDots from "@/components/UI/LoadingDots";
 import Link from "next/link";
+import { Button as PrimitiveButton, ButtonProps } from "@nextui-org/react";
 
 interface Props
   extends ButtonHTMLAttributes<HTMLButtonElement | HTMLAnchorElement> {
@@ -44,7 +40,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
       {
         [styles.slim]: variant === "slim",
         [styles.loading]: loading,
-        [styles.disabled]: disabled,
+        [styles.disabled]: disabled
       },
       className
     );
@@ -59,7 +55,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
           className={rootClassName}
           style={{
             width,
-            ...style,
+            ...style
           }}
           {...rest}
         >
@@ -82,7 +78,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
         disabled={disabled}
         style={{
           width,
-          ...style,
+          ...style
         }}
         {...rest}
       >
@@ -97,5 +93,24 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
   }
 );
 Button.displayName = "Button";
+
+interface SecondaryButtonProps extends ButtonProps {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  // variant: "solid" | "ghost";
+}
+export const SecondaryButton = (props: SecondaryButtonProps | ButtonProps) => {
+  return (
+    <PrimitiveButton
+      size="lg"
+      variant={props.variant}
+      className={props.className}
+      {...props}
+    >
+      {props.children}
+    </PrimitiveButton>
+  );
+};
 
 export default Button;

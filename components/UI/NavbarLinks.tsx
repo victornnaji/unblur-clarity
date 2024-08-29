@@ -35,7 +35,7 @@ const NavbarLinks = ({ user }: { user: any }) => {
       key: "account",
       text: "Account",
       href: "/",
-      description: shortenFileName(email),
+      description: email && shortenFileName(email),
       icon: UserIcon
     },
     {

@@ -8,7 +8,7 @@ import Button from "@/components/UI/Button";
 import { useAppStore } from "@/hooks/use-store";
 
 const SidebarContainer = () => {
-  const { photo, model } = useAppStore((state) => state);
+  const { photo, model, setAppStatus, appStatus } = useAppStore((state) => state);
 
   const buttonText =
     model === "image_upscaling" ? "Upscale Image" : "Enhance Image";
@@ -22,6 +22,8 @@ const SidebarContainer = () => {
       </div>
       <Button
         disabled={!photo.name}
+        loading={appStatus.status === "processing"}
+        onClick={() => setAppStatus({ status: "processing", message: "" })}
         variant="flat"
         className="grid w-full md:w-1/2 md:mx-auto lg:w-full"
       >
