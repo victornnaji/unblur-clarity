@@ -89,7 +89,7 @@ const ToastMessage = React.memo(
     description: string | null;
   }) => (
     <aside className="flex flex-col">
-      {title && <span className="text-base font-bold px-2">{title}</span>}
+      {title && <span className="text-base font-bold pr-2">{title}</span>}
       {description && <span className="text-sm">{description}</span>}
     </aside>
   )

@@ -1,3 +1,5 @@
+'use client';
+
 import { useAppStore } from "@/hooks/use-store";
 import { PhotoType } from "@/types";
 import React from "react";

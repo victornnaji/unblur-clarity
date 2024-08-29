@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import Link from "next/link";
 import React, { useId } from "react";
 import Select, { StylesConfig } from "react-select";
 import { AlertOctagon } from "react-feather";
@@ -87,9 +86,10 @@ const Selector = ({
         inputId={appliedId}
         name={name}
         options={options}
-        defaultValue={defaultOption}
+        value={defaultOption}
         styles={customStyles}
         className={clsx("mb-2 cursor-pointer")}
+        aria-activedescendant={defaultOption.value}
         onChange={(selectedOption: unknown) => {
           if (selectedOption) {
             handleSelect(selectedOption as OptionType);
@@ -101,4 +101,4 @@ const Selector = ({
   );
 };
 
-export default Selector;
+export default React.memo(Selector);

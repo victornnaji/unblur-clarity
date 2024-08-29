@@ -1,3 +1,4 @@
+'use client';
 import React from "react";
 import TextInput from "../TextInput";
 import Selector from "../Selector";
@@ -14,18 +15,18 @@ const ImageUpscalingComponents = () => {
   const { payload, setPayload } = useAppStore((state) => state);
 
   const handlePromptChange = React.useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      const prompt = e.currentTarget.prompt.value;
-      setPayload({ ...payload, prompt });
+    (prompt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const promptValue = prompt.currentTarget.value;
+      setPayload({ ...payload, prompt: promptValue });
     },
-    []
+    [payload]
   );
 
   const handleSelectorChange = React.useCallback(
     (selectedOption: ImageUpscalingStyleOptionType) => {
       setPayload({ ...payload, upscaleStyle: selectedOption.value });
     },
-    []
+    [payload]
   );
 
   const selectedOption =
@@ -34,18 +35,17 @@ const ImageUpscalingComponents = () => {
     ) || DEFAULT_UPSCALING_STYLE;
 
   return (
-    <form
-      noValidate={true}
-      className="mb-4 mt-2 max-w-full box-border"
-      onChange={handlePromptChange}
-    >
+    <div className="mb-4 mt-2 max-w-full box-border">
       <TextInput
         type="textarea"
         label="Prompt (optional)"
         placeholder="Prompt"
         name="prompt"
-        defaultValue={payload.prompt}
         id="prompt"
+        key="prompt"
+        value={payload.prompt}
+        aria-activedescendant={undefined}
+        onChange={handlePromptChange}
         tooltipContent={tooltipText.imageUpscalingInput}
       />
       <Selector
@@ -53,6 +53,7 @@ const ImageUpscalingComponents = () => {
         options={imageUpscalingStyleOptions}
         defaultOption={selectedOption}
         name="unblurStyle"
+        aria-activedescendant={undefined}
         handleSelect={handleSelectorChange}
         id="unblurStyle"
         tooltipContent={tooltipText.imageUpscalingSelector}
@@ -63,7 +64,7 @@ const ImageUpscalingComponents = () => {
           linkText="Learn what they mean &#8594;"
         />
       </Selector>
-    </form>
+    </div>
   );
 };
 
