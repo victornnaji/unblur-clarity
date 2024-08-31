@@ -1,4 +1,4 @@
-import { ImageUpscalingStyleOptionType, UnblurOptionType } from "./types";
+import { ImageUpscalingStyleOptionType, UnblurOptionType } from "./types/types";
 
 export const config = {
   metadataBase: new URL("http://localhost:3000"),
@@ -28,3 +28,8 @@ export const tooltipText = {
     "Add a style to change the way your image is upscaled. Leave default to match the original image style as close as possible.",
   modelSelector: "The type of enhancement you want to apply to your image.",
 };
+
+export const UPSCALE_CLARITY_MODEL =
+  "dfad41707589d68ecdccd1dfa600d55a208f9310748e44bfe35b4a6291453d5e";
+export const MEGVII_ENHANCE_MODEL =
+  "018241a6c880319404eaa2714b764313e27e11f950a7ff0a7b5b37b27b74dcf7";

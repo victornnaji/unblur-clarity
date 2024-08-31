@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import PhotoCompare from "@/components/UI/PhotoCompare";
 import Toggle from "@/components/UI/Toggle";
 import ZoomImageViewer from "@/components/UI/ImageViewer/ZoomImageViewer";
+import { useAppStore } from "@/hooks/use-store";
 
 const PhotoPreviewer = () => {
   const [sideBySide, setSideBySide] = useState(false);
   const toggleSwitch = () => setSideBySide(!sideBySide);
+  const { photo } = useAppStore((state) => state);
 
   return (
     <div className="h-full">
@@ -24,26 +26,26 @@ const PhotoPreviewer = () => {
             <ZoomImageViewer
               classNames={{
                 base: "lg:h-100",
-                image: "mb-1 border"
+                image: "mb-1 border",
               }}
               caption="Original Photo"
               alt="Left Image"
-              src="https://raw.githubusercontent.com/nerdyman/stuff/main/libs/react-compare-slider/demo-images/sydney-opera-house-1.jpg"
+              src={photo.originalImage}
             />
             <ZoomImageViewer
               classNames={{
                 base: "lg:h-100",
-                image: "mb-1 border"
+                image: "mb-1 border",
               }}
               caption="Restored Photo"
               alt="Right Image"
-              src="https://raw.githubusercontent.com/nerdyman/stuff/main/libs/react-compare-slider/demo-images/sydney-opera-house-2.jpg"
+              src={photo.restoredImage}
             />
           </div>
         ) : (
           <PhotoCompare
-            leftImage="https://raw.githubusercontent.com/nerdyman/stuff/main/libs/react-compare-slider/demo-images/sydney-opera-house-1.jpg"
-            rightImage="https://raw.githubusercontent.com/nerdyman/stuff/main/libs/react-compare-slider/demo-images/sydney-opera-house-2.jpg"
+            leftImage={photo.originalImage}
+            rightImage={photo.restoredImage}
             leftAlt="Original Image"
             rightAlt="Restored Image"
             className="h-100 mt-6 border border-gray"

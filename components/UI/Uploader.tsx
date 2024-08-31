@@ -10,16 +10,6 @@ import { FileRejection, useDropzone } from "react-dropzone";
 import { Upload, Trash } from "react-feather";
 import Balancer from "react-wrap-balancer";
 
-function imageValidator(file: File) {
-  const fileSize = file.size / 1024;
-  if (fileSize > 900) {
-    return {
-      code: "file-too-large",
-      message: "File is too large. Please upload a file smaller than 1MB."
-    };
-  }
-  return null;
-}
 
 interface UploaderProps {
   handlePhoto: (photo: PhotoType) => void;
@@ -97,9 +87,8 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
         "image/png": [],
         "image/jpg": []
       },
-      validator: imageValidator,
       maxFiles: 1,
-      maxSize: 900 * 1024
+      maxSize: 2 * 1024 * 1024
     });
 
   const { preview, fileName } = imageMetadata;
