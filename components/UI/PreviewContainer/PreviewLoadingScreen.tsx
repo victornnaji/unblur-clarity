@@ -5,6 +5,7 @@ import ZoomImageViewer from "../ImageViewer/ZoomImageViewer";
 import StatusNotification from "../StatusNotification";
 import { CircularProgress } from "@nextui-org/react";
 import ResetTab from "@/components/UI/ResetTab";
+import { useAppStore } from "@/hooks/use-store";
 
 const PreviewLoadingScreen = () => {
   const statusTexts = [
@@ -13,9 +14,11 @@ const PreviewLoadingScreen = () => {
     "Fetching data...",
     "",
     "Almost there...",
-    "Preparing preview..."
+    "Preparing preview...",
   ];
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
+
+  const { photo } = useAppStore((state) => state);
 
   useEffect(() => {
     let intervalId: string | number | NodeJS.Timeout | undefined;
@@ -48,10 +51,10 @@ const PreviewLoadingScreen = () => {
           <ZoomImageViewer
             classNames={{
               base: "lg:h-100",
-              image: "mb-1 border"
+              image: "mb-1 border",
             }}
             alt="Left Image"
-            src="https://raw.githubusercontent.com/nerdyman/stuff/main/libs/react-compare-slider/demo-images/sydney-opera-house-1.jpg"
+            src={photo.originalImage}
           />
         </div>
       </div>
