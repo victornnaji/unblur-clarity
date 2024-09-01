@@ -12,11 +12,19 @@ type AppStatusStore = {
   message: string;
 };
 
+type PredictionStore = {
+  id: string;
+  status: string;
+  predict_time: number | undefined;
+  error: string | null;
+};
+
 export type AppStoreState = {
   model: UnblurModel;
   photo: PhotoType;
   payload: PayloadStore;
   appStatus: AppStatusStore;
+  prediction: Partial<PredictionStore>;
 };
 
 export type AppStoreActions = {
@@ -25,6 +33,7 @@ export type AppStoreActions = {
   setPayload: (payload: PayloadStore) => void;
   setAppStatus: (status: AppStatusStore) => void;
   reset: () => void;
+  setPrediction: (prediction: PredictionStore) => void;
 };
 
 export type AppStore = AppStoreState & AppStoreActions;
@@ -32,18 +41,25 @@ export type AppStore = AppStoreState & AppStoreActions;
 export const defaultState: AppStoreState = {
   appStatus: {
     status: "idle",
-    message: ""
+    message: "",
+  },
+  prediction: {
+    id: "",
+    status: "starting",
+    predict_time: 0,
+    error: "",
   },
   model: DEFAULT_UNBLUR_OPTION.value,
   photo: {
     name: "",
     originalImage: "",
-    restoredImage: ""
+    restoredImage: "",
+    previewImage: "",
   },
   payload: {
     prompt: "",
-    upscaleStyle: DEFAULT_UPSCALING_STYLE.value
-  }
+    upscaleStyle: DEFAULT_UPSCALING_STYLE.value,
+  },
 };
 
 export const createAppStore = (initState: AppStoreState = defaultState) => {
@@ -56,9 +72,11 @@ export const createAppStore = (initState: AppStoreState = defaultState) => {
     reset: () =>
       set(() => ({
         ...defaultState,
-        appStatus: { status: "reset", message: "" }
+        appStatus: { status: "reset", message: "" },
       })),
     setPayload: (payload: PayloadStore) =>
-      set((state) => ({ ...state, payload }))
+      set((state) => ({ ...state, payload })),
+    setPrediction: (prediction: PredictionStore) =>
+      set((state) => ({ ...state, prediction })),
   }));
 };

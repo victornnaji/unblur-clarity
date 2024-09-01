@@ -1,18 +1,17 @@
-'use client';
-
-import { useAppStore } from "@/hooks/use-store";
-import { PhotoType } from "@/types";
 import React from "react";
-import Uploader from "../Uploader";
+import dynamic from "next/dynamic";
+import { Zone } from "../Uploader";
 
-const ImageSelector = () => {
-  const { setPhoto } = useAppStore((state) => state);
+const Uploader = dynamic(() => import("../Uploader"), {
+  loading: () => (
+    <Zone>
+      <span>loading...</span>
+    </Zone>
+  ),
+});
 
-  const handlePhotoChange = React.useCallback((photo: PhotoType) => {
-    setPhoto(photo);
-  }, []);
-
-  return <Uploader handlePhoto={handlePhotoChange} />;
+const SidebarImageSelector = () => {
+  return <Uploader />;
 };
 
-export default ImageSelector;
+export default SidebarImageSelector;

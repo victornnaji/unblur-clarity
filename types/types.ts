@@ -17,6 +17,7 @@ export type ImageUpscalingStyleOptionType = {
 
 export interface PhotoType {
   name: string;
+  previewImage: string;
   originalImage: string;
   restoredImage: string;
 }

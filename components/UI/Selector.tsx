@@ -1,3 +1,4 @@
+"use client";
 import clsx from "clsx";
 import React, { useId } from "react";
 import Select, { StylesConfig } from "react-select";

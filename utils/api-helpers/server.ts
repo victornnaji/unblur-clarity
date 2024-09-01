@@ -2,8 +2,8 @@
 
 import { PredictionDto } from "@/types/dtos";
 import { v2 as cloudinary } from "cloudinary";
-import { Prediction } from "replicate";
 import { createClient } from "../supabase/server";
+import { cache } from "react";
 
 export const uploadImageToCloudinary = async (imageUrl: string) => {
   try {
@@ -17,10 +17,10 @@ export const uploadImageToCloudinary = async (imageUrl: string) => {
       folder: "unblur-photos",
     });
 
-    return { url: result.secure_url };
-    // return {
-    //   url: "https://asset.cloudinary.com/victornnaji/e7f72e4904bfb716e920365caa6d2f82",
-    // };
+    // return { url: result.secure_url };
+    return {
+      url: "https://res.cloudinary.com/victornnaji/image/upload/v1725121461/unblur-photos/ehxgthsetnsbnrkgd2nl.png",
+    };
   } catch (error) {
     console.error("Error uploading image to Cloudinary:", error);
     throw new Error("Failed to upload image");
@@ -59,3 +59,18 @@ export const pollPredictionStatus = async (predictionId: string) => {
 
   return checkStatus();
 };
+
+export const getPredictionStartTime = cache(async (predictionId: string) => {
+  const supabase = createClient();
+  const { data, error }: { data: PredictionDto | null; error: any } =
+    await supabase
+      .from("prediction")
+      .select("created_at")
+      .eq("id", predictionId)
+      .single();
+
+  if (error) throw new Error(`Error fetching prediction: ${error.message}`);
+  if (!data) throw new Error("Prediction not found");
+
+  return data.created_at;
+});

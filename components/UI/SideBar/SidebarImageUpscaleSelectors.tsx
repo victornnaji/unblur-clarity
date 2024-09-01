@@ -1,4 +1,5 @@
 'use client';
+
 import React from "react";
 import TextInput from "../TextInput";
 import Selector from "../Selector";
@@ -11,8 +12,11 @@ import { useAppStore } from "@/hooks/use-store";
 import { ImageUpscalingStyleOptionType } from "@/types";
 import ExtraInfo from "../ExtraInfo";
 
-const ImageUpscalingComponents = () => {
-  const { payload, setPayload } = useAppStore((state) => state);
+const SidebarUpscalingOptionsSeletors = () => {
+  const { payload, setPayload } = useAppStore((state) => ({
+    payload: state.payload,
+    setPayload: state.setPayload,
+  }));
 
   const handlePromptChange = React.useCallback(
     (prompt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -68,4 +72,4 @@ const ImageUpscalingComponents = () => {
   );
 };
 
-export default ImageUpscalingComponents;
+export default SidebarUpscalingOptionsSeletors;
