@@ -9,8 +9,7 @@ import { useAppStore } from "@/hooks/use-store";
 
 const PreviewLoadingScreen = () => {
   const statusTexts = [
-    "",
-    "Loading...",
+    "Gathering image data....",
     "Fetching data...",
     "",
     "Almost there...",
@@ -18,7 +17,7 @@ const PreviewLoadingScreen = () => {
   ];
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
-  const { photo } = useAppStore((state) => state);
+  const photo = useAppStore((state) => state.photo);
 
   useEffect(() => {
     let intervalId: string | number | NodeJS.Timeout | undefined;
@@ -53,7 +52,7 @@ const PreviewLoadingScreen = () => {
               base: "lg:h-100",
               image: "mb-1 border",
             }}
-            alt="Left Image"
+            alt="original image"
             src={photo.originalImage}
           />
         </div>

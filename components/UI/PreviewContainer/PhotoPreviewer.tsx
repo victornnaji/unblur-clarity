@@ -7,9 +7,9 @@ import ZoomImageViewer from "@/components/UI/ImageViewer/ZoomImageViewer";
 import { useAppStore } from "@/hooks/use-store";
 
 const PhotoPreviewer = () => {
-  const [sideBySide, setSideBySide] = useState(false);
+  const [sideBySide, setSideBySide] = useState(true);
   const toggleSwitch = () => setSideBySide(!sideBySide);
-  const { photo } = useAppStore((state) => state);
+  const photo = useAppStore((state) => state.photo);
 
   return (
     <div className="h-full">
@@ -22,10 +22,10 @@ const PhotoPreviewer = () => {
       />
       <div>
         {sideBySide ? (
-          <div className="h-full lg:h-100 mt-6 flex flex-col items-start justify-between gap-6 sm:flex-row">
+          <div className="h-full lg:max-h-[50vh] mt-6 flex flex-col items-start justify-between gap-6 sm:flex-row">
             <ZoomImageViewer
               classNames={{
-                base: "lg:h-100",
+                base: "lg:full",
                 image: "mb-1 border",
               }}
               caption="Original Photo"
@@ -34,7 +34,7 @@ const PhotoPreviewer = () => {
             />
             <ZoomImageViewer
               classNames={{
-                base: "lg:h-100",
+                base: "lg:h-full",
                 image: "mb-1 border",
               }}
               caption="Restored Photo"
@@ -48,7 +48,7 @@ const PhotoPreviewer = () => {
             rightImage={photo.restoredImage}
             leftAlt="Original Image"
             rightAlt="Restored Image"
-            className="h-100 mt-6 border border-gray"
+            className="lg:h-[50vh] mt-6 border border-gray"
           />
         )}
       </div>

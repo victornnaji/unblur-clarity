@@ -1,9 +1,7 @@
 "use server";
 import { MEGVII_ENHANCE_MODEL, UPSCALE_CLARITY_MODEL } from "@/config";
 import { UnblurModel } from "@/types";
-import {
-  uploadImageToCloudinary,
-} from "@/utils/api-helpers/server";
+import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
 import { getErrorRedirect } from "@/utils/helpers";
 import { insertPrediction } from "@/utils/supabase/actions";
 import { createClient } from "@/utils/supabase/server";
@@ -96,26 +94,27 @@ export async function initiatePrediction(payload: PayloadProps) {
   });
 
   try {
-    const prediction: Prediction = await replicate.predictions.create({
-      version: replicateModel,
-      input,
-      webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
-      webhook_events_filter: ["completed"],
-    });
+    // const prediction: Prediction = await replicate.predictions.create({
+    //   version: replicateModel,
+    //   input,
+    //   webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
+    //   webhook_events_filter: ["completed"],
+    // });
 
-    const { id: predictionId } = await insertPrediction({
-      supabase,
-      prediction: {
-        id: prediction.id,
-        status: prediction.status,
-        created_at: prediction.created_at,
-        started_at: prediction.started_at,
-      },
-      userId: user?.id,
-    });
+    // const { id: predictionId } = await insertPrediction({
+    //   supabase,
+    //   prediction: {
+    //     id: prediction.id,
+    //     status: prediction.status,
+    //     created_at: prediction.created_at,
+    //     started_at: prediction.started_at,
+    //   },
+    //   userId: user?.id,
+    // });
 
-    console.log("prediction successfully created on replicate", prediction);
-    return { predictionId, secure_url };
+    // console.log("prediction successfully created on replicate", prediction);
+    // return { predictionId, secure_url };
+    return { predictionId: "dy3q453zv9rj40chn50axdngx4", secure_url };
   } catch (error) {
     console.log("error creating prediction", error);
     const errorMessage =

@@ -1,17 +1,32 @@
 "use client";
 
 import React, { useCallback } from "react";
-import ImageUpscalingComponents from "./ImageUpscalingComponents";
+import SidebarUpscalingOptionsSeletors from "./SidebarImageUpscaleSelectors";
 import SidebarModelSelector from "./SidebarModelSelector";
-import SidebarImageSelector from "./SidebarImageSelector";
 import Button from "@/components/UI/Button";
 import { useAppStore } from "@/hooks/use-store";
 import { initiatePrediction } from "@/app/unblur/actions";
 import { pollPredictionStatus } from "@/utils/api-helpers/server";
+import SidebarImageSelector from "./SidebarImageSelector";
 
 const SidebarContainer = () => {
-  const { photo, model, setAppStatus, appStatus, payload, setPhoto } =
-    useAppStore((state) => state);
+  const {
+    photo,
+    model,
+    setAppStatus,
+    appStatus,
+    payload,
+    setPhoto,
+    setPrediction,
+  } = useAppStore((state) => ({
+    model: state.model,
+    photo: state.photo,
+    payload: state.payload,
+    appStatus: state.appStatus,
+    setAppStatus: state.setAppStatus,
+    setPhoto: state.setPhoto,
+    setPrediction: state.setPrediction,
+  }));
 
   const buttonText =
     model === "image_upscaling" ? "Upscale Image" : "Enhance Image";
@@ -32,11 +47,12 @@ const SidebarContainer = () => {
       }
 
       setAppStatus({ status: "processing", message: "Processing image..." });
-      setPhoto({
-        ...photo,
-        originalImage: response.secure_url,
+      setPrediction({
+        id: response.predictionId,
+        status: "processing",
+        predict_time: 0,
+        error: null,
       });
-
       const prediction = await pollPredictionStatus(response.predictionId);
       switch (prediction.status) {
         case "succeeded":
@@ -46,12 +62,25 @@ const SidebarContainer = () => {
           });
           setPhoto({
             ...photo,
-            restoredImage: prediction?.image_url || "",
+            restoredImage: prediction.image_url!,
+          });
+          setPrediction({
+            id: prediction.id,
+            status: prediction.status,
+            predict_time: prediction.predict_time,
+            error: prediction.error,
           });
           break;
         case "failed":
-          throw new Error(prediction.error || "Prediction failed");
+          setAppStatus({
+            status: "error",
+            message: prediction.error || "Prediction failed",
+          });
         case "canceled":
+          setAppStatus({
+            status: "canceled",
+            message: "Prediction was canceled",
+          });
           throw new Error("Prediction was canceled");
         default:
           throw new Error(`Unexpected prediction status: ${prediction.status}`);
@@ -66,14 +95,14 @@ const SidebarContainer = () => {
             : "An error occurred while processing your image.",
       });
     }
-  }, [setAppStatus, photo.originalImage, model, payload]);
+  }, [setAppStatus, photo, model, payload, setPhoto]);
 
   return (
     <>
       <SidebarImageSelector />
       <SidebarModelSelector />
       <div className="lg:h-80 overflow-scroll mb-5 p-1 box-border">
-        {model === "image_upscaling" && <ImageUpscalingComponents />}
+        {model === "image_upscaling" && <SidebarUpscalingOptionsSeletors />}
       </div>
       <Button
         disabled={!photo.name}

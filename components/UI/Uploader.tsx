@@ -1,35 +1,32 @@
 "use client";
 
 import { useAppStore } from "@/hooks/use-store";
-import { PhotoType } from "@/types";
 import { shortenFileName } from "@/utils/helpers";
 import clsx from "clsx";
 import Image from "next/image";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
 import { Upload, Trash } from "react-feather";
 import Balancer from "react-wrap-balancer";
 
-
-interface UploaderProps {
-  handlePhoto: (photo: PhotoType) => void;
-}
-const Uploader = ({ handlePhoto }: UploaderProps) => {
-  const [imageMetadata, setImageMetadata] = useState({
-    preview: "",
-    fileName: ""
-  });
-
-  const { appStatus, setAppStatus } = useAppStore((state) => state);
+const Uploader = () => {
+  const { appStatus, setAppStatus, photo, setPhoto } = useAppStore((state) => ({
+    appStatus: state.appStatus,
+    setAppStatus: state.setAppStatus,
+    photo: state.photo,
+    setPhoto: state.setPhoto,
+  }));
 
   useEffect(() => {
     if (appStatus.status === "reset") {
-      setImageMetadata({
-        preview: "",
-        fileName: ""
+      setPhoto({
+        name: "",
+        originalImage: "",
+        restoredImage: "",
+        previewImage: "",
       });
     }
-  }, [appStatus.status]);
+  }, [appStatus.status, setPhoto]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
@@ -40,44 +37,35 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
       const reader = new FileReader();
 
       reader.onloadend = async () => {
+        if (photo.previewImage) {
+          URL.revokeObjectURL(photo.previewImage);
+        }
         setAppStatus({
           ...appStatus,
-          status: "idle"
+          status: "idle",
         });
-        setImageMetadata({
-          preview: URL.createObjectURL(file),
-          fileName: file.name
-        });
-        handlePhoto({
+        const newPhoto = {
           name: file.name,
           originalImage: reader.result as string,
-          restoredImage: ""
-        });
+          restoredImage: "",
+          previewImage: URL.createObjectURL(file),
+        };
+        setPhoto(newPhoto);
       };
       if (file) {
         reader.readAsDataURL(file);
       }
     },
-    []
+    [setAppStatus, appStatus, setPhoto]
   );
 
   const removeImage = () => {
-    setImageMetadata({
-      preview: "",
-      fileName: ""
-    });
-    handlePhoto({
+    setPhoto({
+      ...photo,
       name: "",
-      originalImage: "",
-      restoredImage: ""
+      previewImage: "",
     });
   };
-
-  useEffect(() => {
-    return () => {
-      imageMetadata.preview && URL.revokeObjectURL(imageMetadata.preview);
-    };
-  }, [imageMetadata.preview]);
 
   const { fileRejections, getRootProps, getInputProps, isDragActive } =
     useDropzone({
@@ -85,28 +73,25 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
       accept: {
         "image/jpeg": [],
         "image/png": [],
-        "image/jpg": []
+        "image/jpg": [],
       },
       maxFiles: 1,
-      maxSize: 2 * 1024 * 1024
+      maxSize: 2 * 1024 * 1024,
     });
 
-  const { preview, fileName } = imageMetadata;
-
-  if (preview) {
+  if (photo.previewImage) {
     return (
       <Zone className="relative">
         <div className="flex flex-col items-center space-y-2">
           <Image
             className="rounded-md shadow-md"
-            src={preview}
+            src={photo.previewImage}
             width={120}
             height={120}
             alt="Preview photo"
-            onLoad={() => URL.revokeObjectURL(preview)}
           />
           <div className="flex text-zink">
-            <div className="mr-3">{shortenFileName(fileName)}</div>
+            <div className="mr-3">{shortenFileName(photo.name)}</div>
             <button
               className="absolute top-2.5 left-2.5 cursor-pointer"
               onClick={removeImage}
@@ -133,7 +118,7 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
           <span>Click to upload your Image</span>
           <input
             {...getInputProps({
-              "aria-label": "upload"
+              "aria-label": "upload",
             })}
             name="uploader"
             id="uploader"
@@ -150,9 +135,9 @@ const Uploader = ({ handlePhoto }: UploaderProps) => {
   );
 };
 
-const Zone = ({
+export const Zone = ({
   children,
-  className
+  className,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -171,7 +156,7 @@ const Zone = ({
 
 const Message = ({
   fileRejections,
-  isDragActive
+  isDragActive,
 }: {
   fileRejections: FileRejection[];
   isDragActive: boolean;

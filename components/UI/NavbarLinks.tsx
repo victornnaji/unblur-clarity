@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useId } from "react";
+import React, { useCallback, useId } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { handleRequest } from "@/utils/auth-helpers/client";
 import { SignOut } from "@/utils/auth-helpers/server";
@@ -12,13 +12,13 @@ import {
   DropdownMenu,
   DropdownItem,
   Avatar,
-  DropdownSection
+  DropdownSection,
 } from "@nextui-org/react";
 import {
   User as UserIcon,
   ShoppingCart as ShoppingCartIcon,
   LogOut as LogOutIcon,
-  Zap as ZapIcon
+  Zap as ZapIcon,
 } from "react-feather";
 import { shortenFileName } from "@/utils/helpers";
 
@@ -36,21 +36,28 @@ const NavbarLinks = ({ user }: { user: any }) => {
       text: "Account",
       href: "/",
       description: email && shortenFileName(email),
-      icon: UserIcon
+      icon: UserIcon,
     },
     {
       key: "unblur",
       text: "Unblur",
       href: "/unblur",
-      icon: ZapIcon
+      icon: ZapIcon,
     },
     {
       key: "buy-credit",
       text: "Buy credits",
       href: "/products",
-      icon: ShoppingCartIcon
-    }
+      icon: ShoppingCartIcon,
+    },
   ];
+
+  const handleNavigation = useCallback(
+    (href: string) => {
+      router.push(href);
+    },
+    [router]
+  );
 
   return (
     <>
@@ -58,7 +65,7 @@ const NavbarLinks = ({ user }: { user: any }) => {
         <Dropdown
           placement="bottom-end"
           classNames={{
-            content: "py-1 px-1 bg-gray"
+            content: "py-1 px-1 bg-gray",
           }}
         >
           <DropdownTrigger>
@@ -77,7 +84,7 @@ const NavbarLinks = ({ user }: { user: any }) => {
             <DropdownSection
               showDivider
               classNames={{
-                divider: "bg-zink opacity-50"
+                divider: "bg-zink opacity-50",
               }}
               aria-label="credits"
             >
@@ -96,7 +103,7 @@ const NavbarLinks = ({ user }: { user: any }) => {
               aria-label="Links"
               showDivider
               classNames={{
-                divider: "bg-zink opacity-50"
+                divider: "bg-zink opacity-50",
               }}
             >
               {menus.map(({ key, href, description, icon: Icon, text }) => (
@@ -104,7 +111,7 @@ const NavbarLinks = ({ user }: { user: any }) => {
                   key={`${id}-${key}`}
                   as={Link}
                   href={href}
-                  onClick={() => router.push(href)}
+                  onClick={() => handleNavigation(href)}
                   description={description && description}
                   startContent={<Icon className={iconClasses} />}
                 >

@@ -8,7 +8,10 @@ import { UnblurOptionType } from "@/types";
 import ExtraInfo from "../ExtraInfo";
 
 const SidebarModelSelector = () => {
-  const { model, setModel, payload } = useAppStore((state) => state);
+  const { model, setModel } = useAppStore((state) => ({
+    model: state.model,
+    setModel: state.setModel, 
+  }));
 
   const handleSelectOptions = React.useCallback(
     (selectedOption: UnblurOptionType) => {
@@ -28,7 +31,6 @@ const SidebarModelSelector = () => {
       defaultOption={selectedOption}
       id="unblurType"
       name="unblurType"
-      aria-activedescendant={undefined}
       handleSelect={handleSelectOptions}
       tooltipContent={tooltipText.modelSelector}
     >

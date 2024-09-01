@@ -6,7 +6,10 @@ import { downloadPhoto } from "@/utils/helpers";
 import { useAppStore } from "@/hooks/use-store";
 
 const PreviewContainerFooter = () => {
-  const [photo] = useAppStore((state) => [state.photo]);
+  const { photo, reset } = useAppStore((state) => ({
+    photo: state.photo,
+    reset: state.reset,
+  }));
 
   const buttons = [
     {
@@ -16,7 +19,7 @@ const PreviewContainerFooter = () => {
       },
       variant: "solid",
       icon: Download,
-      className: "mb-3 lg:mb-0 border-gray"
+      className: "mb-3 lg:mb-0 border-gray",
     },
     {
       label: "Report",
@@ -24,16 +27,16 @@ const PreviewContainerFooter = () => {
       icon: AlertCircle,
       variant: "ghost",
       className:
-        "md:ml-3 mb-3 lg:mb-0 bg-gray text-zink hover:bg-default-100 hover:text-gray"
+        "md:ml-3 mb-3 lg:mb-0 bg-gray text-zink hover:bg-default-100 hover:text-gray",
     },
     {
       label: "Reset",
-      onClick: () => {},
+      onClick: reset,
       icon: RefreshCcw,
       variant: "ghost",
       className:
-        "md:ml-3 bg-gray text-zink hover:bg-default-100 hover:text-gray"
-    }
+        "md:ml-3 bg-gray text-zink hover:bg-default-100 hover:text-gray",
+    },
   ];
   return (
     <div className="flex mt-4 flex-col md:flex-row">
