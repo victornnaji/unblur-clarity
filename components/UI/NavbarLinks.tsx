@@ -21,8 +21,9 @@ import {
   Zap as ZapIcon,
 } from "react-feather";
 import { shortenFileName } from "@/utils/helpers";
+import { User } from "@/types";
 
-const NavbarLinks = ({ user }: { user: any }) => {
+const NavbarLinks = ({ user }: { user: User | null }) => {
   const { avatar_url, name, email } = user?.user_metadata || {};
   const router = useRouter();
   const id = useId();

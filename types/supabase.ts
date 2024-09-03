@@ -34,6 +34,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      credits: {
+        Row: {
+          credits: number
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          credits?: number
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          credits?: number
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          created_at: string | null
+          id: string
+          stripe_customer_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          stripe_customer_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          stripe_customer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customers_id_fkey"
+            columns: ["id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      one_time_credits: {
+        Row: {
+          credits: number
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          credits?: number
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          credits?: number
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "one_time_credits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prediction: {
         Row: {
           completed_at: string | null
@@ -41,20 +125,20 @@ export type Database = {
           error: string | null
           id: string
           image_url: string | null
-          predict_time: unknown | null
+          predict_time: string | null
           started_at: string | null
-          status: string
+          status: string | null
           user_id: string | null
         }
         Insert: {
           completed_at?: string | null
           created_at?: string | null
           error?: string | null
-          id?: string
+          id: string
           image_url?: string | null
-          predict_time?: unknown | null
+          predict_time?: string | null
           started_at?: string | null
-          status: string
+          status?: string | null
           user_id?: string | null
         }
         Update: {
@@ -63,9 +147,9 @@ export type Database = {
           error?: string | null
           id?: string
           image_url?: string | null
-          predict_time?: unknown | null
+          predict_time?: string | null
           started_at?: string | null
-          status: string
+          status?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -78,15 +162,79 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          cancel_at: string | null
+          cancel_at_period_end: boolean | null
+          canceled_at: string | null
+          created: string
+          current_period_end: string
+          current_period_start: string
+          ended_at: string | null
+          id: string
+          metadata: Json | null
+          status: Database["public"]["Enums"]["subscription_status"] | null
+          user_id: string
+        }
+        Insert: {
+          cancel_at?: string | null
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created?: string
+          current_period_end?: string
+          current_period_start?: string
+          ended_at?: string | null
+          id: string
+          metadata?: Json | null
+          status?: Database["public"]["Enums"]["subscription_status"] | null
+          user_id: string
+        }
+        Update: {
+          cancel_at?: string | null
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created?: string
+          current_period_end?: string
+          current_period_start?: string
+          ended_at?: string | null
+          id?: string
+          metadata?: Json | null
+          status?: Database["public"]["Enums"]["subscription_status"] | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      adjust_credits: {
+        Args: {
+          user_id: string
+          adjustment: number
+        }
+        Returns: number
+      }
     }
     Enums: {
-      [_ in never]: never
+      subscription_status:
+        | "trialing"
+        | "active"
+        | "canceled"
+        | "incomplete"
+        | "incomplete_expired"
+        | "past_due"
+        | "unpaid"
+        | "paused"
     }
     CompositeTypes: {
       [_ in never]: never

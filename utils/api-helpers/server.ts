@@ -13,9 +13,9 @@ export const uploadImageToCloudinary = async (imageUrl: string) => {
       api_secret: process.env.CLOUDINARY_API_SECRET,
     });
 
-    const result = await cloudinary.uploader.upload(imageUrl, {
-      folder: "unblur-photos",
-    });
+    // const result = await cloudinary.uploader.upload(imageUrl, {
+    //   folder: "unblur-photos",
+    // });
 
     // return { url: result.secure_url };
     return {

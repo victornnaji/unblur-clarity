@@ -1,3 +1,4 @@
+import { creditsByPlan } from "@/config";
 import { PredictionDto } from "@/types/dtos";
 import { Prediction } from "replicate";
 
@@ -9,9 +10,16 @@ export const mapReplicateResponseToPredictionDto = (response: Prediction) => {
     created_at: response.created_at,
     started_at: response.started_at || null,
     completed_at: response.completed_at || null,
-    image_url: Array.isArray(response.output) ? response.output[0] : response.output,
-    predict_time: response.metrics?.predict_time || null,
+    image_url: Array.isArray(response.output)
+      ? response.output[0]
+      : response.output,
+    predict_time: response.metrics?.predict_time || "0",
   };
 
   return mappedResponse;
+};
+
+export const getCreditsForPlan = (planId: string) => {
+  const plan = Object.values(creditsByPlan).find((plan) => plan.id === planId);
+  return plan?.credits || 0;
 };

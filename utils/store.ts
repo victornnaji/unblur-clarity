@@ -15,7 +15,7 @@ type AppStatusStore = {
 type PredictionStore = {
   id: string;
   status: string;
-  predict_time: number | undefined;
+  predict_time: string | null;
   error: string | null;
 };
 
@@ -46,7 +46,7 @@ export const defaultState: AppStoreState = {
   prediction: {
     id: "",
     status: "starting",
-    predict_time: 0,
+    predict_time: "",
     error: "",
   },
   model: DEFAULT_UNBLUR_OPTION.value,
