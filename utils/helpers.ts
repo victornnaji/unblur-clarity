@@ -122,3 +122,26 @@ export async function downloadPhoto(photoUrl: string, name: string) {
   link.click();
   link.remove();
 }
+
+export async function streamToString(stream: ReadableStream<Uint8Array>): Promise<string> {
+  const reader = stream.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let result = '';
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) {
+      break;
+    }
+    result += decoder.decode(value);
+  }
+
+  reader.releaseLock();
+  return result;
+}
+
+export const toDateTime = (secs: number) => {
+  var t = new Date(+0); // Unix epoch start.
+  t.setSeconds(secs);
+  return t;
+};

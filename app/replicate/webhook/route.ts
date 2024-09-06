@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { validateWebhook } from "replicate";
 import { updatePrediction } from "@/utils/supabase/actions";
-import { createServiceRoleClient } from "@/utils/supabase/service-role";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { mapReplicateResponseToPredictionDto } from "@/utils/api-helpers/client";
 
 export async function POST(req: Request) {

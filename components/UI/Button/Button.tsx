@@ -40,7 +40,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
       {
         [styles.slim]: variant === "slim",
         [styles.loading]: loading,
-        [styles.disabled]: disabled
+        [styles.disabled]: disabled,
       },
       className
     );
@@ -55,16 +55,16 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
           className={rootClassName}
           style={{
             width,
-            ...style
+            ...style,
           }}
           {...rest}
         >
-          {children}
           {loading && (
-            <i className="flex pl-2 m-0">
+            <i className="flex pr-2 m-0">
               <LoadingDots />
             </i>
           )}
+          {children}
         </Link>
       );
     }
@@ -78,16 +78,16 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
         disabled={disabled}
         style={{
           width,
-          ...style
+          ...style,
         }}
         {...rest}
       >
-        {children}
         {loading && (
-          <i className="flex pl-2 m-0">
+          <i className="flex pr-2 m-0">
             <LoadingDots />
           </i>
         )}
+        {children}
       </Component>
     );
   }
@@ -98,7 +98,6 @@ interface SecondaryButtonProps extends ButtonProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
-  // variant: "solid" | "ghost";
 }
 export const SecondaryButton = (props: SecondaryButtonProps | ButtonProps) => {
   return (
@@ -106,6 +105,11 @@ export const SecondaryButton = (props: SecondaryButtonProps | ButtonProps) => {
       size="lg"
       variant={props.variant}
       className={props.className}
+      spinner={
+        <i className="flex m-0">
+          <LoadingDots />
+        </i>
+      }
       {...props}
     >
       {props.children}

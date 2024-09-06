@@ -50,7 +50,7 @@ const SidebarContainer = () => {
       setPrediction({
         id: response.predictionId,
         status: "processing",
-        predict_time: 0,
+        predict_time: "",
         error: null,
       });
       const prediction = await pollPredictionStatus(response.predictionId);

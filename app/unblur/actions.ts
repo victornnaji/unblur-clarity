@@ -1,5 +1,9 @@
 "use server";
-import { MEGVII_ENHANCE_MODEL, UPSCALE_CLARITY_MODEL } from "@/config";
+import {
+  CODEFORMER_FACE_ENHANCE_MODEL,
+  MEGVII_ENHANCE_MODEL,
+  UPSCALE_CLARITY_MODEL,
+} from "@/config";
 import { UnblurModel } from "@/types";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
 import { getErrorRedirect } from "@/utils/helpers";
@@ -29,6 +33,7 @@ interface InputProps {
   prompt?: string;
   style?: string;
   task_type?: string;
+  codeformer_fidelity?: string;
 }
 
 interface ErrorResponse {
@@ -60,8 +65,17 @@ export async function initiatePrediction(payload: PayloadProps) {
 
   const { url: secure_url } = await uploadImageToCloudinary(image_url);
 
-  const replicateModel =
-    model === "image_upscaling" ? UPSCALE_CLARITY_MODEL : MEGVII_ENHANCE_MODEL;
+  let replicateModel;
+  switch (model) {
+    case "image_upscaling":
+      replicateModel = UPSCALE_CLARITY_MODEL;
+      break;
+    case "face_restoration":
+      replicateModel = CODEFORMER_FACE_ENHANCE_MODEL;
+      break;
+    default:
+      replicateModel = MEGVII_ENHANCE_MODEL;
+  }
 
   let input: InputProps = {
     image: secure_url,
@@ -74,6 +88,11 @@ export async function initiatePrediction(payload: PayloadProps) {
         (payload as ImageUpscalingPayload).prompt ||
         "masterpiece, best quality, highres, <lora:more_details:0.5> <lora:SDXLrender_v2.0:1>",
       style: (payload as ImageUpscalingPayload).upscale_style || "default",
+    };
+  } else if (model === "face_restoration") {
+    input = {
+      ...input,
+      codeformer_fidelity: "0.1",
     };
   } else if (model === "image_restoration") {
     input = {
@@ -94,27 +113,27 @@ export async function initiatePrediction(payload: PayloadProps) {
   });
 
   try {
-    // const prediction: Prediction = await replicate.predictions.create({
-    //   version: replicateModel,
-    //   input,
-    //   webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
-    //   webhook_events_filter: ["completed"],
-    // });
+    const prediction: Prediction = await replicate.predictions.create({
+      version: replicateModel,
+      input,
+      webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
+      webhook_events_filter: ["completed"],
+    });
 
-    // const { id: predictionId } = await insertPrediction({
-    //   supabase,
-    //   prediction: {
-    //     id: prediction.id,
-    //     status: prediction.status,
-    //     created_at: prediction.created_at,
-    //     started_at: prediction.started_at,
-    //   },
-    //   userId: user?.id,
-    // });
+    const { id: predictionId } = await insertPrediction({
+      supabase,
+      prediction: {
+        id: prediction.id,
+        status: prediction.status,
+        created_at: prediction.created_at,
+        started_at: prediction.started_at,
+      },
+      userId: user?.id,
+    });
 
-    // console.log("prediction successfully created on replicate", prediction);
-    // return { predictionId, secure_url };
-    return { predictionId: "dy3q453zv9rj40chn50axdngx4", secure_url };
+    console.log("prediction successfully created on replicate", prediction);
+    return { predictionId, secure_url };
+    // return { predictionId: "dy3q453zv9rj40chn50axdngx4", secure_url };
   } catch (error) {
     console.log("error creating prediction", error);
     const errorMessage =

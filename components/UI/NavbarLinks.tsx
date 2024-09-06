@@ -21,8 +21,15 @@ import {
   Zap as ZapIcon,
 } from "react-feather";
 import { shortenFileName } from "@/utils/helpers";
+import { User } from "@/types";
 
-const NavbarLinks = ({ user }: { user: any }) => {
+const NavbarLinks = ({
+  user,
+  credits,
+}: {
+  user: User | null;
+  credits: number;
+}) => {
   const { avatar_url, name, email } = user?.user_metadata || {};
   const router = useRouter();
   const id = useId();
@@ -94,8 +101,8 @@ const NavbarLinks = ({ user }: { user: any }) => {
                 as={"div"}
                 variant="bordered"
               >
-                <span className="text-bold text-base text-foreground">
-                  Credits: 0
+                <span className="font-bold text-base text-white">
+                  Credits: <span className="text-white">{credits} 💵</span>
                 </span>
               </DropdownItem>
             </DropdownSection>

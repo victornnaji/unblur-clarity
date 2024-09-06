@@ -10,7 +10,9 @@ const Summary = () => {
 
   return (
     <div className="text-sm text-left text-zink lg:mt-2">
-      <span>Restoration time: {prediction?.predict_time?.toFixed(2)} </span>
+      <span>
+        Restoration time: {Number(prediction?.predict_time)?.toFixed(2)}{" "}
+      </span>
     </div>
   );
 };

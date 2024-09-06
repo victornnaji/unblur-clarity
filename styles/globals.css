@@ -16,6 +16,7 @@
     --surface: 200 50% 3%;
     --cols: 12;
     --gridSize: calc(100vw / var(--cols));
+    --pricing-table-column-width: 312px;
   }
 
   * {
