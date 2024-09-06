@@ -1,46 +1,86 @@
 "use client";
-import { User } from "@/types";
-import React, { useEffect } from "react";
 
-interface StripePricingTableProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLElement>,
-    HTMLElement
-  > {
-  "pricing-table-id": string;
-  "publishable-key": string;
+import {
+  BillingInterval,
+  ProductWithPrices,
+  SubscriptionWithProducts,
+  User,
+} from "@/types";
+import React, { useCallback, useState } from "react";
+import PricingHeader from "./PricingHeader";
+import PricingBody from "./PricingBody";
+import { usePathname, useRouter } from "next/navigation";
+import { checkoutWithStripe } from "@/utils/stripe/admin";
+import { PriceDto } from "@/types/dtos";
+import { getErrorRedirect } from "@/utils/helpers";
+import { getStripe } from "@/utils/stripe/client";
+
+interface PricingTablesProps {
+  user: User;
+  products: ProductWithPrices[];
+  subscription: SubscriptionWithProducts;
 }
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      "stripe-pricing-table": StripePricingTableProps;
-    }
-  }
-}
+const stripePromise = getStripe();
 
-const PricingTables = ({ user }: { user: User | null }) => {
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://js.stripe.com/v3/pricing-table.js";
-    script.async = true;
+const PricingTables = ({
+  user,
+  products,
+  subscription,
+}: PricingTablesProps) => {
+  const router = useRouter();
+  const currentPath = usePathname();
 
-    document.body.appendChild(script);
+  const [billingInterval, setBillingInterval] =
+    useState<BillingInterval>("month");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+  const handleBillingIntervalChange = (value: BillingInterval) => {
+    setBillingInterval(value);
+  };
+
+  const handleCheckout = useCallback(
+    async (price: PriceDto) => {
+      setIsLoading(true);
+      if (!user) {
+        return router.push("/signin?redirect=/products");
+      }
+
+      const { errorRedirect, url } = await checkoutWithStripe(price);
+
+      if (errorRedirect) {
+        return router.push(errorRedirect);
+      }
+
+      if (!url) {
+        return router.push(
+          getErrorRedirect(
+            currentPath,
+            "An error occurred while redirecting to Stripe",
+            "Please try again"
+          )
+        );
+      }
+      router.push(url);
+      setIsLoading(false);
+    },
+    [currentPath, router, user]
+  );
 
   return (
-    <div className="flex flex-1 flex-col w-full">
-      <stripe-pricing-table
-        pricing-table-id="prctbl_1PuGIvBb8uOnuhORd7pU4Xwv"
-        publishable-key="pk_test_51I0J8ABb8uOnuhOR9b1xuavSpYcbzZ5TvJXflkTVZ8Fy7FFBWldW5OvpPdt93vXLRKOoxZGIiMRyYCCqrXtp7huu00VB6p31Zd"
-        client-reference-id={user?.id}
-        customer-email={user?.email}
-      ></stripe-pricing-table>
-    </div>
+    <section>
+      <PricingHeader
+        billingInterval={billingInterval}
+        onBillingIntervalChange={handleBillingIntervalChange}
+      />
+      <PricingBody
+        products={products}
+        billingInterval={billingInterval}
+        subscription={subscription}
+        onCheckout={handleCheckout}
+        isLoading={isLoading}
+      />
+    </section>
   );
 };
 

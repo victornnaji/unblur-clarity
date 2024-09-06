@@ -2,32 +2,26 @@
 
 import Stripe from "stripe";
 import {
-  getCustomer,
-  createCustomer,
   upsertSubscription,
   updateCustomerCredits,
   removeCustomerCredits,
   updateCustomerOneTimeCredits,
-  getCustomerByEmail,
+  upsertPriceRecord,
+  upsertProductRecord,
+  deletePriceRecord,
+  deleteProductRecord,
+  getCustomer,
 } from "../supabase/admin";
 import { getCreditsForPlan } from "../api-helpers/client";
 import { creditsByPlan } from "@/config";
 import { PlanName } from "@/types";
+import { stripe } from "./config";
 
 export const handleSubscription = async (subscription: Stripe.Subscription) => {
-  const customerId = subscription.customer as string;
-  if (!customerId) {
-    throw new Error("Missing customer ID");
-  }
-
-  const customer = await getCustomer(customerId);
+  const customer = await getCustomer(subscription.customer as string);
   if (!customer || customer.error || !customer.data) {
     throw new Error("Supabase customer lookup failed");
   }
-  if (customer.data.stripe_customer_id !== subscription.customer) {
-    throw new Error("Unblur customer ID does not match stripe customer ID");
-  }
-
   const userId = customer.data.id;
   try {
     const { error } = await upsertSubscription(subscription, userId);
@@ -47,28 +41,20 @@ export const handleSubscription = async (subscription: Stripe.Subscription) => {
 export const handleSubscriptionDeletion = async (
   subscription: Stripe.Subscription
 ) => {
-  const customerId = subscription.customer as string;
-  if (!customerId) {
-    throw new Error("Missing customer ID");
-  }
-
-  const customer = await getCustomer(customerId);
+  const customer = await getCustomer(subscription.customer as string);
   if (!customer || customer.error || !customer.data) {
     throw new Error("Supabase customer lookup failed");
   }
-
   const userId = customer.data.id;
 
   try {
+    const { error } = await upsertSubscription(subscription, userId);
+    if (error) {
+      console.error("Supabase subscription upsert error:", error);
+      throw new Error(`Supabase subscription upsert failed: ${error.message}`);
+    }
     if (subscription.status === "canceled") {
-      const { error } = await upsertSubscription(subscription, userId);
-      if (error) {
-        console.error("Supabase subscription upsert error:", error);
-        throw new Error(
-          `Supabase subscription upsert failed: ${error.message}`
-        );
-      }
-      const { data: creditData, error: creditError } = await deleteCredits(
+      const { data: creditData, error: creditError } = await removeCredits(
         userId
       );
       if (creditError) {
@@ -81,89 +67,34 @@ export const handleSubscriptionDeletion = async (
   }
 };
 
-export const handleCredits = async (invoice: Stripe.Invoice) => {
-  const customerId = invoice.customer as string;
-  if (!customerId) {
-    throw new Error("Missing customer ID");
-  }
-
-  const customer = await getCustomer(customerId);
+export const handleCompletedCheckout = async (
+  checkout: Stripe.Checkout.Session
+) => {
+  const customer = await getCustomer(checkout.customer as string);
   if (!customer || customer.error || !customer.data) {
     throw new Error("Supabase customer lookup failed");
   }
-  if (customer.data.stripe_customer_id !== customerId) {
-    throw new Error("Unblur customer ID does not match stripe customer ID");
-  }
-
   const userId = customer.data.id;
 
-  try {
-    const planId = invoice.lines?.data[0].price?.product as string;
-    if (!planId) {
-      throw new Error("Missing plan ID");
-    }
-    const { data: creditData, error: creditError } = await updateCredits(
-      userId,
-      planId
+  if (checkout.mode === "subscription") {
+    const subscription = await stripe.checkout.sessions.listLineItems(
+      checkout.id
     );
-    if (creditError) {
+    const planId = subscription.data[0].price?.product as string;
+    const { error } = await updateCredits(userId, planId);
+    if (error) {
       throw new Error("Supabase credit update failed");
     }
-    console.log({ creditData });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const handleOneTimeCredit = async (
-  paymentIntent: Stripe.PaymentIntent
-) => {
-  const customerId = paymentIntent.customer as string;
-  if (!customerId) {
-    throw new Error("Missing customer ID");
-  }
-
-  const customer = await getCustomer(customerId);
-  if (!customer || customer.error || !customer.data) {
-    throw new Error("Supabase customer lookup failed");
-  }
-  if (customer.data.stripe_customer_id !== customerId) {
-    throw new Error("Unblur customer ID does not match stripe customer ID");
-  }
-
-  const userId = customer.data.id;
-  const { data, error } = await updateOneTimeCredits(userId);
-  if (error) {
-    throw new Error("Supabase one-time credit update failed");
-  }
-  console.log({ data });
-};
-
-export const handleCustomer = async (customer: Stripe.Customer) => {
-  const { email, id: customerId } = customer;
-
-  if (!email) {
-    throw new Error("Missing customer email");
-  }
-  const { data, error: queryError } = await getCustomerByEmail(email);
-
-  if (queryError) {
-    throw new Error("Supabase customer lookup failed");
-  }
-
-  if (!data) {
-    const { error } = await createCustomer(userId, customerId);
-
+  } else if (checkout.mode === "payment") {
+    const { error } = await updateOneTimeCredits(userId);
     if (error) {
-      throw new Error("Supabase customer creation failed");
+      throw new Error("Supabase credit update failed");
     }
   }
 };
 
 export const updateCredits = async (userId: string, planId: string) => {
   const creditAmount = getCreditsForPlan(planId);
-
-  console.log({ creditAmount, userId, planId });
 
   if (!creditAmount) {
     throw new Error("Invalid plan ID");
@@ -190,7 +121,23 @@ export const updateOneTimeCredits = async (userId: string) => {
   return { data, error };
 };
 
-export const deleteCredits = async (userId: string) => {
+export const removeCredits = async (userId: string) => {
   const { data, error } = await removeCustomerCredits(userId);
   return { data, error };
+};
+
+export const handlePriceRecordUpdate = async (price: Stripe.Price) => {
+  return await upsertPriceRecord(price);
+};
+
+export const handleProductRecordUpdate = async (product: Stripe.Product) => {
+  return await upsertProductRecord(product);
+};
+
+export const handlePriceRecordDeletion = async (price: Stripe.Price) => {
+  return await deletePriceRecord(price);
+};
+
+export const handleProductRecordDeletion = async (product: Stripe.Product) => {
+  return await deleteProductRecord(product);
 };

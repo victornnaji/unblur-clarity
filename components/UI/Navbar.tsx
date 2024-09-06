@@ -1,12 +1,19 @@
-import { getServerUser } from "@/utils/auth-helpers/server";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import unblurLogo from "@/assets/unblur-photos.png";
 import NavbarLinks from "./NavbarLinks";
+import { getCredits, getUser } from "@/utils/supabase/actions";
+import { createClient } from "@/utils/supabase/server";
 
 const Navbar = async () => {
-  const user = await getServerUser();
+  const supabase = createClient();
+
+  const [user, credits] = await Promise.all([
+    getUser(supabase),
+    getCredits(supabase),
+  ]);
+
   return (
     <header className="flex items-center justify-between h-20 md:h-36">
       <a href="#skip" className="sr-only focus:not-sr-only">
@@ -24,7 +31,7 @@ const Navbar = async () => {
       </Link>
       <div className="flex items-center">
         <nav className="relative ml-3">
-          <NavbarLinks user={user} />
+          <NavbarLinks user={user} credits={credits} />
         </nav>
       </div>
     </header>

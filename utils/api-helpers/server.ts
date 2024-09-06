@@ -28,11 +28,9 @@ export const uploadImageToCloudinary = async (imageUrl: string) => {
 };
 
 const POLLING_INTERVAL = 2000;
-const MAX_ATTEMPTS = 60;
 
 export const pollPredictionStatus = async (predictionId: string) => {
   const supabase = createClient();
-  let attempts = 0;
 
   const checkStatus = async (): Promise<PredictionDto> => {
     const { data, error }: { data: PredictionDto | null; error: any } =
@@ -47,10 +45,6 @@ export const pollPredictionStatus = async (predictionId: string) => {
 
     if (!["starting", "processing"].includes(data.status)) {
       return data;
-    }
-
-    if (++attempts >= MAX_ATTEMPTS) {
-      throw new Error("Polling timed out");
     }
 
     await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));

@@ -2,6 +2,8 @@ import { Database } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
 import { toDateTime } from "../helpers";
+import { PriceDto, ProductDto } from "@/types/dtos";
+import { stripe } from "../stripe/config";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -30,21 +32,184 @@ export const getCustomer = async (customerId: string) => {
   return { data, error };
 };
 
-export const getCustomerByEmail = async (email: string) => {
-  const { data, error } = await supabaseAdmin
+export const createCustomer = async (userId: string, customerId: string) => {
+  const { data, error: upsertError } = await supabaseAdmin
     .from("customers")
-    .select("*")
-    .eq("email", email)
-    .maybeSingle();
-  return { data, error };
+    .upsert(
+      {
+        id: userId,
+        stripe_customer_id: customerId,
+      },
+      { onConflict: "id,stripe_customer_id" }
+    );
+
+  if (upsertError)
+    throw new Error(
+      `Supabase customer record creation failed: ${upsertError.message}`
+    );
+
+  return customerId;
 };
 
-export const createCustomer = async (userId: string, customerId: string) => {
-  const { data, error } = await supabaseAdmin.from("customers").insert({
-    id: userId,
-    stripe_customer_id: customerId,
-  });
-  return { data, error };
+export const createCustomerInStripe = async (userId: string, email: string) => {
+  const customerData = { metadata: { userId }, email: email };
+  const newCustomer = await stripe.customers.create(customerData);
+  if (!newCustomer) throw new Error("Stripe customer creation failed.");
+
+  return newCustomer.id;
+};
+
+export const createOrRetrieveCustomer = async ({
+  email,
+  userId,
+}: {
+  email: string;
+  userId: string;
+}) => {
+  // Check if the customer already exists in Supabase
+  const { data: existingSupabaseCustomer, error: queryError } =
+    await supabaseAdmin
+      .from("customers")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
+
+  if (queryError) {
+    throw new Error(`Supabase customer lookup failed: ${queryError.message}`);
+  }
+
+  // Retrieve the Stripe customer ID using the Supabase customer ID, with email fallback
+  let stripeCustomerId: string | undefined;
+  if (existingSupabaseCustomer?.stripe_customer_id) {
+    const existingStripeCustomer = await stripe.customers.retrieve(
+      existingSupabaseCustomer.stripe_customer_id
+    );
+    stripeCustomerId = existingStripeCustomer.id;
+  } else {
+    // If Stripe ID is missing from Supabase, try to retrieve Stripe customer ID by email
+    const stripeCustomers = await stripe.customers.list({ email: email });
+    stripeCustomerId =
+      stripeCustomers.data.length > 0 ? stripeCustomers.data[0].id : undefined;
+  }
+
+  const stripeIdToInsert = stripeCustomerId
+    ? stripeCustomerId
+    : await createCustomerInStripe(userId, email);
+  if (!stripeIdToInsert) throw new Error("Stripe customer creation failed.");
+
+  if (existingSupabaseCustomer && stripeCustomerId) {
+    // If Supabase has a record but doesn't match Stripe, update Supabase record
+    if (existingSupabaseCustomer.stripe_customer_id !== stripeCustomerId) {
+      const { error: updateError } = await supabaseAdmin
+        .from("customers")
+        .update({ stripe_customer_id: stripeCustomerId })
+        .eq("id", userId);
+
+      if (updateError)
+        throw new Error(
+          `Supabase customer record update failed: ${updateError.message}`
+        );
+      console.warn(
+        `Supabase customer record mismatched Stripe ID. Supabase record updated.`
+      );
+    }
+    // If Supabase has a record and matches Stripe, return Stripe customer ID
+    return stripeCustomerId;
+  } else {
+    console.warn(
+      `Supabase customer record was missing. A new record was created.`
+    );
+
+    // If Supabase has no record, create a new record and return Stripe customer ID
+    const upsertedStripeCustomer = await createCustomer(
+      userId,
+      stripeIdToInsert
+    );
+    if (!upsertedStripeCustomer)
+      throw new Error("Supabase customer record creation failed.");
+
+    return upsertedStripeCustomer;
+  }
+};
+
+export const deleteProductRecord = async (product: Stripe.Product) => {
+  const { error: deletionError } = await supabaseAdmin
+    .from("products")
+    .delete()
+    .eq("id", product.id);
+  if (deletionError)
+    throw new Error(`Product deletion failed: ${deletionError.message}`);
+  console.log(`Product deleted: ${product.id}`);
+};
+
+export const deletePriceRecord = async (price: Stripe.Price) => {
+  const { error: deletionError } = await supabaseAdmin
+    .from("prices")
+    .delete()
+    .eq("id", price.id);
+  if (deletionError)
+    throw new Error(`Price deletion failed: ${deletionError.message}`);
+  console.log(`Price deleted: ${price.id}`);
+};
+
+export const upsertPriceRecord = async (
+  price: Stripe.Price,
+  retryCount = 0,
+  maxRetries = 3
+) => {
+  const priceData: PriceDto = {
+    id: price.id,
+    product_id: typeof price.product === "string" ? price.product : "",
+    active: price.active,
+    currency: price.currency,
+    type: price.type,
+    unit_amount: price.unit_amount ?? null,
+    interval: (price.recurring?.interval as "month" | "year" | null) ?? null,
+    interval_count: price.recurring?.interval_count ?? null,
+    trial_period_days: price.recurring?.trial_period_days ?? 0,
+    description: null,
+    metadata: null,
+  };
+
+  const { error: upsertError } = await supabaseAdmin
+    .from("prices")
+    .upsert([priceData]);
+
+  if (upsertError?.message.includes("foreign key constraint")) {
+    if (retryCount < maxRetries) {
+      console.log(`Retry attempt ${retryCount + 1} for price ID: ${price.id}`);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await upsertPriceRecord(price, retryCount + 1, maxRetries);
+    } else {
+      throw new Error(
+        `Price insert/update failed after ${maxRetries} retries: ${upsertError.message}`
+      );
+    }
+  } else if (upsertError) {
+    throw new Error(`Price insert/update failed: ${upsertError.message}`);
+  } else {
+    console.log(`Price inserted/updated: ${price.id}`);
+  }
+};
+
+export const upsertProductRecord = async (product: Stripe.Product) => {
+  const productData: ProductDto = {
+    id: product.id,
+    active: product.active,
+    name: product.name,
+    description: product.description ?? null,
+    image: product.images?.[0] ?? null,
+    metadata: {
+      marketing_features: JSON.stringify(product.marketing_features),
+    },
+  };
+
+  const { error: upsertError } = await supabaseAdmin
+    .from("products")
+    .upsert([productData]);
+  if (upsertError)
+    throw new Error(`Product insert/update failed: ${upsertError.message}`);
+  console.log(`Product inserted/updated: ${product.id}`);
 };
 
 export const upsertSubscription = async (
@@ -85,32 +250,47 @@ export const updateCustomerCredits = async (
   credits: number
 ) => {
   const { data, error } = await supabaseAdmin
-    .from("credits")
-    .upsert(
-      {
-        user_id: userId,
-        credits,
-      },
-      { onConflict: "user_id" }
-    )
-    .select();
-  return { data, error };
-};
-
-export const updateCustomerOneTimeCredits = async (
-  userId: string,
-  credits: number
-) => {
-  const { data, error } = await supabaseAdmin
-    .from("one_time_credits")
-    .upsert({ user_id: userId, credits });
+    .from("users")
+    .update({
+      credits,
+    })
+    .eq("id", userId);
   return { data, error };
 };
 
 export const removeCustomerCredits = async (userId: string) => {
   const { data, error } = await supabaseAdmin
-    .from("credits")
+    .from("users")
     .update({ credits: 0 })
-    .eq("user_id", userId);
+    .eq("id", userId);
   return { data, error };
+};
+
+export const updateCustomerOneTimeCredits = async (
+  userId: string,
+  creditsToAdd: number
+) => {
+  const { data: currentData, error: fetchError } = await supabaseAdmin
+    .from("users")
+    .select("one_time_credits")
+    .eq("id", userId)
+    .single();
+
+  if (fetchError) {
+    return { data: null, error: fetchError };
+  }
+
+  const currentCredits = currentData?.one_time_credits || 0;
+  const newTotalCredits = currentCredits + creditsToAdd;
+
+  const { error: updateError } = await supabaseAdmin
+    .from("users")
+    .update({ one_time_credits: newTotalCredits })
+    .eq("id", userId);
+
+  if (updateError) {
+    return { data: null, error: updateError };
+  }
+
+  return { data: newTotalCredits, error: null };
 };

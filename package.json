@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
+    "@stripe/stripe-js": "^4.4.0",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
     "autoprefixer": "10.4.17",
