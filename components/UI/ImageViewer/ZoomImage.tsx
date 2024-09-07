@@ -2,6 +2,7 @@
 
 import React, { useState, useId } from "react";
 import { Modal, ModalContent, ModalBody } from "@nextui-org/react";
+import { Tooltip } from "../Tooltip";
 
 interface ZoomProps {
   id?: string;
@@ -25,7 +26,9 @@ export const ZoomImage: React.FC<ZoomProps> = ({ id, children }) => {
         onClick={handleZoom}
         className="cursor-zoom-in h-full w-full"
       >
-        {children}
+        <Tooltip content="Click to Zoom">
+          {children}
+        </Tooltip>
       </div>
       <Modal
         size="4xl"
@@ -34,8 +37,8 @@ export const ZoomImage: React.FC<ZoomProps> = ({ id, children }) => {
         isOpen={isZoomed}
         onClose={handleZoom}
         classNames={{
-          base: "bg-transparent cursor-zoom-out",
-          backdrop: "cursor-pointer",
+          base: "bg-transparent",
+          backdrop: "cursor-zoom-out",
           closeButton:
             "fixed block top-10 right-12 font-bold text-3xl text-gray bg-zink rounded-full p-2 hover:bg-gray hover:text-zink"
         }}

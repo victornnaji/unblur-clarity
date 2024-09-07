@@ -21,14 +21,14 @@ const PreviewContainerFooter = () => {
       icon: Download,
       className: "mb-3 lg:mb-0 border-gray",
     },
-    {
-      label: "Report",
-      onClick: () => {},
-      icon: AlertCircle,
-      variant: "ghost",
-      className:
-        "md:ml-3 mb-3 lg:mb-0 bg-gray text-zink hover:bg-default-100 hover:text-gray",
-    },
+    // {
+    //   label: "Report",
+    //   onClick: () => {},
+    //   icon: AlertCircle,
+    //   variant: "ghost",
+    //   className:
+    //     "md:ml-3 mb-3 lg:mb-0 bg-gray text-zink hover:bg-default-100 hover:text-gray",
+    // },
     {
       label: "Reset",
       onClick: reset,

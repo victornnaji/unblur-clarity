@@ -52,8 +52,7 @@ export interface PlanDetails {
 
 export type CheckoutResponse = {
   errorRedirect?: string;
-  sessionId?: string;
-  url?: string | null;
+  sessionUrl?: string;
 };
 
 export interface PriceWithProduct extends PriceDto {

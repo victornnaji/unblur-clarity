@@ -89,6 +89,11 @@ const Uploader = () => {
             width={120}
             height={120}
             alt="Preview photo"
+            style={{
+              width: '100px',
+              height: '100px',
+              objectFit: 'cover',
+            }}
           />
           <div className="flex text-zink">
             <div className="mr-3">{shortenFileName(photo.name)}</div>

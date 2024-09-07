@@ -23,7 +23,7 @@ const ZoomImageViewer = ({
 }: ZoomImageViewerProps) => {
   const id = useId();
   return (
-    <figure className={clsx("w-full h-full", classNames?.base)} key={id}>
+    <figure className={clsx("w-full", classNames?.base)} key={id}>
       <ZoomImage id={id}>
         <ReactCompareSliderImage
           src={src}
