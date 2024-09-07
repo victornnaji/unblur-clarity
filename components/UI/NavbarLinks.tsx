@@ -89,7 +89,7 @@ const NavbarLinks = ({
             aria-label="Navigation"
             disabledKeys={["credits"]}
           >
-            <DropdownSection
+            {/* <DropdownSection
               showDivider
               classNames={{
                 divider: "bg-zink opacity-50",
@@ -106,7 +106,7 @@ const NavbarLinks = ({
                   Credits: <span className="text-white">{credits} 💵</span>
                 </span>
               </DropdownItem>
-            </DropdownSection>
+            </DropdownSection> */}
             <DropdownSection
               aria-label="Links"
               showDivider

@@ -13,8 +13,6 @@ import {
   getCustomer,
 } from "../supabase/admin";
 import { getCreditsForPlan } from "../api-helpers/client";
-import { creditsByPlan } from "@/config";
-import { PlanName } from "@/types";
 import { stripe } from "./config";
 
 export const handleSubscription = async (subscription: Stripe.Subscription) => {
@@ -86,7 +84,9 @@ export const handleCompletedCheckout = async (
       throw new Error("Supabase credit update failed");
     }
   } else if (checkout.mode === "payment") {
-    const { error } = await updateOneTimeCredits(userId);
+    const payment = await stripe.checkout.sessions.listLineItems(checkout.id);
+    const planId = payment.data[0].price?.product as string;
+    const { error } = await updateOneTimeCredits(userId, planId);
     if (error) {
       throw new Error("Supabase credit update failed");
     }
@@ -97,7 +97,7 @@ export const updateCredits = async (userId: string, planId: string) => {
   const creditAmount = getCreditsForPlan(planId);
 
   if (!creditAmount) {
-    throw new Error("Invalid plan ID");
+    throw new Error("Invalid plan Id");
   }
 
   const { data, error } = await updateCustomerCredits(userId, creditAmount);
@@ -105,19 +105,18 @@ export const updateCredits = async (userId: string, planId: string) => {
   return { data, error };
 };
 
-export const updateOneTimeCredits = async (userId: string) => {
-  const oneTimeCreditPlan = getCreditsForPlan(
-    creditsByPlan[PlanName.ONE_TIME].id
-  );
+export const updateOneTimeCredits = async (userId: string, planId: string) => {
+  const creditAmount = getCreditsForPlan(planId);
 
-  if (!oneTimeCreditPlan) {
-    throw new Error("Invalid plan ID");
+  if (!creditAmount) {
+    throw new Error("Invalid plan Id");
   }
 
   const { data, error } = await updateCustomerOneTimeCredits(
     userId,
-    oneTimeCreditPlan
+    creditAmount
   );
+
   return { data, error };
 };
 

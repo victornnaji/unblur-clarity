@@ -7,6 +7,7 @@ import { SecondaryButton } from "./Button/Button";
 import { Tooltip } from "./Tooltip";
 import { useAppStore } from "@/hooks/use-store";
 import { getPredictionStartTime } from "@/utils/api-helpers/server";
+import { AlertOctagon } from "react-feather";
 
 const ResetTab = () => {
   const { reset, prediction } = useAppStore((state) => ({
@@ -47,15 +48,15 @@ const ResetTab = () => {
   }
 
   return (
-    <div className="text-center text-zinc">
+    <div className="text-center text-zinc mt-8">
       <Balancer ratio={0.99}>
         <h3 className="text-base text-bold mb-1 uppercase">
-          It can sometimes take a bit of time to process your image
+          Result taking too long?
         </h3>
         <p className="mx-auto text-sm text-center md:max-w-[80%]">
-          Don't worry!, you can click the button below to reset this page and
-          start another round of enhancement! Your image will be processed in
-          the background.
+          Don't worry! Click the button below to reset this page and start
+          another round of enhancement! Your image will be processed in the
+          background.
         </p>
       </Balancer>
       <div className="mt-6">
@@ -68,12 +69,15 @@ const ResetTab = () => {
             aria-activedescendant={undefined}
             onValueChange={() => setIsEmailOptIn((val) => !val)}
           >
-            <Tooltip content="By checking this box, an email will be sent to you when your image is ready.">
-              <span className="text-darkzink">
-                Receive email update on completion
-              </span>
-            </Tooltip>
+            <span className="text-darkzink">
+              Receive email update on completion
+            </span>
           </Checkbox>
+          <Tooltip content="By checking this box, You will recieve an email update with a link to your completed and enhanced image. To change the email address connected to your account, please visit your account page.">
+            <span className="ml-2 text-darkzink">
+              <AlertOctagon size={16} className="cursor-pointer" />
+            </span>
+          </Tooltip>
         </div>
         <SecondaryButton onClick={handleClick} className="mt-2">
           Start a new upload

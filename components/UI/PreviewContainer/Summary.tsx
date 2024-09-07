@@ -9,7 +9,7 @@ const Summary = () => {
   }));
 
   return (
-    <div className="text-sm text-left text-zink lg:mt-2">
+    <div className="text-sm text-left text-zink mt-4 lg:mt-2">
       <span>Restoration time: </span>
       <span className="font-bold">
         {Number(prediction?.predict_time)?.toFixed(2)} s

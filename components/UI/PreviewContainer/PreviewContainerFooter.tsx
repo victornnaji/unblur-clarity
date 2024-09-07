@@ -39,7 +39,7 @@ const PreviewContainerFooter = () => {
     },
   ];
   return (
-    <div className="flex mt-4 flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row text-xs mt-4 lg:mt-0">
       {buttons.map((button, index) => {
         const Icon = button.icon;
         return (
@@ -48,12 +48,12 @@ const PreviewContainerFooter = () => {
             variant={button.variant as any}
             onClick={button.onClick}
             className={clsx(
-              "flex items-center justify-center p-2 rounded-md border",
+              "flex items-center justify-center rounded-md border lg:min-w-8 lg:h-8",
               button.className
             )}
           >
-            <Icon size={18} />
-            <span className="pr-2">{button.label}</span>
+            <Icon size={20} />
+            <span className="block lg:hidden pr-2">{button.label}</span>
           </SecondaryButton>
         );
       })}

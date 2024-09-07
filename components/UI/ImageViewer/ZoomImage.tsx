@@ -31,7 +31,7 @@ export const ZoomImage: React.FC<ZoomProps> = ({ id, children }) => {
         </Tooltip>
       </div>
       <Modal
-        size="4xl"
+        size="3xl"
         placement="center"
         backdrop="blur"
         isOpen={isZoomed}
