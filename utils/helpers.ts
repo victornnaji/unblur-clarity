@@ -64,8 +64,8 @@ export const getErrorRedirect = (
   errorDescription: string = "",
   disableButton: boolean = false,
   arbitraryParams: string = ""
-) =>
-  getToastRedirect({
+) => {
+  return getToastRedirect({
     path,
     toastType: "error",
     toastTitle: errorName,
@@ -73,6 +73,7 @@ export const getErrorRedirect = (
     disableButton,
     arbitraryParams,
   });
+};
 
 export const getStatusRedirect = (
   path: string,
@@ -81,8 +82,8 @@ export const getStatusRedirect = (
   statusDescription: string = "",
   disableButton: boolean = false,
   arbitraryParams: string = ""
-) =>
-  getToastRedirect({
+) => {
+  return getToastRedirect({
     path,
     toastType: status,
     toastTitle: statusName,
@@ -90,6 +91,7 @@ export const getStatusRedirect = (
     disableButton,
     arbitraryParams,
   });
+};
 
 export function shortenFileName(
   fileName: string,
@@ -110,7 +112,7 @@ export function shortenFileName(
 }
 
 export async function downloadPhoto(photoUrl: string, name: string) {
-  if(!photoUrl) return;
+  if (!photoUrl) return;
   const response = await fetch(photoUrl);
   const blob = await response.blob();
   const filename = `${name}-unblur-photo.${blob.type.split("/")[1]}`;
@@ -123,10 +125,12 @@ export async function downloadPhoto(photoUrl: string, name: string) {
   link.remove();
 }
 
-export async function streamToString(stream: ReadableStream<Uint8Array>): Promise<string> {
+export async function streamToString(
+  stream: ReadableStream<Uint8Array>
+): Promise<string> {
   const reader = stream.getReader();
   const decoder = new TextDecoder("utf-8");
-  let result = '';
+  let result = "";
 
   while (true) {
     const { value, done } = await reader.read();

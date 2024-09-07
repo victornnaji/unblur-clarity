@@ -13,7 +13,6 @@ export const insertPrediction = async ({
   prediction: Partial<PredictionDto>;
   userId?: string;
 }): Promise<{ id: string }> => {
-  console.log("prediction from upsertPrediction", prediction);
   const { data, error: upsertError } = await supabase
     .from("prediction")
     .insert({
@@ -34,13 +33,12 @@ export const insertPrediction = async ({
 
 export const updatePrediction = async (
   supabase: SupabaseClient,
-  predictionId: string,
-  updateData: Partial<PredictionDto>
+  prediction: Partial<PredictionDto>
 ): Promise<{ id: string }> => {
   const { data, error: updateError } = await supabase
     .from("prediction")
-    .update([updateData])
-    .eq("id", predictionId)
+    .update([prediction])
+    .eq("id", prediction.id)
     .select()
     .single();
 
@@ -52,8 +50,6 @@ export const updatePrediction = async (
   if (!data) {
     throw new Error("No data returned after updating prediction");
   }
-
-  console.log("Update result:", data);
 
   return { id: data.id };
 };

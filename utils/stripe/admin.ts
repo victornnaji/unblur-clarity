@@ -75,7 +75,7 @@ export async function checkoutWithStripe(
     }
 
     if (session) {
-      return { sessionId: session.id, url: session.url };
+      return { sessionUrl: session.url };
     } else {
       throw new Error("Unable to create checkout session.");
     }

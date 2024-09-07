@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import TextInput from "../TextInput";
@@ -6,15 +6,16 @@ import Selector from "../Selector";
 import {
   DEFAULT_UPSCALING_STYLE,
   imageUpscalingStyleOptions,
-  tooltipText
+  tooltipText,
 } from "@/config";
 import { useAppStore } from "@/hooks/use-store";
 import { ImageUpscalingStyleOptionType } from "@/types";
 import ExtraInfo from "../ExtraInfo";
 
 const SidebarUpscalingOptionsSeletors = () => {
-  const { payload, setPayload } = useAppStore((state) => ({
+  const { payload, model, setPayload } = useAppStore((state) => ({
     payload: state.payload,
+    model: state.model,
     setPayload: state.setPayload,
   }));
 
@@ -37,6 +38,10 @@ const SidebarUpscalingOptionsSeletors = () => {
     imageUpscalingStyleOptions.find(
       (option) => option.value === payload.upscaleStyle
     ) || DEFAULT_UPSCALING_STYLE;
+
+  if (model !== "image_upscaling") {
+    return null;
+  }
 
   return (
     <div className="mb-4 mt-2 max-w-full box-border">

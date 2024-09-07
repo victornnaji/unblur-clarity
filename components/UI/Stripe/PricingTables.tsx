@@ -4,7 +4,6 @@ import {
   BillingInterval,
   ProductWithPrices,
   SubscriptionWithProducts,
-  User,
 } from "@/types";
 import React, { useCallback, useState } from "react";
 import PricingHeader from "./PricingHeader";
@@ -16,18 +15,13 @@ import { getErrorRedirect } from "@/utils/helpers";
 import { getStripe } from "@/utils/stripe/client";
 
 interface PricingTablesProps {
-  user: User;
   products: ProductWithPrices[];
   subscription: SubscriptionWithProducts;
 }
 
 const stripePromise = getStripe();
 
-const PricingTables = ({
-  user,
-  products,
-  subscription,
-}: PricingTablesProps) => {
+const PricingTables = ({ products, subscription }: PricingTablesProps) => {
   const router = useRouter();
   const currentPath = usePathname();
 
@@ -35,24 +29,16 @@ const PricingTables = ({
     useState<BillingInterval>("month");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleBillingIntervalChange = (value: BillingInterval) => {
-    setBillingInterval(value);
-  };
-
   const handleCheckout = useCallback(
     async (price: PriceDto) => {
       setIsLoading(true);
-      if (!user) {
-        return router.push("/signin?redirect=/products");
-      }
-
-      const { errorRedirect, url } = await checkoutWithStripe(price);
+      const { errorRedirect, sessionUrl } = await checkoutWithStripe(price);
 
       if (errorRedirect) {
         return router.push(errorRedirect);
       }
 
-      if (!url) {
+      if (!sessionUrl) {
         return router.push(
           getErrorRedirect(
             currentPath,
@@ -61,17 +47,17 @@ const PricingTables = ({
           )
         );
       }
-      router.push(url);
+      router.push(sessionUrl);
       setIsLoading(false);
     },
-    [currentPath, router, user]
+    [currentPath, router]
   );
 
   return (
     <section>
       <PricingHeader
         billingInterval={billingInterval}
-        onBillingIntervalChange={handleBillingIntervalChange}
+        onBillingIntervalChange={(value) => setBillingInterval(value)}
       />
       <PricingBody
         products={products}

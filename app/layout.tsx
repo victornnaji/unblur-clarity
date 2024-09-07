@@ -1,10 +1,10 @@
-import { Inter } from "next/font/google";
 import "@/styles/globals.css";
+import { Inter } from "next/font/google";
 import { config } from "@/config";
-import Navbar from "@/components/UI/Navbar";
 import { Suspense } from "react";
-import HotToast from "@/components/UI/HotToast";
 import { AppStoreProvider } from "@/hooks/use-store";
+import Navbar from "@/components/UI/Navbar";
+import HotToast from "@/components/UI/HotToast";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`

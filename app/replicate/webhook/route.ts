@@ -3,24 +3,24 @@ import { validateWebhook } from "replicate";
 import { updatePrediction } from "@/utils/supabase/actions";
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { mapReplicateResponseToPredictionDto } from "@/utils/api-helpers/client";
+import invariant from "tiny-invariant";
 
+invariant(
+  process.env.REPLICATE_WEBHOOK_SECRET,
+  "REPLICATE_WEBHOOK_SECRET is not set"
+);
 export async function POST(req: Request) {
   const secret = process.env.REPLICATE_WEBHOOK_SECRET;
   if (!secret) {
-    console.log(
-      "Skipping webhook validation. To validate webhooks, set REPLICATE_WEBHOOK_SIGNING_SECRET"
-    );
-    const body = await req.json();
-    console.log("body", body);
     return NextResponse.json(
       { detail: "Webhook received (but not validated)" },
       { status: 200 }
     );
   }
 
-  const webhookIsValid = await validateWebhook(req.clone(), secret);
+  const isValidWebhook = await validateWebhook(req.clone(), secret);
 
-  if (!webhookIsValid) {
+  if (!isValidWebhook) {
     return NextResponse.json({ detail: "Webhook is invalid" }, { status: 401 });
   }
 
@@ -64,16 +64,9 @@ export async function POST(req: Request) {
 
   try {
     const response = mapReplicateResponseToPredictionDto(body);
-    console.log("response from webhook", response);
-    const updatedPrediction = await updatePrediction(
-      supabase,
-      response.id,
-      response
-    );
-    console.log("Prediction updated:", updatedPrediction);
+    await updatePrediction(supabase, response);
     return NextResponse.json({ success: true, status: 201 });
   } catch (error) {
-    console.error("Error processing webhook:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

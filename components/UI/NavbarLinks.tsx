@@ -33,6 +33,7 @@ const NavbarLinks = ({
   const { avatar_url, name, email } = user?.user_metadata || {};
   const router = useRouter();
   const id = useId();
+  const pathname = usePathname();
 
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
@@ -142,7 +143,7 @@ const NavbarLinks = ({
                 textValue="Sign out"
                 startContent={<LogOutIcon className={iconClasses} />}
               >
-                <input type="hidden" name="pathName" value={usePathname()} />
+                <input type="hidden" name="pathName" value={pathname} />
                 <button className="w-full text-start">Sign out</button>
               </DropdownItem>
             </DropdownSection>

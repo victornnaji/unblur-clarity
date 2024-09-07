@@ -1,4 +1,5 @@
 "use server";
+
 import {
   CODEFORMER_FACE_ENHANCE_MODEL,
   MEGVII_ENHANCE_MODEL,
@@ -33,17 +34,7 @@ interface InputProps {
   prompt?: string;
   style?: string;
   task_type?: string;
-  codeformer_fidelity?: string;
-}
-
-interface ErrorResponse {
-  error: string;
-  details?: string;
-}
-
-interface SuccessResponse {
-  predictionId: string;
-  secure_url: string;
+  codeformer_fidelity?: number;
 }
 
 export async function initiatePrediction(payload: PayloadProps) {
@@ -92,7 +83,7 @@ export async function initiatePrediction(payload: PayloadProps) {
   } else if (model === "face_restoration") {
     input = {
       ...input,
-      codeformer_fidelity: "0.1",
+      codeformer_fidelity: 0.1,
     };
   } else if (model === "image_restoration") {
     input = {
@@ -113,27 +104,27 @@ export async function initiatePrediction(payload: PayloadProps) {
   });
 
   try {
-    const prediction: Prediction = await replicate.predictions.create({
-      version: replicateModel,
-      input,
-      webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
-      webhook_events_filter: ["completed"],
-    });
+    // const prediction: Prediction = await replicate.predictions.create({
+    //   version: replicateModel,
+    //   input,
+    //   webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
+    //   webhook_events_filter: ["completed"],
+    // });
 
-    const { id: predictionId } = await insertPrediction({
-      supabase,
-      prediction: {
-        id: prediction.id,
-        status: prediction.status,
-        created_at: prediction.created_at,
-        started_at: prediction.started_at,
-      },
-      userId: user?.id,
-    });
+    // const { id: predictionId } = await insertPrediction({
+    //   supabase,
+    //   prediction: {
+    //     id: prediction.id,
+    //     status: prediction.status,
+    //     created_at: prediction.created_at,
+    //     started_at: prediction.started_at,
+    //   },
+    //   userId: user?.id,
+    // });
 
-    console.log("prediction successfully created on replicate", prediction);
-    return { predictionId, secure_url };
-    // return { predictionId: "dy3q453zv9rj40chn50axdngx4", secure_url };
+    // console.log("prediction successfully created on replicate", prediction);
+    // return { predictionId, secure_url };
+    return { predictionId: "3kdqpnsf5nrgj0chs5nvxgzk68", secure_url };
   } catch (error) {
     console.log("error creating prediction", error);
     const errorMessage =

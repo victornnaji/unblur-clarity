@@ -5,6 +5,7 @@ import PhotoCompare from "@/components/UI/PhotoCompare";
 import Toggle from "@/components/UI/Toggle";
 import ZoomImageViewer from "@/components/UI/ImageViewer/ZoomImageViewer";
 import { useAppStore } from "@/hooks/use-store";
+import { ZoomImage } from "../ImageViewer";
 
 const PhotoPreviewer = () => {
   const [sideBySide, setSideBySide] = useState(true);
@@ -12,7 +13,7 @@ const PhotoPreviewer = () => {
   const photo = useAppStore((state) => state.photo);
 
   return (
-    <div className="h-full">
+    <div className="h-full grid grid-rows-[auto,1fr] gap-6">
       <Toggle
         initialState={sideBySide}
         onToggle={toggleSwitch}
@@ -20,12 +21,12 @@ const PhotoPreviewer = () => {
         leftText="Compare"
         rightText="Side by Side"
       />
-      <div>
+      <div className="h-full">
         {sideBySide ? (
-          <div className="h-full lg:max-h-[50vh] mt-6 flex flex-col items-start justify-between gap-6 sm:flex-row">
+          <div className="h-full flex flex-col items-start justify-between gap-12 sm:flex-row sm:gap-3">
             <ZoomImageViewer
               classNames={{
-                base: "lg:full",
+                base: "lg:h-[32rem] relative",
                 image: "mb-1 border",
               }}
               caption="Original Photo"
@@ -34,7 +35,7 @@ const PhotoPreviewer = () => {
             />
             <ZoomImageViewer
               classNames={{
-                base: "lg:h-full",
+                base: "lg:h-[32rem] relative",
                 image: "mb-1 border",
               }}
               caption="Restored Photo"
@@ -48,7 +49,7 @@ const PhotoPreviewer = () => {
             rightImage={photo.restoredImage}
             leftAlt="Original Image"
             rightAlt="Restored Image"
-            className="lg:h-[50vh] mt-6 border border-gray"
+            className="lg:h-[32rem] mt-6 border border-gray"
           />
         )}
       </div>
