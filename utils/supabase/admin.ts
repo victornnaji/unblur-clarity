@@ -294,3 +294,71 @@ export const updateCustomerOneTimeCredits = async (
 
   return { data: newTotalCredits, error: null };
 };
+
+export const getUserCredits = async (userId: string) => {
+  const { data, error } = await supabaseAdmin
+    .from("users")
+    .select("credits, one_time_credits")
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching credits:", error);
+    throw new Error("Failed to fetch credits");
+  }
+
+  const totalCredits = (data?.credits || 0) + (data?.one_time_credits || 0);
+
+  return { data: totalCredits, error };
+};
+
+export const withdrawCredits = async (userId: string, creditsToWithdraw: number) => {
+  // Fetch current credits and one-time credits
+  const { data, error: fetchError } = await supabaseAdmin
+    .from("users")
+    .select("credits, one_time_credits")
+    .eq("id", userId)
+    .single();
+
+  if (fetchError) {
+    return { data: null, error: fetchError };
+  }
+
+  const currentCredits = data?.credits || 0;
+  const currentOneTimeCredits = data?.one_time_credits || 0;
+  const totalAvailableCredits = currentCredits + currentOneTimeCredits;
+
+  // Check if user has enough total credits
+  if (totalAvailableCredits < creditsToWithdraw) {
+    return { data: null, error: new Error("Insufficient credits") };
+  }
+
+  // Calculate how many credits to withdraw from each column
+  const creditsToWithdrawFromCredits = Math.min(currentCredits, creditsToWithdraw);
+  const creditsToWithdrawFromOneTime = creditsToWithdraw - creditsToWithdrawFromCredits;
+
+  // Update the credits
+  const newCredits = currentCredits - creditsToWithdrawFromCredits;
+  const newOneTimeCredits = currentOneTimeCredits - creditsToWithdrawFromOneTime;
+
+  // Update the database
+  const { error: updateError } = await supabaseAdmin
+    .from("users")
+    .update({ 
+      credits: newCredits, 
+      one_time_credits: newOneTimeCredits 
+    })
+    .eq("id", userId);
+
+  if (updateError) {
+    return { data: null, error: updateError };
+  }
+
+  return { 
+    data: { 
+      remainingCredits: newCredits, 
+      remainingOneTimeCredits: newOneTimeCredits 
+    }, 
+    error: null 
+  };
+};

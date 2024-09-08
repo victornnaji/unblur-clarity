@@ -16,7 +16,7 @@ const SidebarContainer = ({ credits }: { credits: number }) => {
       <div className="lg:h-80 overflow-scroll p-1 box-border">
         <SidebarUpscalingOptionsSeletors />
       </div>
-      <SidebarButton />
+      <SidebarButton credits={credits} />
     </>
   );
 };

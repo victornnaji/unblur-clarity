@@ -91,27 +91,18 @@ export const getCredits = cache(async (supabase: SupabaseClient) => {
   } = await supabase.auth.getUser();
   if (!user) return;
 
-  const { data: credits, error: creditsError } = await supabase
+  const { data, error } = await supabase
     .from("users")
-    .select("credits")
+    .select("credits, one_time_credits")
     .eq("id", user.id)
     .single();
 
-  const { data: oneTimeCredits, error: oneTimeCreditsError } = await supabase
-    .from("users")
-    .select("one_time_credits")
-    .eq("id", user.id)
-    .single();
-
-  if (creditsError || oneTimeCreditsError) {
-    console.error(
-      "Error fetching credits:",
-      creditsError || oneTimeCreditsError
-    );
+  if (error) {
+    console.error("Error fetching credits:", error);
     throw new Error("Failed to fetch credits");
   }
 
-  const totalCredits = credits?.credits + oneTimeCredits?.one_time_credits || 0;
+  const totalCredits = (data?.credits || 0) + (data?.one_time_credits || 0);
 
   return totalCredits;
 });

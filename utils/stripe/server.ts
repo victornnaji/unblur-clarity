@@ -79,21 +79,21 @@ export const handleCompletedCheckout = async (
       checkout.id
     );
     const planId = subscription.data[0].price?.product as string;
-    const { error } = await updateCredits(userId, planId);
+    const { error } = await updateCreditsByPlan(userId, planId);
     if (error) {
       throw new Error("Supabase credit update failed");
     }
   } else if (checkout.mode === "payment") {
     const payment = await stripe.checkout.sessions.listLineItems(checkout.id);
     const planId = payment.data[0].price?.product as string;
-    const { error } = await updateOneTimeCredits(userId, planId);
+    const { error } = await updateOneTimeCreditsByPlan(userId, planId);
     if (error) {
       throw new Error("Supabase credit update failed");
     }
   }
 };
 
-export const updateCredits = async (userId: string, planId: string) => {
+export const updateCreditsByPlan = async (userId: string, planId: string) => {
   const creditAmount = getCreditsForPlan(planId);
 
   if (!creditAmount) {
@@ -105,7 +105,7 @@ export const updateCredits = async (userId: string, planId: string) => {
   return { data, error };
 };
 
-export const updateOneTimeCredits = async (userId: string, planId: string) => {
+export const updateOneTimeCreditsByPlan = async (userId: string, planId: string) => {
   const creditAmount = getCreditsForPlan(planId);
 
   if (!creditAmount) {

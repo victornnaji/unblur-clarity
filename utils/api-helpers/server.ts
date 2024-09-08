@@ -3,7 +3,6 @@
 import { PredictionDto } from "@/types/dtos";
 import { v2 as cloudinary } from "cloudinary";
 import { createClient } from "../supabase/server";
-import { cache } from "react";
 
 export const uploadImageToCloudinary = async (imageUrl: string) => {
   try {
@@ -13,14 +12,14 @@ export const uploadImageToCloudinary = async (imageUrl: string) => {
       api_secret: process.env.CLOUDINARY_API_SECRET,
     });
 
-    // const result = await cloudinary.uploader.upload(imageUrl, {
-    //   folder: "unblur-photos",
-    // });
+    const result = await cloudinary.uploader.upload(imageUrl, {
+      folder: "unblur-photos",
+    });
 
-    // return { url: result.secure_url };
-    return {
-      url: "https://replicate.delivery/pbxt/n5oraOleUxXqBSjjK6LClF53PWP5pS7xWgbwuuZHWFIojJtJA/output.png",
-    };
+    return { url: result.secure_url };
+    // return {
+    //   url: "https://replicate.delivery/pbxt/n5oraOleUxXqBSjjK6LClF53PWP5pS7xWgbwuuZHWFIojJtJA/output.png",
+    // };
   } catch (error) {
     console.error("Error uploading image to Cloudinary:", error);
     throw new Error("Failed to upload image");
@@ -54,7 +53,7 @@ export const pollPredictionStatus = async (predictionId: string) => {
   return checkStatus();
 };
 
-export const getPredictionStartTime = cache(async (predictionId: string) => {
+export const getPredictionStartTime = async (predictionId: string) => {
   const supabase = createClient();
   const { data, error }: { data: PredictionDto | null; error: any } =
     await supabase
@@ -67,4 +66,4 @@ export const getPredictionStartTime = cache(async (predictionId: string) => {
   if (!data) throw new Error("Prediction not found");
 
   return data.created_at;
-});
+};

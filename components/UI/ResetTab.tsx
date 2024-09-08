@@ -21,6 +21,7 @@ const ResetTab = () => {
     const fetchStartTime = async () => {
       if (!prediction.id) return;
       const startTime = await getPredictionStartTime(prediction.id);
+      console.log({ startTime });
       if (startTime) {
         const elapsedTime = Date.now() - new Date(startTime).getTime();
         const remainingTime = Math.max(2 * 60 * 1000 - elapsedTime, 0);

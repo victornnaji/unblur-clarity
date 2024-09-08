@@ -71,3 +71,5 @@ export const creditsByPlan: Record<PlanName, PlanDetails> = {
   [PlanName.ONE_TIME_BASIC]: { id: "prod_Qo3cSiP0Ba0XBs", credits: 120 },
   [PlanName.ONE_TIME_STANDARD]: { id: "prod_Qo3lA0vsuduRRT", credits: 600 },
 };
+
+export const CREDITS_PER_UNBLUR = 12;
