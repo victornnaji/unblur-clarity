@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { validateWebhook } from "replicate";
 import { updatePrediction } from "@/utils/supabase/actions";
-import { createServiceRoleClient, uploadImageToSupabase } from "@/utils/supabase/admin";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { mapReplicateResponseToPredictionDto } from "@/utils/api-helpers/client";
 import invariant from "tiny-invariant";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
@@ -65,9 +65,15 @@ export async function POST(req: Request) {
 
   try {
     const response = mapReplicateResponseToPredictionDto(body);
-    const image = Array.isArray(body.output) ? body.output[0] : body.output;
-    const signedUrl = await uploadImageToCloudinary(image, 'unblurred-photos');
-    await updatePrediction(supabase, { ...response, image_url: signedUrl.url });
+    const replicateImage = Array.isArray(body.output) ? body.output[0] : body.output;
+    const { url: secureUrl } = await uploadImageToCloudinary(
+      replicateImage,
+      "unblurred-photos"
+    );
+    await updatePrediction(supabase, {
+      ...response,
+      image_url: secureUrl,
+    });
     return NextResponse.json({ success: true, status: 201 });
   } catch (error) {
     return NextResponse.json(
