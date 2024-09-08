@@ -14,12 +14,9 @@ export const insertPrediction = async ({
   userId?: string;
 }): Promise<{ id: string }> => {
   const { data, error: upsertError } = await supabase
-    .from("prediction")
+    .from("predictions")
     .insert({
-      id: prediction.id,
-      status: prediction.status,
-      created_at: prediction.created_at,
-      started_at: prediction.started_at,
+      ...prediction,
       user_id: userId,
     })
     .select();
@@ -36,7 +33,7 @@ export const updatePrediction = async (
   prediction: Partial<PredictionDto>
 ): Promise<{ id: string }> => {
   const { data, error: updateError } = await supabase
-    .from("prediction")
+    .from("predictions")
     .update([prediction])
     .eq("id", prediction.id)
     .select()

@@ -4,7 +4,7 @@ import { PredictionDto } from "@/types/dtos";
 import { v2 as cloudinary } from "cloudinary";
 import { createClient } from "../supabase/server";
 
-export const uploadImageToCloudinary = async (imageUrl: string) => {
+export const uploadImageToCloudinary = async (imageUrl: string, folder: string = 'unblur-photos') => {
   try {
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -13,7 +13,7 @@ export const uploadImageToCloudinary = async (imageUrl: string) => {
     });
 
     const result = await cloudinary.uploader.upload(imageUrl, {
-      folder: "unblur-photos",
+      folder,
     });
 
     return { url: result.secure_url };
@@ -34,7 +34,7 @@ export const pollPredictionStatus = async (predictionId: string) => {
   const checkStatus = async (): Promise<PredictionDto> => {
     const { data, error }: { data: PredictionDto | null; error: any } =
       await supabase
-        .from("prediction")
+        .from("predictions")
         .select("*")
         .eq("id", predictionId)
         .single();
@@ -57,7 +57,7 @@ export const getPredictionStartTime = async (predictionId: string) => {
   const supabase = createClient();
   const { data, error }: { data: PredictionDto | null; error: any } =
     await supabase
-      .from("prediction")
+      .from("predictions")
       .select("created_at")
       .eq("id", predictionId)
       .single();

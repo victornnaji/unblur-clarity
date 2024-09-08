@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "@nextui-org/react";
 import Balancer from "react-wrap-balancer";
 import { SecondaryButton } from "./Button/Button";
@@ -17,27 +17,35 @@ const ResetTab = () => {
   const [isEmailOptIn, setIsEmailOptIn] = useState(true);
   const [showResetTab, setShowResetTab] = useState(false);
 
+  const timeoutRef = useRef<number | null>(null);
+
   useEffect(() => {
     const fetchStartTime = async () => {
       if (!prediction.id) return;
       const startTime = await getPredictionStartTime(prediction.id);
-      console.log({ startTime });
       if (startTime) {
-        const elapsedTime = Date.now() - new Date(startTime).getTime();
-        const remainingTime = Math.max(2 * 60 * 1000 - elapsedTime, 0);
+        const checkElapsedTime = () => {
+          const elapsedTime = Date.now() - new Date(startTime).getTime();
+          const twoMinutes = 2 * 60 * 1000;
 
-        if (remainingTime > 0) {
-          const timer = setTimeout(() => {
+          if (elapsedTime >= twoMinutes) {
             setShowResetTab(true);
-          }, remainingTime);
-
-          return () => clearTimeout(timer);
-        } else {
-          setShowResetTab(true);
-        }
+          } else {
+            if (timeoutRef.current !== null) {
+              clearTimeout(timeoutRef.current);
+            }
+            timeoutRef.current = window.setTimeout(checkElapsedTime, 10000);
+          }
+        };
+        checkElapsedTime();
       }
     };
     fetchStartTime();
+    return () => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [prediction.id]);
 
   const handleClick = React.useCallback(() => {

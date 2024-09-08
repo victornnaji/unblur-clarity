@@ -34,35 +34,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      credits: {
-        Row: {
-          credits: number
-          id: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          credits?: number
-          id?: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          credits?: number
-          id?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "credits_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       customers: {
         Row: {
           created_at: string | null
@@ -89,42 +60,15 @@ export type Database = {
           },
         ]
       }
-      one_time_credits: {
-        Row: {
-          credits: number
-          id: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          credits?: number
-          id?: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          credits?: number
-          id?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "one_time_credits_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      prediction: {
+      predictions: {
         Row: {
           completed_at: string | null
           created_at: string | null
           error: string | null
           id: string
+          image_name: string | null
           image_url: string | null
+          original_image_url: string | null
           predict_time: string | null
           started_at: string | null
           status: string | null
@@ -135,7 +79,9 @@ export type Database = {
           created_at?: string | null
           error?: string | null
           id: string
+          image_name?: string | null
           image_url?: string | null
+          original_image_url?: string | null
           predict_time?: string | null
           started_at?: string | null
           status?: string | null
@@ -146,7 +92,9 @@ export type Database = {
           created_at?: string | null
           error?: string | null
           id?: string
+          image_name?: string | null
           image_url?: string | null
+          original_image_url?: string | null
           predict_time?: string | null
           started_at?: string | null
           status?: string | null

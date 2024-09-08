@@ -8,8 +8,7 @@ import {
 } from "@/config";
 import { UnblurModel } from "@/types";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
-import { getErrorRedirect } from "@/utils/helpers";
-import { getCredits, insertPrediction } from "@/utils/supabase/actions";
+import { insertPrediction } from "@/utils/supabase/actions";
 import { getUserCredits, withdrawCredits } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 import Replicate, { Prediction } from "replicate";
@@ -23,10 +22,12 @@ interface ImageUpscalingPayload extends BasePayloadProps {
   model: "image_upscaling";
   prompt?: string;
   upscale_style?: string;
+  image_name?: string;
 }
 
 interface OtherModelPayload extends BasePayloadProps {
   model: Exclude<UnblurModel, "image_upscaling">;
+  image_name?: string;
 }
 
 type PayloadProps = ImageUpscalingPayload | OtherModelPayload;
@@ -50,7 +51,6 @@ export async function initiatePrediction(payload: PayloadProps) {
     return { error: "User not found" };
   }
 
-  //get user credits
   const { data: credits, error } = await getUserCredits(user.id);
   if (error) {
     console.error("Error fetching credits:", error);
@@ -61,10 +61,7 @@ export async function initiatePrediction(payload: PayloadProps) {
     return { error: "Not enough credits" };
   }
  
-
-  console.log({ credits });
-
-  const { image_url, model } = payload;
+  const { image_url, model, image_name } = payload;
 
   const { url: secure_url } = await uploadImageToCloudinary(image_url);
 
@@ -137,11 +134,12 @@ export async function initiatePrediction(payload: PayloadProps) {
         status: prediction.status,
         created_at: prediction.created_at,
         started_at: prediction.started_at,
+        original_image_url: secure_url,
+        image_name: image_name,
       },
       userId: user?.id,
     });
     
-
     console.log("prediction successfully created on replicate", prediction);
     return { predictionId, secure_url };
     // return { predictionId: "3kdqpnsf5nrgj0chs5nvxgzk68", secure_url };

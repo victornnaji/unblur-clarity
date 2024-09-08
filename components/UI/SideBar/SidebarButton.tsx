@@ -42,6 +42,7 @@ const SidebarButton = ({ credits }: { credits: number }) => {
         model,
         prompt: payload.prompt,
         upscale_style: payload.upscaleStyle,
+        image_name: photo.name,
       });
 
       if (!response.predictionId) {
@@ -64,6 +65,7 @@ const SidebarButton = ({ credits }: { credits: number }) => {
           });
           setPhoto({
             ...photo,
+            originalImage: prediction.original_image_url!,
             restoredImage: prediction.image_url!,
           });
           setPrediction({

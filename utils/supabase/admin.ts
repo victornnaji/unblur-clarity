@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import { toDateTime } from "../helpers";
 import { PriceDto, ProductDto } from "@/types/dtos";
 import { stripe } from "../stripe/config";
+import { randomUUID } from "crypto";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -361,4 +362,27 @@ export const withdrawCredits = async (userId: string, creditsToWithdraw: number)
     }, 
     error: null 
   };
+};
+
+export const uploadImageToSupabase = async (imageUrl: string) => {
+  try {
+    const fileName = `${randomUUID()}-unblurred.png`;
+    const uploadResult = await supabaseAdmin.storage
+      .from("unblurred-photos")
+      .upload(fileName, imageUrl, {
+        cacheControl: "3600",
+        contentType: "image/png",
+      });
+
+    if (uploadResult.error) {
+      throw uploadResult.error;
+    }
+
+    const { data } = supabaseAdmin.storage.from('unblurred-photos').getPublicUrl(fileName)
+
+    return { url: data.publicUrl };
+  } catch (error) {
+    console.error("Error uploading image to Supabase:", error);
+    throw new Error("Failed to upload image");
+  }
 };
