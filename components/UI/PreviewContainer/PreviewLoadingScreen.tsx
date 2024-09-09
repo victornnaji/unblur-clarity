@@ -6,6 +6,7 @@ import StatusNotification from "../StatusNotification";
 import { CircularProgress } from "@nextui-org/react";
 import ResetTab from "@/components/UI/ResetTab";
 import { useAppStore } from "@/hooks/use-store";
+import Image from "next/image";
 
 const PreviewLoadingScreen = () => {
   const statusTexts = [
@@ -36,28 +37,25 @@ const PreviewLoadingScreen = () => {
   }, [currentTextIndex, statusTexts.length]);
 
   return (
-    <div style={{ marginBottom: "20px" }} className="relative h-full">
-      <div className="relative">
-        <div className="absolute inset-0 z-10 flex justify-center flex-col items-center bg-black bg-opacity-80">
-          <CircularProgress
-            strokeWidth={4}
-            color="secondary"
-            aria-label="Loading..."
-          />
-          <StatusNotification message={statusTexts[currentTextIndex]} />
-        </div>
-        <div className="h-full lg:h-100 mt-6 flex flex-col items-start justify-between gap-6 sm:flex-row mb-12">
-          <ZoomImageViewer
-            classNames={{
-              base: "lg:h-100",
-              image: "mb-1 border",
-            }}
-            alt="original image"
-            src={photo.originalImage}
-          />
-        </div>
+    <div className="relative">
+      <div className="absolute inset-0 z-10 flex justify-center flex-col items-center bg-black bg-opacity-80">
+        <CircularProgress
+          strokeWidth={4}
+          color="secondary"
+          aria-label="Loading..."
+        />
+        <StatusNotification message={statusTexts[currentTextIndex]} />
+        <ResetTab />
       </div>
-      <ResetTab />
+      <div className="relative h-[50vh] lg:h-[45rem] flex flex-col items-start justify-between gap-6 sm:flex-row mb-12">
+        <Image
+          fill
+          className="border"
+          objectFit="cover"
+          alt="original image"
+          src={photo.originalImage}
+        />
+      </div>
     </div>
   );
 };

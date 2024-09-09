@@ -1,4 +1,9 @@
-import { ImageUpscalingStyleOptionType, PlanDetails, PlanName, UnblurOptionType } from "./types/types";
+import {
+  ImageUpscalingStyleOptionType,
+  PlanDetails,
+  PlanName,
+  UnblurOptionType,
+} from "./types/types";
 
 export const config = {
   metadataBase: new URL("http://localhost:3000"),
@@ -37,31 +42,34 @@ export const MEGVII_ENHANCE_MODEL =
 export const CODEFORMER_FACE_ENHANCE_MODEL =
   "7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56";
 
-  export const productsFaq = [
-    {
-      question: 'Does my purchase expire?',
-      answer: 'No! Your purchase will never expire.'
-    },
-    {
-      question: 'Do you store my payment information?',
-      answer:
-        'Payments are processed by Stripe. We do not store your payment information.'
-    },
-    {
-      question: 'Can I get a refund?',
-      answer:
-        'On special cases, we can offer a refund. Please contact us for more information.'
-    },
-    {
-      question: 'How many tokens do I need to unblur a photo?',
-      answer:
-        'You need at least 1 token to unblur a photo. Token balance of less than 1 will not be able to unblur a photo.'
+export const productsFaq = [
+  {
+    question: "Does my purchase expire?",
+    answer: "No! Your purchase will never expire.",
+  },
+  {
+    question: "Do you store my payment information?",
+    answer:
+      "Payments are processed by Stripe. We do not store your payment information.",
+  },
+  {
+    question: "Can I get a refund?",
+    answer:
+      "On special cases, we can offer a refund. Please contact us for more information.",
+  },
+  {
+    question: "How many tokens do I need to unblur a photo?",
+    answer:
+      "You need at least 1 token to unblur a photo. Token balance of less than 1 will not be able to unblur a photo.",
   },
 ];
 
 export const creditsByPlan: Record<PlanName, PlanDetails> = {
-  [PlanName.BASIC]: { id: "prod_QlmZhUb9fi65bt", credits: 3000 },
-  [PlanName.STANDARD]: { id: "prod_Qlma0I04oc74Cz", credits: 10000 },
-  [PlanName.PREMIUM]: { id: "prod_QlmbqmBzKtj9sI", credits: 20000 },
-  [PlanName.ONE_TIME]: { id: "prod_QlmeeH6AD2Aa0N", credits: 10 }
+  [PlanName.BASIC]: { id: "prod_Qo3CqCT6mOb8xa", credits: 300 },
+  [PlanName.STANDARD]: { id: "prod_Qo3SpTFndJxvK3", credits: 600 },
+  [PlanName.PREMIUM]: { id: "prod_Qo3V4lI6RYiWzf", credits: 1440 },
+  [PlanName.ONE_TIME_BASIC]: { id: "prod_Qo3cSiP0Ba0XBs", credits: 120 },
+  [PlanName.ONE_TIME_STANDARD]: { id: "prod_Qo3lA0vsuduRRT", credits: 600 },
 };
+
+export const CREDITS_PER_UNBLUR = 12;

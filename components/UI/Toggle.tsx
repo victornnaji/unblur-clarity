@@ -32,7 +32,7 @@ export default function Toggle({
   };
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center mb-4 lg:mb-0 lg:mr-[-18%]">
       {leftText && <ToggleText text={leftText} isActive={!isToggled} />}
       <div
         className={clsx(

@@ -4,7 +4,7 @@ import { useAppStore } from "@/hooks/use-store";
 import { initiatePrediction } from "@/app/unblur/actions";
 import { pollPredictionStatus } from "@/utils/api-helpers/server";
 
-const SidebarButton = () => {
+const SidebarButton = ({ credits }: { credits: number }) => {
   const {
     photo,
     model,
@@ -30,11 +30,19 @@ const SidebarButton = () => {
     setAppStatus({ status: "processing", message: "Gathering image data..." });
 
     try {
+      if (credits < 12) {
+        setAppStatus({
+          status: "error",
+          message: "Not enough credits to unblur image",
+        });
+        return;
+      }
       const response = await initiatePrediction({
         image_url: photo.originalImage,
         model,
         prompt: payload.prompt,
         upscale_style: payload.upscaleStyle,
+        image_name: photo.name,
       });
 
       if (!response.predictionId) {
@@ -57,6 +65,7 @@ const SidebarButton = () => {
           });
           setPhoto({
             ...photo,
+            originalImage: prediction.original_image_url!,
             restoredImage: prediction.image_url!,
           });
           setPrediction({

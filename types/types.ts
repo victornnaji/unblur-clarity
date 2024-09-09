@@ -42,7 +42,8 @@ export enum PlanName {
   BASIC = "BASIC",
   STANDARD = "STANDARD",
   PREMIUM = "PREMIUM",
-  ONE_TIME = "ONE_TIME"
+  ONE_TIME_BASIC = "ONE_TIME_BASIC",
+  ONE_TIME_STANDARD = "ONE_TIME_STANDARD",
 }
 
 export interface PlanDetails {

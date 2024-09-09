@@ -2,13 +2,14 @@
 
 import {
   CODEFORMER_FACE_ENHANCE_MODEL,
+  CREDITS_PER_UNBLUR,
   MEGVII_ENHANCE_MODEL,
   UPSCALE_CLARITY_MODEL,
 } from "@/config";
 import { UnblurModel } from "@/types";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
-import { getErrorRedirect } from "@/utils/helpers";
 import { insertPrediction } from "@/utils/supabase/actions";
+import { getUserCredits, withdrawCredits } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 import Replicate, { Prediction } from "replicate";
 
@@ -21,10 +22,12 @@ interface ImageUpscalingPayload extends BasePayloadProps {
   model: "image_upscaling";
   prompt?: string;
   upscale_style?: string;
+  image_name?: string;
 }
 
 interface OtherModelPayload extends BasePayloadProps {
   model: Exclude<UnblurModel, "image_upscaling">;
+  image_name?: string;
 }
 
 type PayloadProps = ImageUpscalingPayload | OtherModelPayload;
@@ -45,14 +48,20 @@ export async function initiatePrediction(payload: PayloadProps) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    getErrorRedirect(
-      "/signin",
-      "No user found",
-      "Please sign in to unblur your image."
-    );
+    return { error: "User not found" };
   }
 
-  const { image_url, model } = payload;
+  const { data: credits, error } = await getUserCredits(user.id);
+  if (error) {
+    console.error("Error fetching credits:", error);
+    return { error: "Failed to fetch credits" };
+  }
+
+  if (credits <= 12) {
+    return { error: "Not enough credits" };
+  }
+ 
+  const { image_url, model, image_name } = payload;
 
   const { url: secure_url } = await uploadImageToCloudinary(image_url);
 
@@ -104,27 +113,36 @@ export async function initiatePrediction(payload: PayloadProps) {
   });
 
   try {
-    // const prediction: Prediction = await replicate.predictions.create({
-    //   version: replicateModel,
-    //   input,
-    //   webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
-    //   webhook_events_filter: ["completed"],
-    // });
 
-    // const { id: predictionId } = await insertPrediction({
-    //   supabase,
-    //   prediction: {
-    //     id: prediction.id,
-    //     status: prediction.status,
-    //     created_at: prediction.created_at,
-    //     started_at: prediction.started_at,
-    //   },
-    //   userId: user?.id,
-    // });
+    const data = await withdrawCredits(user.id, CREDITS_PER_UNBLUR);
 
-    // console.log("prediction successfully created on replicate", prediction);
-    // return { predictionId, secure_url };
-    return { predictionId: "3kdqpnsf5nrgj0chs5nvxgzk68", secure_url };
+    if (data.error) {
+      return { error: "Failed to withdraw credits" };
+    }
+
+    const prediction: Prediction = await replicate.predictions.create({
+      version: replicateModel,
+      input,
+      webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
+      webhook_events_filter: ["completed"],
+    });
+
+    const { id: predictionId } = await insertPrediction({
+      supabase,
+      prediction: {
+        id: prediction.id,
+        status: prediction.status,
+        created_at: prediction.created_at,
+        started_at: prediction.started_at,
+        original_image_url: secure_url,
+        image_name: image_name,
+      },
+      userId: user?.id,
+    });
+    
+    console.log("prediction successfully created on replicate", prediction);
+    return { predictionId, secure_url };
+    // return { predictionId: "3kdqpnsf5nrgj0chs5nvxgzk68", secure_url };
   } catch (error) {
     console.log("error creating prediction", error);
     const errorMessage =

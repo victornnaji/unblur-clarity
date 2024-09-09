@@ -5,16 +5,18 @@ import SidebarUpscalingOptionsSeletors from "./SidebarImageUpscaleSelectors";
 import SidebarModelSelector from "./SidebarModelSelector";
 import SidebarImageSelector from "./SidebarImageSelector";
 import SidebarButton from "./SidebarButton";
+import Credits from "../Credits";
 
-const SidebarContainer = () => {
+const SidebarContainer = ({ credits }: { credits: number }) => {
   return (
     <>
+      <Credits credits={credits} />
       <SidebarImageSelector />
       <SidebarModelSelector />
-      <div className="lg:h-80 overflow-scroll mb-5 p-1 box-border">
+      <div className="lg:h-80 overflow-scroll p-1 box-border">
         <SidebarUpscalingOptionsSeletors />
       </div>
-      <SidebarButton />
+      <SidebarButton credits={credits} />
     </>
   );
 };

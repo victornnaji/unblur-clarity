@@ -4,6 +4,7 @@ import { updatePrediction } from "@/utils/supabase/actions";
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { mapReplicateResponseToPredictionDto } from "@/utils/api-helpers/client";
 import invariant from "tiny-invariant";
+import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
 
 invariant(
   process.env.REPLICATE_WEBHOOK_SECRET,
@@ -64,7 +65,15 @@ export async function POST(req: Request) {
 
   try {
     const response = mapReplicateResponseToPredictionDto(body);
-    await updatePrediction(supabase, response);
+    const replicateImage = Array.isArray(body.output) ? body.output[0] : body.output;
+    const { url: secureUrl } = await uploadImageToCloudinary(
+      replicateImage,
+      "unblurred-photos"
+    );
+    await updatePrediction(supabase, {
+      ...response,
+      image_url: secureUrl,
+    });
     return NextResponse.json({ success: true, status: 201 });
   } catch (error) {
     return NextResponse.json(
