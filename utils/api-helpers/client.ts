@@ -23,3 +23,5 @@ export const getCreditsForPlan = (planId: string) => {
   const plan = Object.values(creditsByPlan).find((plan) => plan.id === planId);
   return plan?.credits || 0;
 };
+
+export const fetcher = (url: string) => fetch(url).then(res => res.json());

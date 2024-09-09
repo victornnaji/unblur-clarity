@@ -103,3 +103,47 @@ export const getCredits = cache(async (supabase: SupabaseClient) => {
 
   return totalCredits;
 });
+
+export const getCompletedPredictionsByUser = async (supabase: SupabaseClient) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("predictions")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("status", "succeeded")
+    .order("completed_at", { ascending: false })
+    .limit(20);
+
+  if (error) {
+    console.error("Error fetching completed predictions:", error);
+    throw new Error("Failed to fetch completed predictions");
+  }
+
+  return data;
+};
+
+export const getInProgressPredictionsByUser = cache(async (supabase: SupabaseClient) => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from("predictions")
+    .select("*")
+    .eq("user_id", user.id)
+    .in("status", ["starting", "processing"])
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  if (error) {
+    console.error("Error fetching in-progress predictions:", error);
+    throw new Error("Failed to fetch in-progress predictions");
+  }
+
+  return data;
+});

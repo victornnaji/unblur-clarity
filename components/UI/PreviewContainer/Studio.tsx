@@ -28,7 +28,12 @@ const Studio = () => {
     return <ErrorScreen />;
   }
 
-  return <EmptyScreen />;
+  return (
+    <EmptyScreen
+      title="No Image here yet!"
+      description="Begin upscaling to see your image progress."
+    />
+  );
 };
 
 export default Studio;

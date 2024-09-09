@@ -1,4 +1,5 @@
 import { ToastVariants } from "@/types";
+import moment from "moment";
 
 export const getURL = (path: string = "") => {
   // Check if NEXT_PUBLIC_SITE_URL is set and non-empty. Set this to your site URL in production env.
@@ -113,16 +114,25 @@ export function shortenFileName(
 
 export async function downloadPhoto(photoUrl: string, name: string) {
   if (!photoUrl) return;
+  
   const response = await fetch(photoUrl);
   const blob = await response.blob();
-  const filename = `${name}-unblur-photo.${blob.type.split("/")[1]}`;
-  const url = window.URL.createObjectURL(new Blob([blob]));
+  
+  const fileExtension = blob.type.split("/")[1];
+  
+  const baseName = name.replace(/\.[^/.]+$/, "");
+  
+  const filename = `${baseName}_unblur-photos.${fileExtension}`;
+  
+  const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
   link.setAttribute("download", filename);
   document.body.appendChild(link);
   link.click();
   link.remove();
+  
+  window.URL.revokeObjectURL(url);
 }
 
 export async function streamToString(
@@ -149,3 +159,7 @@ export const toDateTime = (secs: number) => {
   t.setSeconds(secs);
   return t;
 };
+
+export const formatTime = (time: string) => {
+  return moment(time).fromNow();
+}

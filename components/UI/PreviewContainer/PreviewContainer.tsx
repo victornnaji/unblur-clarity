@@ -3,6 +3,8 @@
 import React from "react";
 import { Tabs, Tab } from "@nextui-org/react";
 import Studio from "./Studio";
+import Completed from "./Completed";
+import InProgress from "./InProgress";
 
 const PreviewContainer = () => {
   const options = [
@@ -12,11 +14,11 @@ const PreviewContainer = () => {
     },
     {
       title: "In Progress",
-      component: <div>In Progress</div>,
+      component: <InProgress />,
     },
     {
       title: "Completed",
-      component: <div>Completed</div>,
+      component: <Completed />,
     },
   ];
   return (
