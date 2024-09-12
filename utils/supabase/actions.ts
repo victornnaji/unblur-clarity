@@ -1,7 +1,7 @@
 "use server";
 
 import { SupabaseClient } from "@supabase/supabase-js";
-import { PredictionDto } from "@/types/dtos";
+import { PredictionDto, UserDto } from "@/types/dtos";
 import { cache } from "react";
 
 export const insertPrediction = async ({
@@ -75,12 +75,30 @@ export const getProducts = cache(async (supabase: SupabaseClient) => {
   return products;
 });
 
-export const getUser = cache(async (supabase: SupabaseClient) => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
-});
+export const getUser = cache(
+  async (supabase: SupabaseClient): Promise<UserDto | null> => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching user from public users:", error);
+      throw new Error("Failed to fetch user data");
+    }
+
+    return {
+      ...data,
+      provider: user.app_metadata.provider,
+    };
+  }
+);
 
 export const getCredits = cache(async (supabase: SupabaseClient) => {
   const {
@@ -104,7 +122,9 @@ export const getCredits = cache(async (supabase: SupabaseClient) => {
   return totalCredits;
 });
 
-export const getCompletedPredictionsByUser = async (supabase: SupabaseClient) => {
+export const getCompletedPredictionsByUser = async (
+  supabase: SupabaseClient
+) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -126,24 +146,26 @@ export const getCompletedPredictionsByUser = async (supabase: SupabaseClient) =>
   return data;
 };
 
-export const getInProgressPredictionsByUser = cache(async (supabase: SupabaseClient) => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return;
+export const getInProgressPredictionsByUser = cache(
+  async (supabase: SupabaseClient) => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
 
-  const { data, error } = await supabase
-    .from("predictions")
-    .select("*")
-    .eq("user_id", user.id)
-    .in("status", ["starting", "processing"])
-    .order("created_at", { ascending: false })
-    .limit(20);
+    const { data, error } = await supabase
+      .from("predictions")
+      .select("*")
+      .eq("user_id", user.id)
+      .in("status", ["starting", "processing"])
+      .order("created_at", { ascending: false })
+      .limit(20);
 
-  if (error) {
-    console.error("Error fetching in-progress predictions:", error);
-    throw new Error("Failed to fetch in-progress predictions");
+    if (error) {
+      console.error("Error fetching in-progress predictions:", error);
+      throw new Error("Failed to fetch in-progress predictions");
+    }
+
+    return data;
   }
-
-  return data;
-});
+);
