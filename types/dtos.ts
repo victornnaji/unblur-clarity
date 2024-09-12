@@ -12,4 +12,8 @@ export interface PriceDto extends Tables<"prices"> {
   type: "recurring" | "one_time";
 };
 
+export interface UserDto extends Tables<"users"> {
+  provider: string;
+};
+
 export interface SubscriptionDto extends Tables<"subscriptions"> {};

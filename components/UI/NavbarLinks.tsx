@@ -21,16 +21,19 @@ import {
   Zap as ZapIcon,
 } from "react-feather";
 import { shortenFileName } from "@/utils/helpers";
-import { User } from "@/types";
+import { UserDto } from "@/types/dtos";
 
 const NavbarLinks = ({
   user,
   credits,
 }: {
-  user: User | null;
+  user: UserDto | null;
   credits: number;
 }) => {
-  const { avatar_url, name, email } = user?.user_metadata || {};
+  const avatar_url = user?.avatar_url ?? "";
+  const name = user?.full_name ?? "";
+  const email = user?.email ?? "";
+
   const router = useRouter();
   const id = useId();
   const pathname = usePathname();
@@ -42,7 +45,7 @@ const NavbarLinks = ({
     {
       key: "account",
       text: "Account",
-      href: "/",
+      href: "/account",
       description: email && shortenFileName(email),
       icon: UserIcon,
     },
@@ -89,7 +92,7 @@ const NavbarLinks = ({
             aria-label="Navigation"
             disabledKeys={["credits"]}
           >
-            {/* <DropdownSection
+            <DropdownSection
               showDivider
               classNames={{
                 divider: "bg-zink opacity-50",
@@ -103,10 +106,10 @@ const NavbarLinks = ({
                 variant="bordered"
               >
                 <span className="font-bold text-base text-white">
-                  Credits: <span className="text-white">{credits} 💵</span>
+                  Credits: <span className="text-white">{credits} 💰</span>
                 </span>
               </DropdownItem>
-            </DropdownSection> */}
+            </DropdownSection>
             <DropdownSection
               aria-label="Links"
               showDivider

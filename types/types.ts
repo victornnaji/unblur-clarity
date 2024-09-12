@@ -1,6 +1,4 @@
-import { User as PrimitiveUser } from "@supabase/supabase-js";
 import { PriceDto, ProductDto, SubscriptionDto } from "./dtos";
-
 export type UnblurModel =
   | "image_upscaling"
   | "face_restoration"
@@ -36,7 +34,6 @@ export enum AppStatusEnum {
   ERROR = "error",
 }
 
-export type User = PrimitiveUser;
 export type BillingInterval = "month" | "year" | "one_time";
 export enum PlanName {
   BASIC = "BASIC",
