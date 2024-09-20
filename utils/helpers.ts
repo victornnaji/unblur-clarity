@@ -163,3 +163,8 @@ export const toDateTime = (secs: number) => {
 export const formatTime = (time: string) => {
   return moment(time).fromNow();
 }
+
+export function isValidEmail(email: string) {
+  var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  return regex.test(email);
+}

@@ -5,7 +5,7 @@ import React, { useCallback, useId } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { handleRequest } from "@/utils/auth-helpers/client";
 import { SignOut } from "@/utils/auth-helpers/server";
-import Button from "./Button";
+import Button from "@/components/UI/Button";
 import {
   Dropdown,
   DropdownTrigger,
@@ -70,6 +70,13 @@ const NavbarLinks = ({
     [router]
   );
 
+  const prefetchRouter = useCallback(
+    (href: string) => {
+      router.prefetch(href);
+    },
+    [router]
+  );
+
   return (
     <>
       {user ? (
@@ -123,6 +130,8 @@ const NavbarLinks = ({
                   as={Link}
                   href={href}
                   onClick={() => handleNavigation(href)}
+                  onMouseEnter={() => prefetchRouter(href)}
+                  onHoverStart={() => prefetchRouter(href)}
                   description={description && description}
                   startContent={<Icon className={iconClasses} />}
                 >
@@ -153,9 +162,7 @@ const NavbarLinks = ({
           </DropdownMenu>
         </Dropdown>
       ) : (
-        <Button href="/signin" variant="slim">
-          Sign in
-        </Button>
+        <Button href="/signin">Sign in</Button>
       )}
     </>
   );

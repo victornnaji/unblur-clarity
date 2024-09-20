@@ -23,6 +23,9 @@ module.exports = {
       },
       spacing: {
         100: "30rem"
+      },
+      gridTemplateColumns: {
+        'auto-fit-300': 'repeat(auto-fill, minmax(300px, 1fr))'
       }
     }
   },

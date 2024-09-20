@@ -1,8 +1,8 @@
+import Stripe from "stripe";
 import { Database } from "@/types";
 import { createClient } from "@supabase/supabase-js";
-import Stripe from "stripe";
 import { toDateTime } from "../helpers";
-import { PriceDto, ProductDto } from "@/types/dtos";
+import { PredictionDto, PriceDto, ProductDto } from "@/types/dtos";
 import { stripe } from "../stripe/config";
 import { randomUUID } from "crypto";
 
@@ -30,7 +30,12 @@ export const getCustomer = async (customerId: string) => {
     .select("*")
     .eq("stripe_customer_id", customerId)
     .maybeSingle();
-  return { data, error };
+
+  if (error) {
+    throw new Error(`Supabase customer lookup failed: ${error.message}`);
+  }
+
+  return data;
 };
 
 export const createCustomer = async (userId: string, customerId: string) => {
@@ -205,12 +210,14 @@ export const upsertProductRecord = async (product: Stripe.Product) => {
     },
   };
 
-  const { error: upsertError } = await supabaseAdmin
+  const { data, error: upsertError } = await supabaseAdmin
     .from("products")
     .upsert([productData]);
   if (upsertError)
     throw new Error(`Product insert/update failed: ${upsertError.message}`);
   console.log(`Product inserted/updated: ${product.id}`);
+
+  return data;
 };
 
 export const upsertSubscription = async (
@@ -243,7 +250,10 @@ export const upsertSubscription = async (
     },
     { onConflict: "id" }
   );
-  return { data, error };
+  if (error) {
+    throw new Error("Updating subscription failed");
+  }
+  return data;
 };
 
 export const updateCustomerCredits = async (
@@ -256,7 +266,11 @@ export const updateCustomerCredits = async (
       credits,
     })
     .eq("id", userId);
-  return { data, error };
+
+  if (error) {
+    throw new Error("User credit update failed");
+  }
+  return data;
 };
 
 export const removeCustomerCredits = async (userId: string) => {
@@ -264,7 +278,11 @@ export const removeCustomerCredits = async (userId: string) => {
     .from("users")
     .update({ credits: 0 })
     .eq("id", userId);
-  return { data, error };
+
+  if (error) {
+    throw new Error("Supabase credit deletion failed");
+  }
+  return data;
 };
 
 export const updateCustomerOneTimeCredits = async (
@@ -278,7 +296,7 @@ export const updateCustomerOneTimeCredits = async (
     .single();
 
   if (fetchError) {
-    return { data: null, error: fetchError };
+    throw new Error("Error fetching credits");
   }
 
   const currentCredits = currentData?.one_time_credits || 0;
@@ -290,78 +308,10 @@ export const updateCustomerOneTimeCredits = async (
     .eq("id", userId);
 
   if (updateError) {
-    return { data: null, error: updateError };
+    throw new Error("Credit update failed");
   }
 
-  return { data: newTotalCredits, error: null };
-};
-
-export const getUserCredits = async (userId: string) => {
-  const { data, error } = await supabaseAdmin
-    .from("users")
-    .select("credits, one_time_credits")
-    .eq("id", userId)
-    .single();
-
-  if (error) {
-    console.error("Error fetching credits:", error);
-    throw new Error("Failed to fetch credits");
-  }
-
-  const totalCredits = (data?.credits || 0) + (data?.one_time_credits || 0);
-
-  return { data: totalCredits, error };
-};
-
-export const withdrawCredits = async (userId: string, creditsToWithdraw: number) => {
-  // Fetch current credits and one-time credits
-  const { data, error: fetchError } = await supabaseAdmin
-    .from("users")
-    .select("credits, one_time_credits")
-    .eq("id", userId)
-    .single();
-
-  if (fetchError) {
-    return { data: null, error: fetchError };
-  }
-
-  const currentCredits = data?.credits || 0;
-  const currentOneTimeCredits = data?.one_time_credits || 0;
-  const totalAvailableCredits = currentCredits + currentOneTimeCredits;
-
-  // Check if user has enough total credits
-  if (totalAvailableCredits < creditsToWithdraw) {
-    return { data: null, error: new Error("Insufficient credits") };
-  }
-
-  // Calculate how many credits to withdraw from each column
-  const creditsToWithdrawFromCredits = Math.min(currentCredits, creditsToWithdraw);
-  const creditsToWithdrawFromOneTime = creditsToWithdraw - creditsToWithdrawFromCredits;
-
-  // Update the credits
-  const newCredits = currentCredits - creditsToWithdrawFromCredits;
-  const newOneTimeCredits = currentOneTimeCredits - creditsToWithdrawFromOneTime;
-
-  // Update the database
-  const { error: updateError } = await supabaseAdmin
-    .from("users")
-    .update({ 
-      credits: newCredits, 
-      one_time_credits: newOneTimeCredits 
-    })
-    .eq("id", userId);
-
-  if (updateError) {
-    return { data: null, error: updateError };
-  }
-
-  return { 
-    data: { 
-      remainingCredits: newCredits, 
-      remainingOneTimeCredits: newOneTimeCredits 
-    }, 
-    error: null 
-  };
+  return { data: newTotalCredits };
 };
 
 export const uploadImageToSupabase = async (imageUrl: string) => {
@@ -378,11 +328,39 @@ export const uploadImageToSupabase = async (imageUrl: string) => {
       throw uploadResult.error;
     }
 
-    const { data } = supabaseAdmin.storage.from('unblurred-photos').getPublicUrl(fileName)
+    const { data } = supabaseAdmin.storage
+      .from("unblurred-photos")
+      .getPublicUrl(fileName);
 
     return { url: data.publicUrl };
   } catch (error) {
     console.error("Error uploading image to Supabase:", error);
     throw new Error("Failed to upload image");
   }
+};
+
+export const updatePrediction = async (
+  prediction: Partial<PredictionDto>
+): Promise<{ id: string }> => {
+  if (!prediction.id) {
+    throw new Error("Prediction ID is required for update");
+  }
+
+  const { data, error: updateError } = await supabaseAdmin
+    .from("predictions")
+    .update(prediction)
+    .eq("id", prediction.id)
+    .select()
+    .single();
+
+  if (updateError) {
+    console.error("Update error:", updateError);
+    throw new Error(`Error updating prediction: ${updateError.message}`);
+  }
+
+  if (!data) {
+    throw new Error("No data returned after updating prediction");
+  }
+
+  return { id: data.id };
 };

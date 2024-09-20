@@ -3,7 +3,6 @@
 import {
   BillingInterval,
   ProductWithPrices,
-  SubscriptionWithProducts,
 } from "@/types";
 import React, { useCallback, useState } from "react";
 import PricingHeader from "./PricingHeader";
@@ -16,12 +15,12 @@ import { getStripe } from "@/utils/stripe/client";
 
 interface PricingTablesProps {
   products: ProductWithPrices[];
-  subscription: SubscriptionWithProducts;
+  hasSubscription: boolean;
 }
 
-const stripePromise = getStripe();
+getStripe();
 
-const PricingTables = ({ products, subscription }: PricingTablesProps) => {
+const PricingTable = ({ products, hasSubscription }: PricingTablesProps) => {
   const router = useRouter();
   const currentPath = usePathname();
 
@@ -62,7 +61,7 @@ const PricingTables = ({ products, subscription }: PricingTablesProps) => {
       <PricingBody
         products={products}
         billingInterval={billingInterval}
-        subscription={subscription}
+        hasSubscription={hasSubscription}
         onCheckout={handleCheckout}
         isLoading={isLoading}
       />
@@ -70,4 +69,4 @@ const PricingTables = ({ products, subscription }: PricingTablesProps) => {
   );
 };
 
-export default PricingTables;
+export default PricingTable;

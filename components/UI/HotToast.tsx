@@ -19,15 +19,7 @@ const HotToast = () => {
     const description = searchParams.get("description");
 
     if (status || title || description) {
-      toast[status as ToastVariants](
-        <ToastMessage title={title} description={description} />,
-        {
-          id: status || id,
-          duration: DURATION,
-          position: "bottom-right"
-        }
-      );
-
+      showToast(status as ToastVariants, title, description, id);
       const newSearchParams = new URLSearchParams(searchParams.toString());
       const paramsToRemove = [
         "status",
@@ -94,5 +86,21 @@ const ToastMessage = React.memo(
     </aside>
   )
 );
+
+export const showToast = (
+  status: ToastVariants,
+  title: string | null,
+  description: string | null,
+  id?: string
+) => {
+  toast[status](
+    <ToastMessage title={title} description={description} />,
+    {
+      id: id || status,
+      duration: DURATION,
+      position: "bottom-right"
+    }
+  );
+};
 
 export default React.memo(HotToast);

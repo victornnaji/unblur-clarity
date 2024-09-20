@@ -12,6 +12,10 @@ interface InputProps
   tooltipContent?: string;
   name: string;
   className?: string;
+  classNames?: {
+    label?: string;
+    input?: string;
+  };
   value?: string;
   onChange?: (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -24,6 +28,7 @@ const TextInput: React.FC<InputProps> = ({
   placeholder,
   name,
   className,
+  classNames,
   label,
   value,
   defaultValue,
@@ -33,14 +38,14 @@ const TextInput: React.FC<InputProps> = ({
 }) => {
   const generatedId = React.useId();
   const appliedId = id || generatedId;
-  const style = `w-full p-3 rounded-md bg-gray text-zink`;
+  const style = `w-full p-3 rounded-md bg-gray`;
   const isControlled = value !== undefined;
   const textareaProps = isControlled ? { value, onChange } : { defaultValue };
   return (
     <>
       <label
         htmlFor={appliedId}
-        className="mb-2 text-md text-zink flex items-center gap-2"
+        className={clsx("mb-2 text-md text-zink flex items-center gap-2", classNames?.label)}
       >
         <span>{label}</span>
         {tooltipContent && (
@@ -54,7 +59,7 @@ const TextInput: React.FC<InputProps> = ({
           id={appliedId}
           placeholder={placeholder}
           name={name}
-          className={clsx(style, className)}
+          className={clsx(style, className, classNames?.input)}
           {...textareaProps}
           {...delegated}
         />
@@ -67,7 +72,7 @@ const TextInput: React.FC<InputProps> = ({
           type={type}
           autoCapitalize="none"
           autoCorrect="off"
-          className={clsx(style, className)}
+          className={clsx(style, className, classNames?.input)}
           {...(isControlled ? { value, onChange } : {})}
           {...delegated}
         />

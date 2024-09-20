@@ -49,6 +49,16 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  const loginPath = "/signin";
+  const isLoginRoute = request.nextUrl.pathname === loginPath;
+
+  if (user && isLoginRoute) {
+    //user is logged in and tries to access the login page, redirect to home
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
   // creating a new response object with NextResponse.next() make sure to:
   // 1. Pass the request in it, like so:

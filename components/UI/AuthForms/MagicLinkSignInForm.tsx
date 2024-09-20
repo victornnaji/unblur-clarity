@@ -26,12 +26,7 @@ const MagicLinkSignInForm = () => {
         placeholder="name@example.com"
         disabled={isSubmitting}
       />
-      <Button
-        variant="slim"
-        type="submit"
-        className="mt-5 w-full"
-        loading={isSubmitting}
-      >
+      <Button type="submit" className="mt-5 w-full" isLoading={isSubmitting}>
         Sign in
       </Button>
     </form>

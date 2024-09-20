@@ -6,6 +6,7 @@ import { createOrRetrieveCustomer } from "../supabase/admin";
 import { getErrorRedirect, getStatusRedirect, getURL } from "../helpers";
 import Stripe from "stripe";
 import { stripe } from "./config";
+import { cache } from "react";
 
 export async function checkoutWithStripe(
   price: PriceDto,
@@ -100,7 +101,7 @@ export async function checkoutWithStripe(
   }
 }
 
-export async function createStripePortal(currentPath: string) {
+export const createStripePortal = cache(async (currentPath: string) => {
   try {
     const supabase = createClient();
     const {
@@ -159,4 +160,4 @@ export async function createStripePortal(currentPath: string) {
       );
     }
   }
-}
+});

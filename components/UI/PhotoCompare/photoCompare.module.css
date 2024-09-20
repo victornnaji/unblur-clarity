@@ -1,0 +1,4 @@
+.backdrop {
+    backdrop-filter: blur(0.50rem) saturate(180%) contrast(90%) brightness(120%);
+    -webkit-backdrop-filter: blur(0.50rem) saturate(180%) contrast(90%) brightness(120%);
+}

@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { validateWebhook } from "replicate";
-import { updatePrediction } from "@/utils/supabase/actions";
-import { createServiceRoleClient } from "@/utils/supabase/admin";
+import { createServiceRoleClient, updatePrediction } from "@/utils/supabase/admin";
 import { mapReplicateResponseToPredictionDto } from "@/utils/api-helpers/client";
 import invariant from "tiny-invariant";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
+import { validateWebhook } from "replicate";
 
 invariant(
   process.env.REPLICATE_WEBHOOK_SECRET,
@@ -70,7 +69,7 @@ export async function POST(req: Request) {
       replicateImage,
       "unblurred-photos"
     );
-    await updatePrediction(supabase, {
+    await updatePrediction({
       ...response,
       image_url: secureUrl,
     });

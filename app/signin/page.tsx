@@ -1,17 +1,11 @@
-import { redirect } from "next/navigation";
-import { getServerUser } from "@/utils/auth-helpers/server";
+// import { redirect } from "next/navigation";
+// import { getServerUser } from "@/utils/auth-helpers/server";
 import UnblurLayout from "@/components/UnblurLayout";
 import Separator from "@/components/UI/Separator";
 import MagicLinkSignInForm from "@/components/UI/AuthForms/MagicLinkSignInForm";
 import OauthSignInForm from "@/components/UI/AuthForms/OauthSigninForm";
 
 export default async function SignIn() {
-  const user = await getServerUser();
-
-  if (user) {
-    redirect("/");
-  }
-
   return (
     <UnblurLayout>
       <div className="flex justify-center height-screen-helper">

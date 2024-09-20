@@ -102,8 +102,8 @@ const SidebarButton = ({ credits }: { credits: number }) => {
   }, [setAppStatus, photo, model, payload, setPhoto]);
   return (
     <Button
-      disabled={!photo.name}
-      loading={appStatus.status === "processing"}
+      isDisabled={!photo.name}
+      isLoading={appStatus.status === "processing"}
       onClick={startPrediction}
       variant="flat"
       className="grid w-full md:w-1/2 md:mx-auto lg:w-full"

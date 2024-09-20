@@ -12,13 +12,13 @@ import { PriceDto } from "@/types/dtos";
 const PricingBody = ({
   products,
   billingInterval,
-  subscription,
+  hasSubscription,
   onCheckout,
   isLoading,
 }: {
   products: ProductWithPrices[];
   billingInterval: BillingInterval;
-  subscription: SubscriptionWithProducts;
+  hasSubscription: boolean;
   onCheckout: (price: PriceDto) => void;
   isLoading: boolean;
 }) => {
@@ -43,7 +43,7 @@ const PricingBody = ({
             price={price}
             billingInterval={billingInterval}
             isHighlighted={isHighlighted}
-            subscription={subscription}
+            hasSubscription={hasSubscription}
             onCheckout={onCheckout}
             isLoading={isLoading}
           />
