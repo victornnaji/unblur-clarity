@@ -1,14 +1,35 @@
 import BioCard from "@/components/UI/Accounts/BioCard";
+import StripeCard from "@/components/UI/Accounts/StripeCard";
+import SubscriptionCard from "@/components/UI/Accounts/SubscriptionCard";
 import { createStripePortal } from "@/utils/stripe/admin";
-import { getUser } from "@/utils/supabase/actions";
-import { Avatar, Card, CardBody, CardHeader } from "@nextui-org/react";
-import { redirect } from "next/navigation";
+import {
+  getSubscriptionForUser,
+  getUser,
+  getAllPredictionsByUser,
+  getUsersCreditsOnly,
+  getUsersOneTimeCreditsOnly,
+} from "@/utils/supabase/actions";
 
 export default async function AccountPage() {
-  // const url  = await createStripePortal('/unblur');
-  // redirect(url);
+  const [
+    user,
+    stripePortalUrl,
+    subscription,
+    credits,
+    oneTimeCredits,
+    predictions,
+  ] = await Promise.all([
+    getUser(),
+    createStripePortal("/account"),
+    getSubscriptionForUser(),
+    getUsersCreditsOnly(),
+    getUsersOneTimeCreditsOnly(),
+    getAllPredictionsByUser(),
+  ]);
 
-  const user = await getUser();
+  const subscriptionUpgradeUrl = subscription?.id
+    ? `${stripePortalUrl}/subscriptions/${subscription.id}/update`
+    : null;
 
   return (
     <div>
@@ -16,20 +37,20 @@ export default async function AccountPage() {
       <h2 className="mt-2 text-darkzink">
         Manage your account settings and subscription settings
       </h2>
-      <div className="mt-10 lg:grid-cols-3 grid-cols-1 gap-4 grid">
+      <div className="mt-10 lg:grid-cols-3 grid-cols-1 gap-y-2 lg:gap-4 grid">
         <div className="col-span-1 gap-2 xl:gap-4 flex flex-col">
           <BioCard user={user} />
-          <div className="manage">
-            <Card radius="sm" className="w-full h-full bg-gray border-2">
-              <CardHeader>Manage</CardHeader>
-            </Card>
-          </div>
+          <StripeCard url={stripePortalUrl} />
         </div>
 
-        <div className="subscription col-span-2">
-          <Card radius="sm" className="w-full h-full bg-gray border-2">
-            <CardHeader>Subscription</CardHeader>
-          </Card>
+        <div className="col-span-2">
+          <SubscriptionCard
+            subscription={subscription}
+            credits={credits}
+            oneTimeCredits={oneTimeCredits}
+            subscriptionUpgradeUrl={subscriptionUpgradeUrl}
+            predictions={predictions}
+          />
         </div>
       </div>
     </div>

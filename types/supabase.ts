@@ -198,6 +198,7 @@ export type Database = {
           ended_at: string | null
           id: string
           metadata: Json | null
+          product_id: string | null
           status: Database["public"]["Enums"]["subscription_status"] | null
           user_id: string
         }
@@ -211,6 +212,7 @@ export type Database = {
           ended_at?: string | null
           id: string
           metadata?: Json | null
+          product_id?: string | null
           status?: Database["public"]["Enums"]["subscription_status"] | null
           user_id: string
         }
@@ -224,10 +226,18 @@ export type Database = {
           ended_at?: string | null
           id?: string
           metadata?: Json | null
+          product_id?: string | null
           status?: Database["public"]["Enums"]["subscription_status"] | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "subscriptions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "subscriptions_user_id_fkey"
             columns: ["user_id"]
@@ -245,6 +255,7 @@ export type Database = {
           full_name: string | null
           id: string
           one_time_credits: number | null
+          updated_at: string
         }
         Insert: {
           avatar_url?: string | null
@@ -253,6 +264,7 @@ export type Database = {
           full_name?: string | null
           id: string
           one_time_credits?: number | null
+          updated_at?: string
         }
         Update: {
           avatar_url?: string | null
@@ -261,6 +273,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           one_time_credits?: number | null
+          updated_at?: string
         }
         Relationships: [
           {

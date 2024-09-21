@@ -83,7 +83,7 @@ const NavbarLinks = ({
         <Dropdown
           placement="bottom-end"
           classNames={{
-            content: "py-1 px-1 bg-gray",
+            content: "py-1 px-1 bg-gray border-1",
           }}
         >
           <DropdownTrigger>

@@ -15,4 +15,6 @@ export interface UserDto extends Tables<"users"> {
   provider: string;
 };
 
-export interface SubscriptionDto extends Tables<"subscriptions"> {};
+export interface SubscriptionDto extends Tables<"subscriptions"> {
+  products: ProductDto | null;
+};

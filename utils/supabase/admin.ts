@@ -247,6 +247,7 @@ export const upsertSubscription = async (
       status: subscription.status,
       user_id: userId,
       id: subscription.id,
+      product_id: subscription.items.data[0].price.product,
     },
     { onConflict: "id" }
   );

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "generate": "supabase gen types typescript --local > types/supabase.ts"
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",

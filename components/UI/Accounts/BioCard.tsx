@@ -1,7 +1,7 @@
 "use client";
 
 import { UserDto } from "@/types/dtos";
-import { Avatar, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Avatar } from "@nextui-org/react";
 import React, { useState } from "react";
 import {
   Edit as EditIcon,
@@ -11,9 +11,9 @@ import {
 import { IconButton } from "../Button";
 import TextInput from "../TextInput";
 import { updateUserProfile } from "@/utils/auth-helpers/server";
-import { useRouter } from "next/navigation";
 import { showToast } from "../HotToast";
 import { ToastVariants } from "@/types";
+import AccountCard from "./Card";
 
 const BioCard = ({ user }: { user: UserDto | null }) => {
   const [message, setMessage] = useState("");
@@ -82,53 +82,52 @@ const BioCard = ({ user }: { user: UserDto | null }) => {
   };
 
   return (
-    <Card
-      radius="sm"
-      className="w-full bg-gray border-2 flex flex-col p-y-4 px-2"
-      classNames={{
-        header: "text-md flex justify-between items-center p-2",
-        body: "flex flex-row gap-4 items-center",
-      }}
-    >
-      <CardHeader>
-        <p>Bio Information</p>
-        {isEmailCustomer &&
-          (isEditing ? (
-            <div className="flex gap-2">
+    <AccountCard
+      header={
+        <div className="flex justify-between items-center w-full">
+          <p>Bio</p>
+          {isEmailCustomer &&
+            (isEditing ? (
+              <div className="flex gap-2">
+                <IconButton
+                  Icon={SaveIcon}
+                  onClick={handleSave}
+                  className="bg-transparent text-zink"
+                  disabled={isSaving}
+                />
+                <IconButton
+                  Icon={CancelIcon}
+                  onClick={handleEdit}
+                  className="bg-transparent text-zink"
+                  disabled={isSaving}
+                />
+              </div>
+            ) : (
               <IconButton
-                Icon={SaveIcon}
-                onClick={handleSave}
-                className="bg-transparent text-zink"
-                disabled={isSaving}
-              />
-              <IconButton
-                Icon={CancelIcon}
+                Icon={EditIcon}
                 onClick={handleEdit}
                 className="bg-transparent text-zink"
-                disabled={isSaving}
               />
-            </div>
-          ) : (
-            <IconButton
-              Icon={EditIcon}
-              onClick={handleEdit}
-              className="bg-transparent text-zink"
-            />
-          ))}
-      </CardHeader>
-      <CardBody>
+            ))}
+        </div>
+      }
+    >
+      <div className="grid grid-cols-[auto,1fr] items-center gap-4 px-2">
         <Avatar
           showFallback
           src={user?.avatar_url ?? ""}
           alt="avatar"
           size="lg"
+          radius="sm"
+          className="w-auto"
+          isBordered
         />
-        <div className="flex flex-col w-[60%]">
+        <div className="w-full">
           {isEditing ? (
-            <>
+            <div className="flex flex-col w-auto lg:w-[60%]">
               <TextInput
                 type="text"
-                label="Full Name"
+                label="Name"
                 name="full_name"
                 value={fullName}
                 onChange={(e) =>
@@ -151,16 +150,22 @@ const BioCard = ({ user }: { user: UserDto | null }) => {
                 disabled={isSaving}
               />
               <span className="text-xs text-darkzink">{message}</span>
-            </>
+            </div>
           ) : (
             <>
-              <h3 className="text-base font-bold">{user?.full_name}</h3>
-              <p className="text-base text-darkzink">{user?.email}</p>
+              <h3 className="text-sm">
+                <span className="text-darkzink">Name: </span>
+                <span className="font-normal text-zink">{user?.full_name}</span>
+              </h3>
+              <p className="text-sm text-darkzink">
+                <span className="text-darkzink">Email: </span>
+                <span className="font-normal text-zink">{user?.email}</span>
+              </p>
             </>
           )}
         </div>
-      </CardBody>
-    </Card>
+      </div>
+    </AccountCard>
   );
 };
 

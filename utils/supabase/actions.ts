@@ -114,7 +114,7 @@ export const getSubscriptionForUser = cache(async () => {
   const user = await getServerUser();
   const { data: subscription, error } = await supabase
     .from("subscriptions")
-    .select("*")
+    .select("*, products(*)")
     .in("status", ["active"])
     .eq("user_id", user?.id)
     .maybeSingle();
@@ -195,6 +195,24 @@ export const getInProgressPredictionsByUser = cache(async () => {
   return data as PredictionDto[];
 });
 
+export const getAllPredictionsByUser = cache(async () => {
+  const supabase = createClient();
+  const user = await getServerUser();
+
+  const { data, error } = await supabase
+    .from("predictions")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching all predictions:", error);
+    throw new Error("Failed to fetch all predictions");
+  }
+
+  return data as PredictionDto[];
+});
+
 export const getProducts = cache(async () => {
   const supabase = createClient();
   await getServerUser();
@@ -233,4 +251,42 @@ export const getUserCredits = cache(async () => {
   const totalCredits = (data?.credits || 0) + (data?.one_time_credits || 0);
 
   return totalCredits ?? 0;
+});
+
+export const getUsersCreditsOnly = cache(async () => {
+  const supabase = createClient();
+  const user = await getServerUserOrNull();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("credits")
+    .eq("id", user.id)
+    .single();
+
+  if (error) {
+    console.error("Error fetching credits:", error);
+    throw new Error("Failed to fetch credits");
+  }
+
+  return data?.credits ?? 0;
+});
+
+export const getUsersOneTimeCreditsOnly = cache(async () => {
+  const supabase = createClient();
+  const user = await getServerUserOrNull();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("one_time_credits")
+    .eq("id", user.id)
+    .single();
+
+  if (error) {
+    console.error("Error fetching one-time credits:", error);
+    throw new Error("Failed to fetch one-time credits");
+  }
+
+  return data?.one_time_credits ?? 0;
 });

@@ -6,7 +6,6 @@ import { createOrRetrieveCustomer } from "../supabase/admin";
 import { getErrorRedirect, getStatusRedirect, getURL } from "../helpers";
 import Stripe from "stripe";
 import { stripe } from "./config";
-import { cache } from "react";
 
 export async function checkoutWithStripe(
   price: PriceDto,
@@ -101,7 +100,7 @@ export async function checkoutWithStripe(
   }
 }
 
-export const createStripePortal = cache(async (currentPath: string) => {
+export const createStripePortal = async (currentPath: string) => {
   try {
     const supabase = createClient();
     const {
@@ -134,7 +133,7 @@ export const createStripePortal = cache(async (currentPath: string) => {
     try {
       const { url } = await stripe.billingPortal.sessions.create({
         customer,
-        return_url: getURL("/unblur"),
+        return_url: getURL(currentPath),
       });
       if (!url) {
         throw new Error("Could not create billing portal");
@@ -160,4 +159,4 @@ export const createStripePortal = cache(async (currentPath: string) => {
       );
     }
   }
-});
+};
