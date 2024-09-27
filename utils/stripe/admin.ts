@@ -100,7 +100,7 @@ export async function checkoutWithStripe(
   }
 }
 
-export async function createStripePortal(currentPath: string) {
+export const createStripePortal = async (currentPath: string) => {
   try {
     const supabase = createClient();
     const {
@@ -133,7 +133,7 @@ export async function createStripePortal(currentPath: string) {
     try {
       const { url } = await stripe.billingPortal.sessions.create({
         customer,
-        return_url: getURL("/unblur"),
+        return_url: getURL(currentPath),
       });
       if (!url) {
         throw new Error("Could not create billing portal");
@@ -159,4 +159,4 @@ export async function createStripePortal(currentPath: string) {
       );
     }
   }
-}
+};

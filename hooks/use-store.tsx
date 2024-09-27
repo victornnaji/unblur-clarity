@@ -3,6 +3,8 @@
 import { AppStore, createAppStore } from "@/utils/store";
 import { type StoreApi, useStore } from "zustand";
 import { type ReactNode, createContext, useRef, useContext } from "react";
+import { useRouter } from "next/navigation";
+import { NextUIProvider } from "@nextui-org/react";
 
 export const AppStoreContext = createContext<StoreApi<AppStore> | null>(null);
 
@@ -12,14 +14,18 @@ type RestorationProviderProps = {
 
 export const AppStoreProvider = ({ children }: RestorationProviderProps) => {
   const storeRef = useRef<StoreApi<AppStore>>();
+  const router = useRouter();
+
   if (!storeRef.current) {
     storeRef.current = createAppStore();
   }
 
   return (
-    <AppStoreContext.Provider value={storeRef.current}>
-      {children}
-    </AppStoreContext.Provider>
+    <NextUIProvider navigate={router.push}>
+      <AppStoreContext.Provider value={storeRef.current}>
+        {children}
+      </AppStoreContext.Provider>
+    </NextUIProvider>
   );
 };
 

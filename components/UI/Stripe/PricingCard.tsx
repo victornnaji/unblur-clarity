@@ -7,12 +7,12 @@ import {
   SubscriptionWithProducts,
 } from "@/types";
 import { PriceDto } from "@/types/dtos";
-import { SecondaryButton } from "../Button/Button";
+import { SecondaryButton } from "@/components/UI/Button";
 
 const PricingCard = ({
   product,
   price,
-  subscription,
+  hasSubscription,
   isLoading,
   isHighlighted,
   billingInterval,
@@ -22,7 +22,7 @@ const PricingCard = ({
   isHighlighted: boolean;
   price: PriceDto;
   billingInterval: BillingInterval;
-  subscription: SubscriptionWithProducts;
+  hasSubscription: boolean;
   onCheckout: (price: PriceDto) => void;
   isLoading: boolean;
 }) => {
@@ -71,7 +71,7 @@ const PricingCard = ({
       >
         {price.type === "one_time"
           ? "Buy Credit"
-          : subscription
+          : hasSubscription
           ? "Manage Subscription"
           : "Subscribe"}
       </SecondaryButton>

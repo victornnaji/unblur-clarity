@@ -1,9 +1,9 @@
-import { useId } from "react";
 import {
   Tooltip as PrimitiveTooltip,
   type TooltipProps as PrimitiveTooltipProps
 } from "@nextui-org/react";
 import { clsx } from "clsx";
+import { useId } from "react";
 
 interface TooltipProps extends PrimitiveTooltipProps {
   children: React.ReactNode;

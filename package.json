@@ -5,7 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "generate:types": "supabase gen types typescript --local > types/supabase.ts",
+    "start:ngrok": "ngrok http http://localhost:3000",
+    "supabase:init": "supabase init",
+    "supabase:start": "supabase start",
+    "stripe:webhook": "stripe listen --forward-to localhost:3000/stripe/webhook"
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
@@ -28,6 +33,7 @@
     "react-select": "^5.8.0",
     "react-wrap-balancer": "^1.1.1",
     "replicate": "^0.32.1",
+    "sharp": "^0.33.5",
     "stripe": "^16.9.0",
     "swr": "^2.2.5",
     "tailwindcss": "3.4.1",

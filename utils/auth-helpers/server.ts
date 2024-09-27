@@ -1,13 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getErrorRedirect, getStatusRedirect, getURL } from "@/utils/helpers";
+import {
+  getErrorRedirect,
+  getStatusRedirect,
+  getURL,
+  isValidEmail,
+} from "@/utils/helpers";
 import { createClient } from "@/utils/supabase/server";
-
-function isValidEmail(email: string) {
-  var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-  return regex.test(email);
-}
 
 export const getServerUser = async () => {
   const supabase = createClient();
@@ -16,7 +16,21 @@ export const getServerUser = async () => {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   return user;
+};
+
+export const getServerUserOrNull = async () => {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return user ?? null;
 };
 
 export async function redirectToPath(path: string) {
@@ -96,57 +110,71 @@ export async function SignOut(formData: FormData) {
   );
 }
 
-export async function updateEmail(formData: FormData) {
-  const user = getServerUser();
+type UserUpdateData = {
+  email?: string;
+  full_name?: string;
+};
 
-  if (!user) {
-    return getErrorRedirect(
-      "/signin",
-      "You are not signed in.",
-      "Please sign in and try again."
-    );
-  }
-
-  const newEmail = String(formData.get("newEmail")).trim();
-
-  if (!isValidEmail(newEmail)) {
-    return getErrorRedirect(
-      "/account",
-      "Your email could not be updated.",
-      "Invalid email address."
-    );
-  }
-
-  const callbackUrl = getURL(
-    getStatusRedirect(
-      "/account",
-      "success",
-      "Success!",
-      `Your email has been updated.`
-    )
-  );
-
+export async function updateUserProfile(updateData: UserUpdateData) {
   const supabase = createClient();
 
-  const { error } = await supabase.auth.updateUser(
-    { email: newEmail },
-    {
-      emailRedirectTo: callbackUrl,
+  const user = await getServerUser();
+
+  if (!user) {
+    throw new Error("Please sign in to update your profile.");
+  }
+
+  let updatePayload: any = {};
+  let emailRedirectTo: string | undefined;
+
+  if (updateData.email) {
+    if (!isValidEmail(updateData.email)) {
+      throw new Error("Please enter a valid email address.");
     }
-  );
+    updatePayload.email = updateData.email;
+
+    emailRedirectTo = getURL(
+      getStatusRedirect(
+        "/account",
+        "success",
+        "Success!",
+        `Your email has been updated.`
+      )
+    );
+  }
+
+  if (updateData.full_name) {
+    updatePayload.data = {
+      ...updatePayload.data,
+      full_name: updateData.full_name,
+      name: updateData.full_name,
+    };
+  }
+
+  const { error } = await supabase.auth.updateUser(updatePayload, {
+    emailRedirectTo,
+  });
 
   if (error) {
-    return getErrorRedirect(
-      "/account",
-      "Your email could not be updated.",
-      error.message
-    );
+    return {
+      status: "error",
+      title: "Your profile could not be updated.",
+      description: error.message,
+    };
   } else {
-    return getStatusRedirect(
-      "/account",
-      "success",
-      "Confirmation emails sent.",
-      "You will need to confirm the update by clicking the links sent to both the old and new email addresses."
-    );
+    if (updateData.email) {
+      return {
+        status: "success",
+        title: "Confirmation emails sent.",
+        description:
+          "You will need to confirm the update by clicking the links sent to both the old and new email addresses.",
+      };
+    } else {
+      return {
+        status: "success",
+        title: "Success!",
+        description: "Your profile has been updated.",
+      };
+    }
   }
 }

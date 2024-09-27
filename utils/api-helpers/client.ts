@@ -1,6 +1,6 @@
 import { creditsByPlan } from "@/config";
 import { PredictionDto } from "@/types/dtos";
-import { Prediction } from "replicate";
+import { type Prediction } from "replicate";
 
 export const mapReplicateResponseToPredictionDto = (response: Prediction) => {
   const mappedResponse: Omit<

@@ -8,10 +8,9 @@ import {
 } from "@/config";
 import { UnblurModel } from "@/types";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
-import { insertPrediction } from "@/utils/supabase/actions";
-import { getUserCredits, withdrawCredits } from "@/utils/supabase/admin";
-import { createClient } from "@/utils/supabase/server";
-import Replicate, { Prediction } from "replicate";
+import { getServerUser } from "@/utils/auth-helpers/server";
+import { getCredits, insertPrediction, withdrawCredits } from "@/utils/supabase/actions";
+import Replicate, { type Prediction } from "replicate";
 
 interface BasePayloadProps {
   image_url: string;
@@ -41,17 +40,10 @@ interface InputProps {
 }
 
 export async function initiatePrediction(payload: PayloadProps) {
-  const supabase = createClient();
+  const user = await getServerUser();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: credits, error } = await getCredits(user.id);
 
-  if (!user) {
-    return { error: "User not found" };
-  }
-
-  const { data: credits, error } = await getUserCredits(user.id);
   if (error) {
     console.error("Error fetching credits:", error);
     return { error: "Failed to fetch credits" };
@@ -60,7 +52,7 @@ export async function initiatePrediction(payload: PayloadProps) {
   if (credits <= 12) {
     return { error: "Not enough credits" };
   }
- 
+
   const { image_url, model, image_name } = payload;
 
   const { url: secure_url } = await uploadImageToCloudinary(image_url);
@@ -113,7 +105,6 @@ export async function initiatePrediction(payload: PayloadProps) {
   });
 
   try {
-
     const data = await withdrawCredits(user.id, CREDITS_PER_UNBLUR);
 
     if (data.error) {
@@ -128,18 +119,19 @@ export async function initiatePrediction(payload: PayloadProps) {
     });
 
     const { id: predictionId } = await insertPrediction({
-      supabase,
-      prediction: {
-        id: prediction.id,
-        status: prediction.status,
-        created_at: prediction.created_at,
-        started_at: prediction.started_at,
-        original_image_url: secure_url,
-        image_name: image_name,
-      },
-      userId: user?.id,
+      id: prediction.id,
+      status: prediction.status,
+      created_at: prediction.created_at,
+      started_at: prediction.started_at || null,
+      original_image_url: secure_url,
+      image_name: image_name || null,
+      predict_time: prediction.metrics?.predict_time || null,
+      completed_at: prediction.completed_at || null,
+      error: prediction.error || null,
+      image_url: null,
+      user_id: user?.id,
     });
-    
+
     console.log("prediction successfully created on replicate", prediction);
     return { predictionId, secure_url };
     // return { predictionId: "3kdqpnsf5nrgj0chs5nvxgzk68", secure_url };

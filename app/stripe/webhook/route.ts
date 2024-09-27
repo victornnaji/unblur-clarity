@@ -10,6 +10,7 @@ import {
   handleProductRecordUpdate,
   handleSubscription,
   handleSubscriptionDeletion,
+  handleSubscriptionUpdate,
 } from "@/utils/stripe/server";
 import { stripe } from "@/utils/stripe/config";
 
@@ -78,7 +79,9 @@ export async function POST(request: Request) {
         await handleSubscription(event.data.object as Stripe.Subscription);
         break;
       case "customer.subscription.updated":
-        await handleSubscription(event.data.object as Stripe.Subscription);
+        await handleSubscriptionUpdate(
+          event as Stripe.CustomerSubscriptionUpdatedEvent
+        );
         break;
       case "customer.subscription.deleted":
         await handleSubscriptionDeletion(

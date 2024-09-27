@@ -39,10 +39,9 @@ export default function OauthSignInForm() {
         >
           <input type="hidden" name="provider" value={provider.name} />
           <Button
-            variant="slim"
             type="submit"
-            className="w-full inline-flex"
-            loading={isSubmitting}
+            className="inline-flex w-full bg-foreground text-background"
+            isLoading={isSubmitting}
           >
             <span className="mr-2">{provider.icon}</span>
             <span>{provider.displayName}</span>

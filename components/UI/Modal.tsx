@@ -1,4 +1,4 @@
-import { Modal as PrimitiveModal, ModalContent } from "@nextui-org/react";
+import { Modal as PrimitiveModal, ModalContent, ModalBody } from "@nextui-org/react";
 import React from "react";
 
 interface ModalProps {
@@ -18,8 +18,8 @@ const Modal = ({
   isOpen,
   onClose,
   backdrop = "blur",
-  size = "4xl",
-  classNames
+  size = "3xl",
+  classNames,
 }: ModalProps) => {
   return (
     <PrimitiveModal
@@ -27,16 +27,25 @@ const Modal = ({
       placement="center"
       backdrop={backdrop}
       isOpen={isOpen}
-      onClose={onClose}
+      // onClose={onClose}
+      onOpenChange={onClose}
+      radius="none"
+      shadow={undefined}
+      className="sm:my-0 sm:mx-0"
       classNames={{
-        base: "bg-transparent cursor-zoom-out",
-        backdrop: "cursor-pointer",
+        base: "bg-transparent",
+        wrapper: "max-h-screen",
+        body: "p-0",
+        backdrop:
+          "cursor-zoom-out bg-gradient-to-t from-gray to-black/70 backdrop-opacity-100",
         closeButton:
-          "fixed block top-10 right-12 font-bold text-3xl text-gray bg-zink rounded-full p-2 hover:bg-gray hover:text-zink",
-        ...classNames
+          "fixed block top-10 right-4 lg:right-12 font-bold text-3xl text-gray bg-zink rounded-full p-2 hover:bg-gray hover:text-zink",
+        ...classNames,
       }}
     >
-      <ModalContent>{children}</ModalContent>
+      <ModalContent>
+        <ModalBody>{children}</ModalBody>
+      </ModalContent>
     </PrimitiveModal>
   );
 };
