@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "generate": "supabase gen types typescript --local > types/supabase.ts"
+    "generate:types": "supabase gen types typescript --local > types/supabase.ts",
+    "start:ngrok": "ngrok http http://localhost:3000",
+    "supabase:init": "supabase init",
+    "supabase:start": "supabase start",
+    "stripe:webhook": "stripe listen --forward-to localhost:3000/stripe/webhook"
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
