@@ -168,3 +168,25 @@ export function isValidEmail(email: string) {
   var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
   return regex.test(email);
 }
+
+export function calculateFairUpgradeCredits(
+  originalPlanPrice: number,
+  newPlanPrice: number,
+  newPlanCredits: number,
+  upgradeCost: number,
+  unusedCredits: number
+): number {
+  // Calculate the proportion of the new plan paid for
+  const proportionPaid = (originalPlanPrice + upgradeCost) / newPlanPrice;
+  
+  // Calculate remaining credits from the old plan
+  const remainingOldPlanCredits = unusedCredits;
+  
+  // Calculate new credits based on the proportion of the new plan paid for
+  const newCredits = Math.round(newPlanCredits * proportionPaid);
+  
+  // Sum up the credits, but cap at the maximum allowed by the new plan
+  let fairCredits = Math.min(remainingOldPlanCredits + newCredits, newPlanCredits);
+  
+  return Math.max(fairCredits, 0);
+}

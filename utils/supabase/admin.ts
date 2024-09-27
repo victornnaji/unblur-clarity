@@ -247,7 +247,7 @@ export const upsertSubscription = async (
       status: subscription.status,
       user_id: userId,
       id: subscription.id,
-      product_id: subscription.items.data[0].price.product,
+      product_id: subscription.items.data[0].price.product as string,
     },
     { onConflict: "id" }
   );
@@ -364,4 +364,18 @@ export const updatePrediction = async (
   }
 
   return { id: data.id };
+};
+
+export const getUsersCreditByAdmin = async (userId: string) => {
+  const { data, error } = await supabaseAdmin
+    .from("users")
+    .select("credits")
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    throw new Error("Error fetching user credits");
+  }
+
+  return data.credits || 0;
 };

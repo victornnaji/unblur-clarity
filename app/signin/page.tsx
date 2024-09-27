@@ -1,5 +1,3 @@
-// import { redirect } from "next/navigation";
-// import { getServerUser } from "@/utils/auth-helpers/server";
 import UnblurLayout from "@/components/UnblurLayout";
 import Separator from "@/components/UI/Separator";
 import MagicLinkSignInForm from "@/components/UI/AuthForms/MagicLinkSignInForm";

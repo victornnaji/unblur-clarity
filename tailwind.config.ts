@@ -5,7 +5,7 @@ module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -19,16 +19,19 @@ module.exports = {
         zink: "var(--zink)",
         darkzink: "var(--darkzink)",
         success: "var(--success)",
-        surface: "hsl(var(--surface))"
+        surface: "hsl(var(--surface))",
       },
       spacing: {
-        100: "30rem"
+        100: "30rem",
       },
       gridTemplateColumns: {
-        'auto-fit-300': 'repeat(auto-fill, minmax(300px, 1fr))'
-      }
-    }
+        "auto-fit-300": "repeat(auto-fill, minmax(300px, 1fr))",
+      },
+      gridTemplateAreas: {
+        account: ["bio sub sub", "stripe sub sub"],
+      },
+    },
   },
   darkMode: "class",
-  plugins: [nextui()]
+  plugins: [nextui()],
 };

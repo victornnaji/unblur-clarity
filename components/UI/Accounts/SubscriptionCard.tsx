@@ -1,3 +1,5 @@
+"use client";
+
 import { PredictionDto, SubscriptionDto } from "@/types/dtos";
 import { getCreditsForPlan } from "@/utils/api-helpers/client";
 import { Chip } from "@nextui-org/react";
@@ -88,7 +90,9 @@ const SubscriptionCard = ({
           </div>
         ) : (
           <div className="flex justify-start md:w-[fit-content]">
-            <Button className="w-full" href={"/products"}>Buy Credits</Button>
+            <Button className="w-full" href={"/products"}>
+              Buy Credits
+            </Button>
           </div>
         )}
       </div>

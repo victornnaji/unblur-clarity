@@ -73,7 +73,7 @@ const Button = ({ href, ...rest }: ButtonProps) => {
     );
   }
 
-  return <BaseButton {...rest} />;
+  return <BaseButton className={clsx(styles.root, rest.className)} {...rest} />;
 };
 
 Button.displayName = "Button";

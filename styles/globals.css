@@ -24,6 +24,7 @@
   }
 
 }
+
 ._grid {
   display: grid;
   grid-template-columns: repeat(var(--cols), var(--gridSize));
@@ -36,4 +37,30 @@
 
 ._col-full {
   grid-column: 1 / -1;
+}
+
+._grid-areas-account {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: "bio sub sub "
+    "stripe sub sub";
+  gap: 1rem;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: "bio"
+      "stripe"
+      "sub";
+  }
+}
+
+._grid-area-bio {
+  grid-area: bio;
+}
+
+._grid-area-sub {
+  grid-area: sub;
+}
+
+._grid-area-stripe {
+  grid-area: stripe;
 }

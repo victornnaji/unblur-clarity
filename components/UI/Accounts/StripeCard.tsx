@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Button from "@/components/UI/Button";
 import AccountCard from "./Card";

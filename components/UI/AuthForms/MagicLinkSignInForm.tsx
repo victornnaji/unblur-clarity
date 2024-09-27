@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { useRouter } from "next/navigation";
 import { handleRequest } from "@/utils/auth-helpers/client";
@@ -26,7 +27,11 @@ const MagicLinkSignInForm = () => {
         placeholder="name@example.com"
         disabled={isSubmitting}
       />
-      <Button type="submit" className="mt-5 w-full" isLoading={isSubmitting}>
+      <Button
+        type="submit"
+        className="mt-5 w-full bg-foreground"
+        isLoading={isSubmitting}
+      >
         Sign in
       </Button>
     </form>
