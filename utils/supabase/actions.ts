@@ -19,7 +19,7 @@ export const insertPrediction = async (
     .from("predictions")
     .insert({
       ...prediction,
-      user_id: user.id,
+      user_id: user.id
     })
     .select()
     .single();
@@ -92,7 +92,7 @@ export const withdrawCredits = async (
     .from("users")
     .update({
       credits: newCredits,
-      one_time_credits: newOneTimeCredits,
+      one_time_credits: newOneTimeCredits
     })
     .eq("id", userId);
 
@@ -103,9 +103,9 @@ export const withdrawCredits = async (
   return {
     data: {
       remainingCredits: newCredits,
-      remainingOneTimeCredits: newOneTimeCredits,
+      remainingOneTimeCredits: newOneTimeCredits
     },
-    error: null,
+    error: null
   };
 };
 
@@ -151,7 +151,7 @@ export const getUser = cache(async (): Promise<UserDto | null> => {
 
   return {
     ...data,
-    provider: user.app_metadata.provider ?? "",
+    provider: user.app_metadata.provider ?? ""
   };
 });
 
@@ -221,8 +221,7 @@ export const getProducts = cache(async () => {
     .select("*, prices(*)")
     .eq("active", true)
     .eq("prices.active", true)
-    .order("metadata->index")
-    .order("unit_amount", { referencedTable: "prices" });
+    .order("metadata->index");
 
   if (error) {
     console.error("Error fetching products:", error);

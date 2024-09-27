@@ -1,9 +1,13 @@
 "use server";
 import { CheckoutResponse } from "@/types";
 import { PriceDto } from "@/types/dtos";
-import { createClient } from "../supabase/server";
-import { createOrRetrieveCustomer } from "../supabase/admin";
-import { getErrorRedirect, getStatusRedirect, getURL } from "../helpers";
+import { createClient } from "@/utils/supabase/server";
+import {
+  createOrRetrieveCustomer,
+  upsertPriceRecord,
+  upsertProductRecord
+} from "@/utils/supabase/admin";
+import { getErrorRedirect, getStatusRedirect, getURL } from "@/utils/helpers";
 import Stripe from "stripe";
 import { stripe } from "./config";
 
@@ -15,7 +19,7 @@ export async function checkoutWithStripe(
     const supabase = createClient();
     const {
       error,
-      data: { user },
+      data: { user }
     } = await supabase.auth.getUser();
 
     if (error || !user) {
@@ -27,7 +31,7 @@ export async function checkoutWithStripe(
     try {
       customer = await createOrRetrieveCustomer({
         userId: user?.id || "",
-        email: user?.email || "",
+        email: user?.email || ""
       });
     } catch (err) {
       console.error(err);
@@ -51,19 +55,19 @@ export async function checkoutWithStripe(
     let params: Stripe.Checkout.SessionCreateParams = {
       customer,
       customer_update: {
-        address: "auto",
+        address: "auto"
       },
       line_items: [
         {
           price: price.id,
-          quantity: 1,
-        },
+          quantity: 1
+        }
       ],
 
       client_reference_id: user.id,
       mode: isSubscription ? "subscription" : "payment",
       cancel_url: getURL("/products"),
-      success_url: successUrl,
+      success_url: successUrl
     };
 
     let session;
@@ -86,7 +90,7 @@ export async function checkoutWithStripe(
           redirectPath,
           error.message,
           "Please try again later or contact a system administrator."
-        ),
+        )
       };
     } else {
       return {
@@ -94,7 +98,7 @@ export async function checkoutWithStripe(
           redirectPath,
           "An unknown error occurred.",
           "Please try again later or contact a system administrator."
-        ),
+        )
       };
     }
   }
@@ -105,7 +109,7 @@ export const createStripePortal = async (currentPath: string) => {
     const supabase = createClient();
     const {
       error,
-      data: { user },
+      data: { user }
     } = await supabase.auth.getUser();
 
     if (!user) {
@@ -119,7 +123,7 @@ export const createStripePortal = async (currentPath: string) => {
     try {
       customer = await createOrRetrieveCustomer({
         userId: user.id || "",
-        email: user.email || "",
+        email: user.email || ""
       });
     } catch (err) {
       console.error(err);
@@ -133,7 +137,7 @@ export const createStripePortal = async (currentPath: string) => {
     try {
       const { url } = await stripe.billingPortal.sessions.create({
         customer,
-        return_url: getURL(currentPath),
+        return_url: getURL(currentPath)
       });
       if (!url) {
         throw new Error("Could not create billing portal");
@@ -158,5 +162,26 @@ export const createStripePortal = async (currentPath: string) => {
         "Please try again later or contact a system administrator."
       );
     }
+  }
+};
+
+export const syncStripeProductsAndPrices = async () => {
+  try {
+    const products = await stripe.products.list({ active: true });
+
+    const prices = await stripe.prices.list({ active: true });
+
+    for (const product of products.data) {
+      await upsertProductRecord(product);
+    }
+
+    for (const price of prices.data) {
+      await upsertPriceRecord(price);
+    }
+
+    console.log("Stripe products and prices synced successfully");
+  } catch (error) {
+    console.error("Error syncing Stripe products and prices:", error);
+    throw error;
   }
 };

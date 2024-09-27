@@ -31,7 +31,7 @@ const SubscriptionCard = ({
     <AccountCard header="Subscription Overview">
       <div className="flex flex-col gap-2 h-full justify-center">
         <div className="flex gap-1 items-center">
-          {subscription && (
+          {subscription ? (
             <>
               <span>{subscription?.products?.name}</span>
               <span>
@@ -40,6 +40,8 @@ const SubscriptionCard = ({
                 </Chip>
               </span>
             </>
+          ) : (
+            <span>No subscription</span>
           )}
         </div>
         <div className="border-t border-gray-200">

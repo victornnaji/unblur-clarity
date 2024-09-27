@@ -87,8 +87,6 @@ export const handleSubscriptionUpdate = async (
           currentCredits,
         );
 
-        console.log({ fairCredits });
-
         const newCredits = await updateCustomerCredits(userId, fairCredits);
         console.log(
           `Credits updated successfully for user ${userId} to ${newCredits}`

@@ -10,7 +10,8 @@
     "start:ngrok": "ngrok http http://localhost:3000",
     "supabase:init": "supabase init",
     "supabase:start": "supabase start",
-    "stripe:webhook": "stripe listen --forward-to localhost:3000/stripe/webhook"
+    "stripe:webhook": "stripe listen --forward-to localhost:3000/stripe/webhook",
+    "stripe:sync": "dotenv -e .env.local npx tsx scripts/stripe-sync.ts"
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
@@ -45,6 +46,6 @@
     "@types/node": "20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
-    "encoding": "^0.1.13"
+    "dotenv-cli": "^7.4.2"
   }
 }

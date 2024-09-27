@@ -1,7 +1,7 @@
 import {
   BillingInterval,
   ProductWithPrices,
-  SubscriptionWithProducts,
+  SubscriptionWithProducts
 } from "@/types";
 import React from "react";
 import PricingCard from "./PricingCard";
@@ -14,7 +14,7 @@ const PricingBody = ({
   billingInterval,
   hasSubscription,
   onCheckout,
-  isLoading,
+  isLoading
 }: {
   products: ProductWithPrices[];
   billingInterval: BillingInterval;
@@ -22,6 +22,17 @@ const PricingBody = ({
   onCheckout: (price: PriceDto) => void;
   isLoading: boolean;
 }) => {
+  const sortedProducts = products.sort((a, b) => {
+    const minPriceA = Math.min(
+      ...a.prices.map((price) => price.unit_amount ?? 0)
+    );
+    const minPriceB = Math.min(
+      ...b.prices.map((price) => price.unit_amount ?? 0)
+    );
+
+    return minPriceA - minPriceB;
+  });
+
   return (
     <div
       className={clsx(
@@ -29,7 +40,7 @@ const PricingBody = ({
         "w-4/6 mx-auto grid gap-4 items-center justify-center"
       )}
     >
-      {products.map((product) => {
+      {sortedProducts.map((product) => {
         const price = product?.prices?.find(
           (price) =>
             price.interval === billingInterval || price.type === billingInterval

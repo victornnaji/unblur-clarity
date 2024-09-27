@@ -223,14 +223,6 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."update_credits_updated_at"() TO "anon";
-GRANT ALL ON FUNCTION "public"."update_credits_updated_at"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."update_credits_updated_at"() TO "service_role";
-
-GRANT ALL ON FUNCTION "public"."update_one_time_credits_updated_at"() TO "anon";
-GRANT ALL ON FUNCTION "public"."update_one_time_credits_updated_at"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."update_one_time_credits_updated_at"() TO "service_role";
-
 GRANT ALL ON TABLE "public"."customers" TO "anon";
 GRANT ALL ON TABLE "public"."customers" TO "authenticated";
 GRANT ALL ON TABLE "public"."customers" TO "service_role";
