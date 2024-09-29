@@ -1,9 +1,7 @@
-import Link from "next/link";
-import Image from "next/image";
 import React from "react";
-import unblurLogo from "@/assets/unblur-photos.png";
 import NavbarLinks from "./NavbarLinks";
 import { getUserCredits, getUser } from "@/utils/supabase/actions";
+import BrandLogo from "@/components/Icons/BrandLogo";
 
 const Navbar = async () => {
   const [user, credits] = await Promise.all([getUser(), getUserCredits()]);
@@ -12,16 +10,7 @@ const Navbar = async () => {
       <a href="#skip" className="sr-only focus:not-sr-only">
         Skip to content
       </a>
-      <Link href="/" className="relative w-24 text-4xl font-bold h-9">
-        <Image
-          src={unblurLogo}
-          alt="unblur photo logo"
-          fill
-          priority
-          sizes="h-auto w-auto"
-          style={{ objectFit: "contain" }}
-        />
-      </Link>
+      <BrandLogo />
       <div className="flex items-center">
         <nav className="relative ml-3">
           <NavbarLinks user={user} credits={credits ?? 0} />

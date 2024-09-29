@@ -17,8 +17,8 @@ export default function OauthSignInForm() {
     {
       name: "google",
       displayName: "Google",
-      icon: <GoogleIcon />,
-    },
+      icon: <GoogleIcon />
+    }
   ];
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,11 +40,12 @@ export default function OauthSignInForm() {
           <input type="hidden" name="provider" value={provider.name} />
           <Button
             type="submit"
-            className="inline-flex w-full bg-foreground text-background"
+            className="w-full font-normal"
+            plain
             isLoading={isSubmitting}
+            startContent={provider.icon}
           >
-            <span className="mr-2">{provider.icon}</span>
-            <span>{provider.displayName}</span>
+            {provider.displayName}
           </Button>
         </form>
       ))}

@@ -1,9 +1,10 @@
+import { links } from "@/config";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
-    request,
+    request
   });
 
   const supabase = createServerClient(
@@ -19,13 +20,13 @@ export async function updateSession(request: NextRequest) {
             request.cookies.set(name, value)
           );
           supabaseResponse = NextResponse.next({
-            request,
+            request
           });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           );
-        },
-      },
+        }
+      }
     }
   );
 
@@ -34,10 +35,14 @@ export async function updateSession(request: NextRequest) {
   // issues with users being randomly logged out.
 
   const {
-    data: { user },
+    data: { user }
   } = await supabase.auth.getUser();
 
-  const protectedPaths = ["/account", "/unblur", "/products"];
+  const protectedPaths = [
+    links.account.path,
+    links.studio.path,
+    links.products.path
+  ];
   const isProtectedRoute = protectedPaths.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );
@@ -45,17 +50,17 @@ export async function updateSession(request: NextRequest) {
   if (!user && isProtectedRoute) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
-    url.pathname = "/signin";
+    url.pathname = links.auth.path;
     return NextResponse.redirect(url);
   }
 
-  const loginPath = "/signin";
+  const loginPath = links.auth.path;
   const isLoginRoute = request.nextUrl.pathname === loginPath;
 
   if (user && isLoginRoute) {
     //user is logged in and tries to access the login page, redirect to home
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = links.home.path;
     return NextResponse.redirect(url);
   }
 

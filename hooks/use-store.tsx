@@ -10,9 +10,10 @@ export const AppStoreContext = createContext<StoreApi<AppStore> | null>(null);
 
 type RestorationProviderProps = {
   children: ReactNode;
+  className?: string;
 };
 
-export const AppStoreProvider = ({ children }: RestorationProviderProps) => {
+export const AppStoreProvider = ({ children, className }: RestorationProviderProps) => {
   const storeRef = useRef<StoreApi<AppStore>>();
   const router = useRouter();
 
@@ -21,7 +22,7 @@ export const AppStoreProvider = ({ children }: RestorationProviderProps) => {
   }
 
   return (
-    <NextUIProvider navigate={router.push}>
+    <NextUIProvider navigate={router.push} className={className}>
       <AppStoreContext.Provider value={storeRef.current}>
         {children}
       </AppStoreContext.Provider>

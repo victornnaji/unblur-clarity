@@ -1,10 +1,11 @@
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
-import { config } from "@/config";
+import { metadata as metadataConfig } from "@/config";
 import { Suspense } from "react";
 import { AppStoreProvider } from "@/hooks/use-store";
 import Navbar from "@/components/UI/Navbar";
 import HotToast from "@/components/UI/HotToast";
+import Footer from "@/components/UI/Footer";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -12,14 +13,14 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: config.title,
-  description: config.description,
+  title: metadataConfig.title,
+  description: metadataConfig.description
 };
 
 const InterFont = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {
@@ -29,10 +30,11 @@ export default function RootLayout({
       className={InterFont.className}
       suppressHydrationWarning={true}
     >
-      <body className="_grid grid-rows-[auto,1fr] bg-background text-foreground min-h-screen">
-        <AppStoreProvider>
+      <body className="bg-background text-foreground min-h-screen">
+        <AppStoreProvider className="_grid grid-rows-[auto,1fr,auto] min-h-screen">
           <Navbar />
           <main id="skip">{children}</main>
+          <Footer />
         </AppStoreProvider>
         <Suspense>
           <HotToast />

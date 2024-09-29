@@ -1,94 +1,53 @@
 "use client";
 
-import React, { forwardRef } from "react";
-
+import React from "react";
 import styles from "./Button.module.css";
-import clsx from "clsx";
 import LoadingDots from "@/components/UI/LoadingDots";
 import Link from "next/link";
 import {
   Button as PrimitiveButton,
-  useButton,
-  ButtonProps as BaseButtonProps,
+  ButtonProps as BaseButtonProps
 } from "@nextui-org/react";
-import { Icon } from "react-feather";
+import { type Icon } from "react-feather";
+import { clsx } from "@/utils/clsx";
 
-interface Props extends BaseButtonProps {
-  Component?: React.ComponentType;
-  active?: boolean;
-}
-
-const BaseButton = forwardRef<HTMLButtonElement, Props>((props, ref) => {
-  const {
-    domRef,
-    children,
-    spinner = (
-      <i className="flex pr-2 m-0">
-        <LoadingDots />
-      </i>
-    ),
-    startContent,
-    endContent,
-    isLoading,
-    getButtonProps,
-    Component = "button",
-  } = useButton({
-    ref,
-    ...props,
-  });
-
-  const rootClassName = clsx(
-    styles.root,
-    { [styles.disabled]: props.isDisabled },
-    props.className
-  );
-
-  return (
-    <Component
-      aria-pressed={props.active}
-      ref={domRef}
-      className={rootClassName}
-      disabled={props.isDisabled}
-      {...getButtonProps()}
-    >
-      {startContent}
-      {isLoading && spinner}
-      {children}
-      {endContent}
-    </Component>
-  );
-});
-
-interface ButtonProps extends Omit<Props, "ref"> {
-  href?: string;
-  onClick?: () => void;
-}
-
-const Button = ({ href, ...rest }: ButtonProps) => {
-  if (href) {
-    return (
-      <Link href={href} passHref className={clsx(styles.root, rest.className)}>
-        {rest.children}
-      </Link>
-    );
-  }
-
-  return <BaseButton className={clsx(styles.root, rest.className)} {...rest} />;
-};
-
-Button.displayName = "Button";
-
-interface SecondaryButtonProps extends ButtonProps {
+interface ButtonProps extends BaseButtonProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  plain?: boolean;
+  isLoading?: boolean;
+  withFancyGradient?: boolean;
 }
-export const SecondaryButton = (props: SecondaryButtonProps | ButtonProps) => {
+export const Button = ({
+  className,
+  href,
+  plain,
+  isLoading,
+  ...props
+}: ButtonProps) => {
+  const rootClassName = clsx(
+    styles.root,
+    { [styles.plain]: plain },
+    { [styles.disabled]: props.isDisabled },
+    {
+      [styles.fancyGradient]:
+        props.withFancyGradient && !props.isDisabled && !plain
+    },
+    plain ? "" : "bg-gradient",
+    className
+  );
+
   return (
     <PrimitiveButton
+      as={href ? Link : "button"}
       size="lg"
+      radius={props.radius || "sm"}
       variant={props.variant}
-      className={props.className}
+      className={rootClassName}
+      href={href}
+      isLoading={isLoading}
+      spinnerPlacement="end"
       spinner={
         <i className="flex m-0">
           <LoadingDots />
@@ -101,7 +60,9 @@ export const SecondaryButton = (props: SecondaryButtonProps | ButtonProps) => {
   );
 };
 
-interface IconButtonProps extends ButtonProps {
+Button.displayName = "Button";
+
+interface IconButtonProps extends BaseButtonProps {
   Icon: Icon;
   onClick: () => void;
   className?: string;

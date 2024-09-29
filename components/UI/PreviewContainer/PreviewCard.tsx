@@ -3,7 +3,7 @@ import {
   CardFooter,
   CardHeader,
   Image,
-  Card as PrimitiveCard,
+  Card as PrimitiveCard
 } from "@nextui-org/react";
 import clsx from "clsx";
 
@@ -20,7 +20,7 @@ interface CardProps {
     footer?: string;
   };
 }
-const Card = ({ header, image, footer, classNames }: CardProps) => {
+const PreviewCard = ({ header, image, footer, classNames }: CardProps) => {
   return (
     <PrimitiveCard
       isFooterBlurred
@@ -57,4 +57,4 @@ const Card = ({ header, image, footer, classNames }: CardProps) => {
   );
 };
 
-export default Card;
+export default PreviewCard;

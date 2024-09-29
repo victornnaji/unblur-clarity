@@ -1,24 +1,37 @@
 .root {
-  @apply bg-foreground text-background flex items-center cursor-pointer px-5 lg:px-10 py-2.5 lg:py-3 text-sm lg:text-base rounded-sm leading-6 transition ease-in-out duration-150 shadow-sm text-center justify-center uppercase border border-transparent;
-}
-
-.root:hover {
-  @apply bg-gray text-zink border border-zink;
+  @apply text-milk font-semibold;
 }
 
 .root:focus {
   @apply outline-none ring-2 ring-purple ring-opacity-50;
 }
 
-.root[data-active] {
-  @apply bg-zinc-600;
+.plain {
+  @apply bg-foreground text-background flex items-center cursor-pointer transition ease-in-out duration-150 shadow-sm text-center justify-center uppercase;
 }
 
 .disabled,
 .disabled:hover {
-  @apply text-zinc-400 border-zinc-600 bg-zinc-700 cursor-not-allowed;
-  filter: grayscale(1);
+  @apply cursor-not-allowed;
   -webkit-transform: translateZ(0);
   -webkit-perspective: 1000;
   -webkit-backface-visibility: hidden;
+}
+
+.fancyGradient {
+  background: linear-gradient(270deg, var(--purple), var(--error), var(--gradient-yellow), var(--gradient-blue), var(--purple));
+  background-size: 500% 500%;
+  animation: gradientShift 10s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

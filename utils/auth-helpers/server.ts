@@ -5,15 +5,16 @@ import {
   getErrorRedirect,
   getStatusRedirect,
   getURL,
-  isValidEmail,
+  isValidEmail
 } from "@/utils/helpers";
 import { createClient } from "@/utils/supabase/server";
+import { links } from "@/config";
 
 export const getServerUser = async () => {
   const supabase = createClient();
 
   const {
-    data: { user },
+    data: { user }
   } = await supabase.auth.getUser();
 
   if (!user) {
@@ -27,7 +28,7 @@ export const getServerUserOrNull = async () => {
   const supabase = createClient();
 
   const {
-    data: { user },
+    data: { user }
   } = await supabase.auth.getUser();
 
   return user ?? null;
@@ -37,7 +38,7 @@ export async function redirectToPath(path: string) {
   return redirect(path);
 }
 
-export async function signInWithMagiclink(formData: FormData) {
+export async function signInWithMagicLink(formData: FormData) {
   const callbackURL = getURL("/auth/callback");
 
   const email = String(formData.get("email")).trim();
@@ -46,7 +47,7 @@ export async function signInWithMagiclink(formData: FormData) {
 
   if (!isValidEmail(email)) {
     redirectPath = getErrorRedirect(
-      "/signin",
+      links.auth.path,
       "Invalid email",
       "Please enter a valid email address"
     );
@@ -55,23 +56,23 @@ export async function signInWithMagiclink(formData: FormData) {
   const supabase = createClient();
   let options = {
     emailRedirectURL: callbackURL,
-    shouldCreateUser: true,
+    shouldCreateUser: true
   };
 
   const { data, error } = await supabase.auth.signInWithOtp({
     email,
-    options,
+    options
   });
 
   if (error) {
     redirectPath = getErrorRedirect(
-      "/signin",
+      links.auth.path,
       "You could not be signed in.",
       "Please check your email address and try again."
     );
   } else if (data) {
     redirectPath = getStatusRedirect(
-      "/signin",
+      links.auth.path,
       "success",
       "Success!",
       "Please check your email for a magic link. You may now close this tab.",
@@ -79,7 +80,7 @@ export async function signInWithMagiclink(formData: FormData) {
     );
   } else {
     redirectPath = getErrorRedirect(
-      "/signin",
+      links.auth.path,
       "An unexpected error occurred.",
       "Please try again later."
     );
@@ -135,7 +136,7 @@ export async function updateUserProfile(updateData: UserUpdateData) {
 
     emailRedirectTo = getURL(
       getStatusRedirect(
-        "/account",
+        links.account.path,
         "success",
         "Success!",
         `Your email has been updated.`
@@ -147,19 +148,19 @@ export async function updateUserProfile(updateData: UserUpdateData) {
     updatePayload.data = {
       ...updatePayload.data,
       full_name: updateData.full_name,
-      name: updateData.full_name,
+      name: updateData.full_name
     };
   }
 
   const { error } = await supabase.auth.updateUser(updatePayload, {
-    emailRedirectTo,
+    emailRedirectTo
   });
 
   if (error) {
     return {
       status: "error",
       title: "Your profile could not be updated.",
-      description: error.message,
+      description: error.message
     };
   } else {
     if (updateData.email) {
@@ -167,13 +168,13 @@ export async function updateUserProfile(updateData: UserUpdateData) {
         status: "success",
         title: "Confirmation emails sent.",
         description:
-          "You will need to confirm the update by clicking the links sent to both the old and new email addresses.",
+          "You will need to confirm the update by clicking the links sent to both the old and new email addresses."
       };
     } else {
       return {
         status: "success",
         title: "Success!",
-        description: "Your profile has been updated.",
+        description: "Your profile has been updated."
       };
     }
   }

@@ -1,6 +1,6 @@
 import React from "react";
 import { Download, AlertCircle, RefreshCcw } from "react-feather";
-import { SecondaryButton } from "../Button/Button";
+import { Button } from "../Button/Button";
 import { clsx } from "clsx";
 import { downloadPhoto } from "@/utils/helpers";
 import { useAppStore } from "@/hooks/use-store";
@@ -8,7 +8,7 @@ import { useAppStore } from "@/hooks/use-store";
 const PreviewContainerFooter = () => {
   const { photo, reset } = useAppStore((state) => ({
     photo: state.photo,
-    reset: state.reset,
+    reset: state.reset
   }));
 
   const buttons = [
@@ -19,7 +19,7 @@ const PreviewContainerFooter = () => {
       },
       variant: "solid",
       icon: Download,
-      className: "mb-3 lg:mb-0 border-gray",
+      className: "mb-3 lg:mb-0 border-gray"
     },
     // {
     //   label: "Report",
@@ -35,15 +35,15 @@ const PreviewContainerFooter = () => {
       icon: RefreshCcw,
       variant: "ghost",
       className:
-        "md:ml-3 bg-gray text-zink hover:bg-default-100 hover:text-gray",
-    },
+        "md:ml-3 bg-gray text-zink hover:bg-default-100 hover:text-gray"
+    }
   ];
   return (
     <div className="flex flex-col md:flex-row text-xs mt-4 lg:mt-0">
       {buttons.map((button, index) => {
         const Icon = button.icon;
         return (
-          <SecondaryButton
+          <Button
             key={index}
             variant={button.variant as any}
             onClick={button.onClick}
@@ -54,7 +54,7 @@ const PreviewContainerFooter = () => {
           >
             <Icon size={20} />
             <span className="block lg:hidden pr-2">{button.label}</span>
-          </SecondaryButton>
+          </Button>
         );
       })}
     </div>

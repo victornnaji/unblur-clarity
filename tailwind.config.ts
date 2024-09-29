@@ -24,6 +24,9 @@ module.exports = {
       spacing: {
         100: "30rem",
       },
+      backgroundImage: {
+        gradient: "linear-gradient(to right, var(--purple), var(--error))",
+      },
       gridTemplateColumns: {
         "auto-fit-300": "repeat(auto-fill, minmax(300px, 1fr))",
       },

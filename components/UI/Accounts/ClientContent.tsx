@@ -42,7 +42,7 @@ export function ClientContent({
           predictions={predictions}
         />
       </div>
-      <div className="_grid-area-stripe">
+      <div className="_grid-area-stripe h-full">
         <StripeCard url={stripePortalUrl} />
       </div>
     </>

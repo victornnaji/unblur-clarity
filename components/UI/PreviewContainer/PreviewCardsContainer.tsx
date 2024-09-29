@@ -5,13 +5,13 @@ import { PredictionDto } from "@/types/dtos";
 import { shortenFileName, formatTime, downloadPhoto } from "@/utils/helpers";
 import { IconButton } from "@/components/UI/Button";
 import PhotoCompare from "@/components/UI/PhotoCompare";
-import Card from "@/components/UI/Card";
+import PreviewCard from "./PreviewCard";
 import Modal from "@/components/UI/Modal";
 import { Spinner } from "@nextui-org/react";
 
 const PreviewCardsContainer = ({
   type,
-  predictions,
+  predictions
 }: {
   type: "inProgress" | "completed";
   predictions: PredictionDto[];
@@ -32,10 +32,10 @@ const InProgress = ({ predictions }: { predictions: PredictionDto[] }) => {
     <>
       {predictions.map((prediction) => (
         <div key={prediction.id} className="relative">
-          <Card
+          <PreviewCard
             image={{
               src: prediction.original_image_url!,
-              alt: prediction.image_name ?? "restored Image",
+              alt: prediction.image_name ?? "restored Image"
             }}
             footer={
               <div className="flex flex-col">
@@ -63,7 +63,7 @@ const Completed = ({ predictions }: { predictions: PredictionDto[] }) => {
     <>
       {predictions.map((prediction) => (
         <div key={prediction.id}>
-          <Card
+          <PreviewCard
             header={
               <IconButton
                 Icon={Maximize2}
@@ -73,7 +73,7 @@ const Completed = ({ predictions }: { predictions: PredictionDto[] }) => {
             }
             image={{
               src: prediction.image_url!,
-              alt: prediction.image_name ?? "restored Image",
+              alt: prediction.image_name ?? "restored Image"
             }}
             footer={
               <>

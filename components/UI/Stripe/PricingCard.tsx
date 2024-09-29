@@ -4,10 +4,10 @@ import styles from "./pricing.module.css";
 import {
   BillingInterval,
   ProductWithPrices,
-  SubscriptionWithProducts,
+  SubscriptionWithProducts
 } from "@/types";
 import { PriceDto } from "@/types/dtos";
-import { SecondaryButton } from "@/components/UI/Button";
+import { Button } from "@/components/UI/Button";
 
 const PricingCard = ({
   product,
@@ -16,7 +16,7 @@ const PricingCard = ({
   isLoading,
   isHighlighted,
   billingInterval,
-  onCheckout,
+  onCheckout
 }: {
   product: ProductWithPrices;
   isHighlighted: boolean;
@@ -35,7 +35,7 @@ const PricingCard = ({
   const priceString = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: price.currency!,
-    minimumFractionDigits: 0,
+    minimumFractionDigits: 0
   }).format((price?.unit_amount || 0) / 100);
 
   return (
@@ -64,17 +64,17 @@ const PricingCard = ({
           </span>
         )}
       </div>
-      <SecondaryButton
+      <Button
         onClick={() => onCheckout(price)}
         isLoading={isLoading}
-        className="w-full bg-purple text-white py-2 rounded-md mb-6 hover:opacity-80 transition-all duration-300"
+        className="mb-6"
       >
         {price.type === "one_time"
           ? "Buy Credit"
           : hasSubscription
           ? "Manage Subscription"
           : "Subscribe"}
-      </SecondaryButton>
+      </Button>
       <div className="space-y-2 text-zink text-sm">
         <p className="">This includes:</p>
         {marketingFeatures.map((feature: { name: string }, index: number) => (

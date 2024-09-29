@@ -9,7 +9,7 @@ const AccountCard = ({
   children: React.ReactNode;
 }) => {
   return (
-    <Card radius="sm" className="w-full h-full bg-gray border-2">
+    <Card radius="sm" className="w-full h-full bg-gray border-1">
       <CardHeader className="font-semibold">{header}</CardHeader>
       <CardBody>{children}</CardBody>
     </Card>
