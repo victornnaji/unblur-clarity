@@ -33,6 +33,9 @@ module.exports = {
       gridTemplateAreas: {
         account: ["bio sub sub", "stripe sub sub"],
       },
+      fontFamily: {
+        handwriting: ['"Reenie Beanie"', "cursive"],
+      },
     },
   },
   darkMode: "class",
