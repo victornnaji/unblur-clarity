@@ -13,6 +13,8 @@
     --purple: #bb86fc;
     --error: #CF6679;
     --success: #03DAC6;
+    --gradient-yellow: #f79533;
+    --gradient-blue: #5073b8;
     --surface: 200 50% 3%;
     --cols: 12;
     --gridSize: calc(100vw / var(--cols));

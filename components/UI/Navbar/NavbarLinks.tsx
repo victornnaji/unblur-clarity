@@ -22,6 +22,7 @@ import {
 } from "react-feather";
 import { shortenFileName } from "@/utils/helpers";
 import { UserDto } from "@/types/dtos";
+import { links } from "@/config";
 
 const NavbarLinks = ({
   user,
@@ -43,22 +44,22 @@ const NavbarLinks = ({
 
   const menus = [
     {
-      key: "account",
-      text: "Account",
-      href: "/account",
+      key: links.account.key,
+      text: links.account.label,
+      href: links.account.path,
       description: email && shortenFileName(email),
       icon: UserIcon,
     },
     {
-      key: "unblur",
-      text: "Unblur",
-      href: "/unblur",
+      key: links.studio.key,
+      text: links.studio.label,
+      href: links.studio.path,
       icon: ZapIcon,
     },
     {
-      key: "buy-credit",
-      text: "Buy credits",
-      href: "/products",
+      key: links.products.key,
+      text: links.products.label,
+      href: links.products.path,
       icon: ShoppingCartIcon,
     },
   ];
@@ -162,7 +163,7 @@ const NavbarLinks = ({
           </DropdownMenu>
         </Dropdown>
       ) : (
-        <Button href="/signin">Sign in</Button>
+        <Button href={links.auth.path}>Sign in</Button>
       )}
     </>
   );

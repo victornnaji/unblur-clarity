@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import ZoomImageViewer from "../ImageViewer/ZoomImageViewer";
-import StatusNotification from "../StatusNotification";
+import StatusNotification from "./StatusNotification";
 import { CircularProgress } from "@nextui-org/react";
 import ResetTab from "@/components/UI/ResetTab";
 import { useAppStore } from "@/hooks/use-store";

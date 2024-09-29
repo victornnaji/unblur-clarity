@@ -5,25 +5,26 @@ import { Tabs, Tab } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import clsx from "clsx";
+import { links } from "@/config";
 
 const PreviewContainer = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const options = [
     {
-      title: "Studio",
-      key: "studio",
-      href: "/unblur/studio",
+      title: links.studio.label,
+      key: links.studio.key,
+      href: links.studio.path
     },
     {
-      title: "In Progress",
-      key: "in-progress",
-      href: "/unblur/in-progress",
+      title: links.studioInProgress.label,
+      key: links.studioInProgress.key,
+      href: links.studioInProgress.path
     },
     {
-      title: "Completed",
-      key: "completed",
-      href: "/unblur/completed",
-    },
+      title: links.studioCompleted.label,
+      key: links.studioCompleted.key,
+      href: links.studioCompleted.path
+    }
   ];
   return (
     <div className="w-full border-t-2 border-gray lg:border-none">
@@ -38,8 +39,8 @@ const PreviewContainer = ({ children }: { children: React.ReactNode }) => {
           base: "text-zink",
           tab: "w-full",
           tabList: "w-full bg-gray border-2 border-gray",
-          tabContent: "text-white font-bold hover:text-purple",
-          cursor: "w-full bg-purple",
+          tabContent: "text-white font-bold",
+          cursor: "w-full bg-gradient"
         }}
       >
         {(item) => (

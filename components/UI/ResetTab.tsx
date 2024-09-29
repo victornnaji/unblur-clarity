@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Checkbox } from "@nextui-org/react";
 import Balancer from "react-wrap-balancer";
-import { SecondaryButton } from "./Button/Button";
+import { Button } from "./Button/Button";
 import { Tooltip } from "./Tooltip";
 import { useAppStore } from "@/hooks/use-store";
 import { getPredictionStartTime } from "@/utils/api-helpers/server";
@@ -12,7 +12,7 @@ import { AlertOctagon } from "react-feather";
 const ResetTab = () => {
   const { reset, prediction } = useAppStore((state) => ({
     reset: state.reset,
-    prediction: state.prediction,
+    prediction: state.prediction
   }));
   const [isEmailOptIn, setIsEmailOptIn] = useState(true);
   const [showResetTab, setShowResetTab] = useState(false);
@@ -88,9 +88,9 @@ const ResetTab = () => {
             </span>
           </Tooltip>
         </div>
-        <SecondaryButton onClick={handleClick} className="mt-2">
+        <Button onClick={handleClick} className="mt-2">
           Start a new upload
-        </SecondaryButton>
+        </Button>
       </div>
     </div>
   );

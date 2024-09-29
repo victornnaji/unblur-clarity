@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 
 import { createClient } from "@/utils/supabase/server";
 import { getErrorRedirect, getStatusRedirect } from "@/utils/helpers";
+import { links } from "@/config";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
   if (error) {
     return NextResponse.redirect(
       getErrorRedirect(
-        `${requestUrl.origin}/signin`,
+        `${requestUrl.origin}${links.auth.path}`,
         "Server Error",
         error_description ||
           "There was an error during the authentication process."
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
   if (!code) {
     return NextResponse.redirect(
       getErrorRedirect(
-        `${requestUrl.origin}/signin`,
+        `${requestUrl.origin}${links.auth.path}`,
         "Sign in process cancelled",
         "No authorization code was provided. Please try again"
       )
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
   if (exchangeError) {
     return NextResponse.redirect(
       getErrorRedirect(
-        `${requestUrl.origin}/signin`,
+        `${requestUrl.origin}${links.auth.path}`,
         exchangeError.name,
         "Sorry, we weren't able to log you in. Please try again."
       )
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.redirect(
     getStatusRedirect(
-      `${requestUrl.origin}/unblur`,
+      `${requestUrl.origin}${links.studio.path}`,
       "success",
       "Success!",
       "You are now signed in. Happy unblurring!"

@@ -4,16 +4,17 @@ import { PredictionDto, SubscriptionDto } from "@/types/dtos";
 import { getCreditsForPlan } from "@/utils/api-helpers/client";
 import { Chip } from "@nextui-org/react";
 import React from "react";
-import Button from "../Button";
-import { SubsciptionRow } from "./SubscriptionRow";
+import { Button } from "@/components/UI/Button";
+import { SubscriptionRow } from "./SubscriptionRow";
 import AccountCard from "./Card";
+import { links } from "@/config";
 
 const SubscriptionCard = ({
   subscription,
   credits,
   oneTimeCredits,
   subscriptionUpgradeUrl,
-  predictions,
+  predictions
 }: {
   subscription: SubscriptionDto | null;
   credits: number | null;
@@ -47,7 +48,7 @@ const SubscriptionCard = ({
         <div className="border-t border-gray-200">
           <dl className="divide-y divide-gray-200">
             {subscription && (
-              <SubsciptionRow
+              <SubscriptionRow
                 title="Subscription Credits"
                 description={
                   <div className="flex gap-2">
@@ -64,11 +65,11 @@ const SubscriptionCard = ({
                 }
               />
             )}
-            <SubsciptionRow
+            <SubscriptionRow
               title="One-Time Credits"
               description={oneTimeCredits}
             />
-            <SubsciptionRow
+            <SubscriptionRow
               title="Enhancements"
               description={
                 <div className="flex gap-2">
@@ -87,12 +88,12 @@ const SubscriptionCard = ({
           </dl>
         </div>
         {subscriptionUpgradeUrl ? (
-          <div className="flex justify-start md:w-[fit-content]">
-            <Button href={subscriptionUpgradeUrl}>Upgrade Subscription</Button>
+          <div className="flex justify-start sm:w-[fit-content]">
+            <Button href={subscriptionUpgradeUrl} className="w-full">Upgrade Subscription</Button>
           </div>
         ) : (
-          <div className="flex justify-start md:w-[fit-content]">
-            <Button className="w-full" href={"/products"}>
+          <div className="flex justify-start sm:w-[fit-content]">
+            <Button className="w-full" href={links.products.path}>
               Buy Credits
             </Button>
           </div>

@@ -1,6 +1,6 @@
-export const SubsciptionRow = ({
+export const SubscriptionRow = ({
   title,
-  description,
+  description
 }: {
   title: string;
   description: string | React.ReactNode;

@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { handleRequest } from "@/utils/auth-helpers/client";
-import { signInWithMagiclink } from "@/utils/auth-helpers/server";
+import { signInWithMagicLink } from "@/utils/auth-helpers/server";
 import TextInput from "@/components/UI/TextInput";
 import Button from "@/components/UI/Button";
 
@@ -13,7 +13,7 @@ const MagicLinkSignInForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsSubmitting(true);
-    await handleRequest(e, signInWithMagiclink, router);
+    await handleRequest(e, signInWithMagicLink, router);
     setIsSubmitting(false);
   };
 
@@ -27,11 +27,7 @@ const MagicLinkSignInForm = () => {
         placeholder="name@example.com"
         disabled={isSubmitting}
       />
-      <Button
-        type="submit"
-        className="mt-5 w-full bg-foreground"
-        isLoading={isSubmitting}
-      >
+      <Button type="submit" className="mt-5 w-full" isLoading={isSubmitting}>
         Sign in
       </Button>
     </form>

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import CustomLink from "@/components/UI/CustomLink";
 
 interface ExtraInfoProps {
   text: string;
@@ -10,13 +10,9 @@ const ExtraInfo = ({ text, link, linkText }: ExtraInfoProps) => {
   return (
     <span className="mb-6 text-sm text-left text-zink flex flex-col">
       <span>{text}</span>
-      <Link
-        target="_blank"
-        href={link}
-        className="inline-block text-purple transition-all hover:underline"
-      >
+      <CustomLink type="inline" href={link} className="text-sm">
         {linkText}
-      </Link>
+      </CustomLink>
     </span>
   );
 };
