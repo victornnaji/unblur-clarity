@@ -48,7 +48,7 @@ const PreviewLoadingScreen = () => {
         <StatusNotification message={message} />
         {/* <ResetTab /> // TODO: Add reset tab functionality */}
       </div>
-      <div className="relative h-[50vh] lg:h-[45rem] flex flex-col items-start justify-between gap-6 sm:flex-row mb-12">
+      <div className="relative h-half-screen lg:h-[45rem] flex flex-col items-start justify-between gap-6 sm:flex-row mb-12">
         <Image
           fill
           className="border"

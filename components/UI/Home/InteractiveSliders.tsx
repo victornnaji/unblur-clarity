@@ -10,7 +10,6 @@ import ContentBlock from "@/components/UI/Home/ContentBlock";
 import { clsx } from "@/utils/clsx";
 import Balancer from "react-wrap-balancer";
 
-
 const interactiveSliderItems = [
   {
     id: 1,
@@ -62,10 +61,10 @@ const interactiveSliderItems = [
   }
 ];
 
-const InteractiveSliderContainer = () => {
+const InteractiveSliders = () => {
   return (
-    <>
-      <h3 className="text-4xl font-bold text-center text-purple">
+    <section>
+      <h3 className="heading text-purple">
         <Balancer>Various ways to enhance or restore your photos</Balancer>
       </h3>
       {interactiveSliderItems.map((item, index) => (
@@ -96,8 +95,8 @@ const InteractiveSliderContainer = () => {
           </div>
         </div>
       ))}
-    </>
+    </section>
   );
 };
 
-export default InteractiveSliderContainer;
+export default InteractiveSliders;

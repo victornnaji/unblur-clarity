@@ -2,7 +2,6 @@
 
 import GoogleIcon from "@/components/Icons/GoogleIcon";
 import Button from "@/components/UI/Button";
-import { links } from "@/config";
 import { signInWithOAuth } from "@/utils/auth-helpers/client";
 import { type Provider } from "@supabase/supabase-js";
 import { useSearchParams } from "next/navigation";
@@ -14,17 +13,15 @@ type OAuthProviders = {
   icon: JSX.Element;
 };
 
+const providers: OAuthProviders[] = [
+  {
+    name: "google",
+    displayName: "Google",
+    icon: <GoogleIcon />
+  }
+];
 export default function OauthSignInForm() {
-  const providers: OAuthProviders[] = [
-    {
-      name: "google",
-      displayName: "Google",
-      icon: <GoogleIcon />
-    }
-  ];
-
   const searchParams = useSearchParams();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

@@ -28,7 +28,7 @@ const FooterList = ({
         }}
       >
         {items.map((item) => (
-          <ListboxItem key={item.href} href={item.href} className="py-0 w-[fit-content] ">
+          <ListboxItem key={item.href} href={item.href} className="py-0 w-fit">
             {item.label}
           </ListboxItem>
         ))}

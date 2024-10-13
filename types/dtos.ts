@@ -3,6 +3,7 @@ import { Tables } from "./supabase";
 
 export interface PredictionDto extends Tables<"predictions"> {
   status: Prediction["status"];
+  predict_time: string;
 }
 
 export interface ProductDto extends Tables<"products"> {};

@@ -62,7 +62,7 @@ const ResetTab = () => {
         <h3 className="text-base text-bold mb-1 uppercase">
           Result taking too long?
         </h3>
-        <p className="mx-auto text-sm text-center md:max-w-[80%]">
+        <p className="mx-auto text-sm text-center md:max-w-4/5">
           Don't worry! Click the button below to reset this page and start
           another round of enhancement! Your image will be processed in the
           background.

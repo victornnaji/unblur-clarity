@@ -24,7 +24,7 @@ const PreviewCard = ({ header, image, footer, classNames }: CardProps) => {
   return (
     <PrimitiveCard
       isFooterBlurred
-      className="w-full h-[350px] col-span-12 sm:col-span-5"
+      className="w-full h-96 col-span-12 sm:col-span-5"
       radius="none"
       isBlurred
     >

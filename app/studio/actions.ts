@@ -132,7 +132,7 @@ export async function initiatePrediction(payload: PayloadProps) {
       started_at: prediction.started_at || null,
       original_image_url: secure_url,
       image_name: image_name || null,
-      predict_time: prediction.metrics?.predict_time?.toString() || null,
+      predict_time: prediction.metrics?.predict_time?.toString() || "0",
       completed_at: prediction.completed_at || null,
       error: prediction.error || null,
       image_url: null,

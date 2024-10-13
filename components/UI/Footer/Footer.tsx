@@ -24,7 +24,7 @@ const Footer = () => {
             <BrandLogo />
             <div className="text-darkzink">
               <CustomLink
-                className="hover:text-zink cursor-pointer"
+                className="hover:text-zink cursor-pointer lg:px-2 px-0"
                 href="mailto:hi@unblur.photos"
                 showAnchorIcon={true}
               >

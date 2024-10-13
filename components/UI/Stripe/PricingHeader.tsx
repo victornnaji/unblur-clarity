@@ -27,7 +27,7 @@ const PricingHeader = ({
   return (
     <div className="max-w-6xl mx-auto mb-8">
       <div className="sm:flex sm:flex-col sm:align-center">
-        <h1 className="text-4xl font-extrabold text-center sm:text-4xl">
+        <h1 className="heading">
           <Balancer>Subscription Plans</Balancer>
         </h1>
         <p className="max-w-2xl m-auto mt-5 text-xl text-zink text-center ">
@@ -50,9 +50,7 @@ const PricingHeader = ({
                     ? "relative w-1/2 bg-purple border-zinc-800 shadow-sm text-white"
                     : "ml-0.5 relative w-1/2 border border-transparent text-zink"
                 }`,
-                index === 1
-                  ? "before:content-[''] before:absolute before:left-0 before:top-[10%] before:w-px before:h-[80%] before:bg-white/20 after:content-[''] after:absolute after:right-0 after:top-[10%] after:w-px after:h-[80%] after:bg-white/20"
-                  : "",
+                index === 1 && "divider",
                 "rounded-md m-1 py-3 text-sm font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-purple focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8"
               )}
             >

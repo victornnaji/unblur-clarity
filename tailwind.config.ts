@@ -24,12 +24,18 @@ module.exports = {
       spacing: {
         100: "30rem"
       },
+      width: {
+        "half-screen": "50vw"
+      },
+      height: {
+        "half-screen": "50vh"
+      },
       backgroundImage: {
         gradient: "linear-gradient(to right, var(--purple), var(--error))"
       },
       gridTemplateColumns: {
         "auto-fit-300": "repeat(auto-fill, minmax(300px, 1fr))"
-      },
+      }
     }
   },
   darkMode: "class",

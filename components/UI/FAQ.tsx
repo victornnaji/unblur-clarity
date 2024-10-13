@@ -12,8 +12,8 @@ interface FaqProps {
 
 const Faq = ({ contents, title = "Frequently Asked Questions" }: FaqProps) => {
   return (
-    <>
-      <h2 className="text-2xl font-semibold text-zink text-center">{title}</h2>
+    <section>
+      <h2 className="heading">{title}</h2>
       <div className="mt-6">
         <Accordion variant="splitted" className="px-0 lg:w-2/3 w-full mx-auto">
           {contents.map((content, index) => (
@@ -24,7 +24,7 @@ const Faq = ({ contents, title = "Frequently Asked Questions" }: FaqProps) => {
               classNames={{
                 base: "bg-zinc-800",
                 title: "text-zinc-50",
-                content: "text-zinc-50",
+                content: "text-zinc-50"
               }}
             >
               <span className="text-darkzink">{content.answer}</span>
@@ -32,7 +32,7 @@ const Faq = ({ contents, title = "Frequently Asked Questions" }: FaqProps) => {
           ))}
         </Accordion>
       </div>
-    </>
+    </section>
   );
 };
 

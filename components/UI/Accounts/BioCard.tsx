@@ -124,7 +124,7 @@ const BioCard = ({ user }: { user: UserDto | null }) => {
         />
         <div className="w-full">
           {isEditing ? (
-            <div className="flex flex-col w-auto lg:w-[60%]">
+            <div className="flex flex-col w-auto lg:w-3/5">
               <TextInput
                 type="text"
                 label="Name"

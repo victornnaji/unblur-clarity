@@ -91,6 +91,8 @@ const NavbarLinks = ({
               as="button"
               src={avatar_url}
               className="transition-transform"
+              color="secondary"
+              isBordered
               name={name}
             />
           </DropdownTrigger>
