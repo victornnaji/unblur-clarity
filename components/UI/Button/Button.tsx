@@ -28,12 +28,11 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const rootClassName = clsx(
-    styles.root,
+    "text-milk font-semibold",
     { [styles.plain]: plain },
     { [styles.disabled]: props.isDisabled },
     {
-      [styles.fancyGradient]:
-        withFancyGradient && !props.isDisabled && !plain
+      [styles.fancyGradient]: withFancyGradient && !props.isDisabled && !plain
     },
     plain ? "" : "bg-gradient",
     className
