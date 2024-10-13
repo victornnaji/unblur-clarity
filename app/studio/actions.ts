@@ -47,6 +47,10 @@ interface InputProps {
   codeformer_fidelity?: number;
 }
 
+const defaultWebhookUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : process.env.NGROK_URL || "";
+
 export async function initiatePrediction(payload: PayloadProps) {
   const user = await getServerUser();
 
@@ -121,7 +125,7 @@ export async function initiatePrediction(payload: PayloadProps) {
     const prediction: Prediction = await replicate.predictions.create({
       version: replicateModel,
       input,
-      webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
+      webhook: `${defaultWebhookUrl}/replicate/webhook?userId=${user?.id}`,
       webhook_events_filter: ["completed"]
     });
 

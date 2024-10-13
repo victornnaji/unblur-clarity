@@ -18,7 +18,7 @@ const FooterList = ({
         className
       )}
     >
-      <h3 className="text-lg font-bold px-2">{title}</h3>
+      <h6 className="text-lg font-bold px-2">{title}</h6>
       <Listbox
         as="ul"
         aria-label={title ? title : "Footer List"}
