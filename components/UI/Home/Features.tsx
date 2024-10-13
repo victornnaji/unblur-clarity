@@ -61,8 +61,8 @@ const features = [
 
 const Features = () => {
   return (
-    <div className="w-full">
-      <div className="text-center text-4xl font-bold">Features</div>
+    <section className="w-full">
+      <h3 className="heading">Features</h3>
       <Tabs
         aria-label="Unblur Features"
         items={features}
@@ -99,7 +99,7 @@ const Features = () => {
           </Tab>
         )}
       </Tabs>
-    </div>
+    </section>
   );
 };
 

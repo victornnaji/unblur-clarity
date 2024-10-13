@@ -11,7 +11,7 @@ const PricingTable = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-[50vh] w-full grid place-items-center">
+      <div className="h-half-screen w-full grid place-items-center">
         <LoadingDots />
       </div>
     ),

@@ -13,7 +13,7 @@ const ImageFrame = ({
   alt: string;
 }) => {
   return (
-    <div className="w-full max-w-[380px] mx-auto bg-zink p-3 rounded-md shadow-md">
+    <div className="w-full max-w-96 mx-auto bg-zink p-3 rounded-md shadow-md">
       <div className="relative aspect-square overflow-hidden rounded-sm">
         <Image
           src={src}

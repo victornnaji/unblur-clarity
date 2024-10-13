@@ -88,11 +88,11 @@ const SubscriptionCard = ({
           </dl>
         </div>
         {subscriptionUpgradeUrl ? (
-          <div className="flex justify-start sm:w-[fit-content]">
+          <div className="flex justify-start sm:w-fit">
             <Button href={subscriptionUpgradeUrl} className="w-full">Upgrade Subscription</Button>
           </div>
         ) : (
-          <div className="flex justify-start sm:w-[fit-content]">
+          <div className="flex justify-start sm:w-fit">
             <Button className="w-full" href={links.products.path}>
               Buy Credits
             </Button>

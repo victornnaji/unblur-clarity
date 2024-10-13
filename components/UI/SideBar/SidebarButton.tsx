@@ -107,7 +107,7 @@ const SidebarButton = ({ credits }: { credits: number }) => {
       isLoading={appStatus.status === "processing"}
       onClick={startPrediction}
       radius="none"
-      className="uppercase sm:w-[fit-content] lg:w-full"
+      className="uppercase sm:w-fit lg:w-full"
     >
       {buttonText}
     </Button>

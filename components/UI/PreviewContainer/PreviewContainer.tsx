@@ -49,10 +49,7 @@ const PreviewContainer = ({ children }: { children: React.ReactNode }) => {
             key={item.href}
             title={item.title}
             href={item.href}
-            className={clsx(
-              item.key === "in-progress" &&
-                "before:content-[''] before:absolute before:left-0 before:top-[10%] before:w-px before:h-[80%] before:bg-white/20 after:content-[''] after:absolute after:right-0 after:top-[10%] after:w-px after:h-[80%] after:bg-white/20"
-            )}
+            className={clsx(item.key === "in-progress" && "divider")}
           >
             <div className="lg:rounded-md shadow-md lg:mt-0 pt-6 lg:p-6 h-auto lg:h-[49rem] lg:border-gray lg:border-2">
               {children}

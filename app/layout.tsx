@@ -29,8 +29,8 @@ export default function RootLayout({
       className={clsx(InterFont.className, "max-w-screen overflow-x-hidden")}
       suppressHydrationWarning={true}
     >
-      <body className="bg-background text-foreground min-h-screen max-w-screen overflow-x-hidden">
-        <AppStoreProvider className="_grid grid-rows-[auto,1fr,auto] min-h-screen">
+      <body className="bg-background text-foreground min-h-screen max-w-screen">
+        <AppStoreProvider className="layout-grid min-h-screen">
           <Navbar />
           <main id="skip">{children}</main>
           <Footer />

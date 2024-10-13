@@ -11,7 +11,7 @@ const StripeCard = ({ url }: { url: string }) => {
         Manage your account on stripe - Upgrade your subscription plan, change
         your payment method, etc.
       </div>
-      <div className="flex justify-start sm:w-[fit-content]">
+      <div className="flex justify-start sm:w-fit">
         <Button href={url} className="w-full">
           Manage Account
         </Button>
