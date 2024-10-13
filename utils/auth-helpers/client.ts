@@ -9,13 +9,14 @@ import { redirectToPath } from "./server";
 
 export async function handleRequest(
   e: React.FormEvent<HTMLFormElement>,
-  requestFunc: (formData: FormData) => Promise<string>,
-  router: AppRouterInstance | null = null
+  requestFunc: (formData: FormData, redirectTo?: string | null) => Promise<string>,
+  router: AppRouterInstance | null = null,
+  redirectTo?: string | null
 ) {
   e.preventDefault();
 
   const formData = new FormData(e.currentTarget);
-  const redirectUrl: string = await requestFunc(formData);
+  const redirectUrl: string = await requestFunc(formData, redirectTo);
 
   if (router) {
     // If client-side router is provided, use it to redirect
@@ -26,7 +27,10 @@ export async function handleRequest(
   }
 }
 
-export async function signInWithOAuth(e: React.FormEvent<HTMLFormElement>) {
+export async function signInWithOAuth(
+  e: React.FormEvent<HTMLFormElement>,
+  redirectTo?: string | null
+) {
   // Prevent default form submission refresh
   e.preventDefault();
   const formData = new FormData(e.currentTarget);
@@ -34,11 +38,16 @@ export async function signInWithOAuth(e: React.FormEvent<HTMLFormElement>) {
 
   // Create client-side supabase client and call signInWithOAuth
   const supabase = createClient();
-  const redirectURL = getURL("/auth/callback");
+  let redirectURL;
+  if (redirectTo) {
+    redirectURL = getURL("/auth/callback?redirectTo=" + redirectTo);
+  }else{
+    redirectURL = getURL("/auth/callback");
+  }
   await supabase.auth.signInWithOAuth({
     provider: provider,
     options: {
-      redirectTo: redirectURL,
-    },
+      redirectTo: redirectURL
+    }
   });
 }

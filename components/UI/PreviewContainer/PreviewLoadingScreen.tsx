@@ -1,40 +1,41 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import ZoomImageViewer from "../ImageViewer/ZoomImageViewer";
 import StatusNotification from "./StatusNotification";
 import { CircularProgress } from "@nextui-org/react";
-import ResetTab from "@/components/UI/ResetTab";
 import { useAppStore } from "@/hooks/use-store";
 import Image from "next/image";
 
 const PreviewLoadingScreen = () => {
-  const statusTexts = [
-    "Gathering image data....",
-    "Fetching data...",
-    "",
-    "Almost there...",
-    "Preparing preview...",
-  ];
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+  // const statusTexts = [
+  //   "Gathering image data....",
+  //   "Fetching data...",
+  //   "",
+  //   "Almost there...",
+  //   "Preparing preview...",
+  // ];
+  // const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
-  const photo = useAppStore((state) => state.photo);
+  const { photo, message } = useAppStore((state) => ({
+    photo: state.photo,
+    message: state.appStatus.message,
+  }));
 
-  useEffect(() => {
-    let intervalId: string | number | NodeJS.Timeout | undefined;
+  // useEffect(() => {
+  //   let intervalId: string | number | NodeJS.Timeout | undefined;
 
-    if (currentTextIndex < statusTexts.length - 1) {
-      intervalId = setInterval(() => {
-        setCurrentTextIndex((prevIndex) => prevIndex + 1);
-      }, 2000);
-    }
+  //   if (currentTextIndex < statusTexts.length - 1) {
+  //     intervalId = setInterval(() => {
+  //       setCurrentTextIndex((prevIndex) => prevIndex + 1);
+  //     }, 2000);
+  //   }
 
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [currentTextIndex, statusTexts.length]);
+  //   return () => {
+  //     if (intervalId) {
+  //       clearInterval(intervalId);
+  //     }
+  //   };
+  // }, [currentTextIndex, statusTexts.length]);
 
   return (
     <div className="relative">
@@ -44,8 +45,8 @@ const PreviewLoadingScreen = () => {
           color="secondary"
           aria-label="Loading..."
         />
-        <StatusNotification message={statusTexts[currentTextIndex]} />
-        <ResetTab />
+        <StatusNotification message={message} />
+        {/* <ResetTab /> // TODO: Add reset tab functionality */}
       </div>
       <div className="relative h-[50vh] lg:h-[45rem] flex flex-col items-start justify-between gap-6 sm:flex-row mb-12">
         <Image

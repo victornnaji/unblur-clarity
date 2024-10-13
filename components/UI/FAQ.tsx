@@ -12,11 +12,10 @@ interface FaqProps {
 
 const Faq = ({ contents, title = "Frequently Asked Questions" }: FaqProps) => {
   return (
-    <div className="mb-10">
-      <div className="mt-20"></div>
+    <>
       <h2 className="text-2xl font-semibold text-zink text-center">{title}</h2>
       <div className="mt-6">
-        <Accordion variant="splitted" className="px-0 md:w-[50%] mx-auto">
+        <Accordion variant="splitted" className="px-0 lg:w-2/3 w-full mx-auto">
           {contents.map((content, index) => (
             <AccordionItem
               key={index}
@@ -28,12 +27,12 @@ const Faq = ({ contents, title = "Frequently Asked Questions" }: FaqProps) => {
                 content: "text-zinc-50",
               }}
             >
-              {content.answer}
+              <span className="text-darkzink">{content.answer}</span>
             </AccordionItem>
           ))}
         </Accordion>
       </div>
-    </div>
+    </>
   );
 };
 

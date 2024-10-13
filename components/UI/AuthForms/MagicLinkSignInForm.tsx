@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { handleRequest } from "@/utils/auth-helpers/client";
 import { signInWithMagicLink } from "@/utils/auth-helpers/server";
 import TextInput from "@/components/UI/TextInput";
@@ -9,11 +9,13 @@ import Button from "@/components/UI/Button";
 
 const MagicLinkSignInForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsSubmitting(true);
-    await handleRequest(e, signInWithMagicLink, router);
+    const redirectTo = searchParams.get('redirectTo')
+    await handleRequest(e, signInWithMagicLink, router, redirectTo);
     setIsSubmitting(false);
   };
 

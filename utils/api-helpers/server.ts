@@ -18,7 +18,7 @@ export const uploadImageToCloudinary = async (imageUrl: string, folder: string =
 
     return { url: result.secure_url };
     // return {
-    //   url: "https://replicate.delivery/pbxt/n5oraOleUxXqBSjjK6LClF53PWP5pS7xWgbwuuZHWFIojJtJA/output.png",
+    //   url: "https://res.cloudinary.com/victornnaji/image/upload/v1727945534/unblur-photos/sturdmc9j3nybd5r0zza.jpg",
     // };
   } catch (error) {
     console.error("Error uploading image to Cloudinary:", error);

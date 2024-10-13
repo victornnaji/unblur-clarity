@@ -27,6 +27,10 @@
 
 }
 
+/* .text-rainbow {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500;
+} */
+
 ._grid {
   display: grid;
   grid-template-columns: repeat(var(--cols), var(--gridSize));

@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  BillingInterval,
-  ProductWithPrices,
-} from "@/types";
+import { BillingInterval, ProductWithPrices } from "@/types";
 import React, { useCallback, useState } from "react";
 import PricingHeader from "./PricingHeader";
 import PricingBody from "./PricingBody";
@@ -31,7 +28,10 @@ const PricingTable = ({ products, hasSubscription }: PricingTablesProps) => {
   const handleCheckout = useCallback(
     async (price: PriceDto) => {
       setIsLoading(true);
-      const { errorRedirect, sessionUrl } = await checkoutWithStripe(price);
+      const { errorRedirect, sessionUrl } = await checkoutWithStripe(
+        price,
+        currentPath
+      );
 
       if (errorRedirect) {
         return router.push(errorRedirect);
@@ -48,6 +48,10 @@ const PricingTable = ({ products, hasSubscription }: PricingTablesProps) => {
       }
       router.push(sessionUrl);
       setIsLoading(false);
+
+      return () => {
+        setIsLoading(false);
+      };
     },
     [currentPath, router]
   );

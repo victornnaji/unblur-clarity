@@ -38,8 +38,19 @@ export async function redirectToPath(path: string) {
   return redirect(path);
 }
 
-export async function signInWithMagicLink(formData: FormData) {
-  const callbackURL = getURL("/auth/callback");
+export async function signInWithMagicLink(
+  formData: FormData,
+  redirectTo?: string | null
+) {
+  let callbackURL;
+
+  if (redirectTo) {
+    callbackURL = getURL(
+      `/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+    );
+  } else {
+    callbackURL = getURL("/auth/callback");
+  }
 
   const email = String(formData.get("email")).trim();
 
@@ -104,7 +115,7 @@ export async function SignOut(formData: FormData) {
   }
 
   return getStatusRedirect(
-    pathName,
+    links.home.path,
     "success",
     "You have been signed out.",
     "Sign in to access your account."

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useId } from "react";
+import React, { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { toast, Toaster, ToastBar } from "react-hot-toast";
 import { ToastVariants } from "@/types";
@@ -11,7 +11,6 @@ const HotToast = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const id = useId();
 
   useEffect(() => {
     const status = searchParams.get("status");
@@ -19,7 +18,7 @@ const HotToast = () => {
     const description = searchParams.get("description");
 
     if (status || title || description) {
-      showToast(status as ToastVariants, title, description, id);
+      showToast(status as ToastVariants, title, description);
       const newSearchParams = new URLSearchParams(searchParams.toString());
       const paramsToRemove = [
         "status",
@@ -93,14 +92,11 @@ export const showToast = (
   description: string | null,
   id?: string
 ) => {
-  toast[status](
-    <ToastMessage title={title} description={description} />,
-    {
-      id: id || status,
-      duration: DURATION,
-      position: "bottom-right"
-    }
-  );
+  toast[status](<ToastMessage title={title} description={description} />, {
+    id: id || status,
+    duration: DURATION,
+    position: "bottom-right"
+  });
 };
 
 export default React.memo(HotToast);

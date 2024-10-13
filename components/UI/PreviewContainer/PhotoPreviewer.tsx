@@ -7,10 +7,11 @@ import ZoomImageViewer from "@/components/UI/ImageViewer/ZoomImageViewer";
 import { useAppStore } from "@/hooks/use-store";
 import Summary from "./Summary";
 import PreviewContainerFooter from "./PreviewContainerFooter";
+import { ZoomImage } from "@/components/UI/ImageViewer";
 
 const PhotoPreviewer = () => {
   const [sideBySide, setSideBySide] = useState(true);
-  const toggleSwitch = () => setSideBySide(!sideBySide);
+  const toggleSwitch = () => setSideBySide((prevState) => !prevState);
   const photo = useAppStore((state) => state.photo);
 
   return (
@@ -33,7 +34,7 @@ const PhotoPreviewer = () => {
             <ZoomImageViewer
               classNames={{
                 base: "lg:h-[38rem] relative",
-                image: "border",
+                image: "border"
               }}
               caption="Original Photo"
               alt="Left Image"
@@ -42,7 +43,7 @@ const PhotoPreviewer = () => {
             <ZoomImageViewer
               classNames={{
                 base: "lg:h-[38rem] relative",
-                image: "border",
+                image: "border"
               }}
               caption="Restored Photo"
               alt="Right Image"
@@ -50,13 +51,17 @@ const PhotoPreviewer = () => {
             />
           </div>
         ) : (
-          <PhotoCompare
-            leftImage={photo.originalImage}
-            rightImage={photo.restoredImage}
-            leftAlt="Original Image"
-            rightAlt="Restored Image"
-            className="lg:h-[38rem] border border-gray"
-          />
+         <div className="h-[38rem]">
+           <ZoomImage>
+            <PhotoCompare
+              leftImage={photo.originalImage}
+              rightImage={photo.restoredImage}
+              leftAlt="Original Image"
+              rightAlt="Restored Image"
+              className="h-auto w-auto"
+            />
+          </ZoomImage>
+         </div>
         )}
       </div>
       <div className="summary">

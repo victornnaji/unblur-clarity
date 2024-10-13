@@ -24,11 +24,11 @@ const FooterList = ({
         aria-label={title ? title : "Footer List"}
         classNames={{
           base: "h-full",
-          list: "h-full w-[fit-content] gap-2"
+          list: "h-full gap-2"
         }}
       >
         {items.map((item) => (
-          <ListboxItem key={item.href} href={item.href} className="py-0">
+          <ListboxItem key={item.href} href={item.href} className="py-0 w-[fit-content] ">
             {item.label}
           </ListboxItem>
         ))}

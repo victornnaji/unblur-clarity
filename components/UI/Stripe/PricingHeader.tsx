@@ -25,7 +25,7 @@ const PricingHeader = ({
   onBillingIntervalChange: (value: BillingInterval) => void;
 }) => {
   return (
-    <div className="max-w-6xl mx-auto my-8">
+    <div className="max-w-6xl mx-auto mb-8">
       <div className="sm:flex sm:flex-col sm:align-center">
         <h1 className="text-4xl font-extrabold text-center sm:text-4xl">
           <Balancer>Subscription Plans</Balancer>

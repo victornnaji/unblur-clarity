@@ -2,10 +2,10 @@
 
 import { useAppStore } from "@/hooks/use-store";
 import React from "react";
-import EmptyScreen from "./EmptyScreen";
-import ErrorScreen from "./ErrorScreen";
-import PreviewLoadingScreen from "./PreviewContainer/PreviewLoadingScreen";
-import PhotoPreviewer from "./PreviewContainer/PhotoPreviewer";
+import EmptyScreen from "@/components/UI/EmptyScreen";
+import ErrorScreen from "@/components/UI/ErrorScreen";
+import PreviewLoadingScreen from "@/components/UI/PreviewContainer/PreviewLoadingScreen";
+import PhotoPreviewer from "@/components/UI/PreviewContainer/PhotoPreviewer";
 
 const Studio = () => {
   const {
