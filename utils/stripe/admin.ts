@@ -10,10 +10,11 @@ import {
 import { getErrorRedirect, getStatusRedirect, getURL } from "@/utils/helpers";
 import Stripe from "stripe";
 import { stripe } from "./config";
+import { links } from "@/config";
 
 export async function checkoutWithStripe(
   price: PriceDto,
-  redirectPath: string = "/unblur"
+  redirectPath: string = "/studio"
 ): Promise<CheckoutResponse> {
   try {
     const supabase = createClient();
@@ -24,7 +25,7 @@ export async function checkoutWithStripe(
 
     if (error || !user) {
       console.error(error);
-      throw new Error("Could not get user session.");
+      throw new Error("Please login to continue");
     }
 
     let customer: string;
@@ -66,7 +67,7 @@ export async function checkoutWithStripe(
 
       client_reference_id: user.id,
       mode: isSubscription ? "subscription" : "payment",
-      cancel_url: getURL("/products"),
+      cancel_url: getURL(redirectPath),
       success_url: successUrl
     };
 
@@ -87,7 +88,7 @@ export async function checkoutWithStripe(
     if (error instanceof Error) {
       return {
         errorRedirect: getErrorRedirect(
-          redirectPath,
+          links.products.path,
           error.message,
           "Please try again later or contact a system administrator."
         )
@@ -95,7 +96,7 @@ export async function checkoutWithStripe(
     } else {
       return {
         errorRedirect: getErrorRedirect(
-          redirectPath,
+          links.products.path,
           "An unknown error occurred.",
           "Please try again later or contact a system administrator."
         )

@@ -31,7 +31,7 @@ export const insertPrediction = async (
   return { id: data.id };
 };
 
-export const getCredits = async (userId: string) => {
+export const getCreditsForUser = async (userId: string) => {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("users")
@@ -49,7 +49,7 @@ export const getCredits = async (userId: string) => {
   return { data: totalCredits, error };
 };
 
-export const withdrawCredits = async (
+export const withdrawCreditsForUser = async (
   userId: string,
   creditsToWithdraw: number
 ) => {
@@ -111,7 +111,8 @@ export const withdrawCredits = async (
 
 export const getSubscriptionForUser = cache(async () => {
   const supabase = createClient();
-  const user = await getServerUser();
+  const user = await getServerUserOrNull();
+  if (!user) return null;
   const { data: subscription, error } = await supabase
     .from("subscriptions")
     .select("*, products(*)")
@@ -155,28 +156,28 @@ export const getUser = cache(async (): Promise<UserDto | null> => {
   };
 });
 
-export const getCompletedPredictionsByUser = cache(
-  async (): Promise<PredictionDto[]> => {
-    const supabase = createClient();
-    const user = await getServerUser();
+export const getCompletedPredictionsByUser = async (): Promise<
+  PredictionDto[]
+> => {
+  const supabase = createClient();
+  const user = await getServerUser();
 
-    const { data, error } = await supabase
-      .from("predictions")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("status", "succeeded")
-      .order("completed_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("predictions")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("status", "succeeded")
+    .order("completed_at", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching completed predictions:", error);
-      throw new Error("Failed to fetch completed predictions");
-    }
-
-    return data as PredictionDto[];
+  if (error) {
+    console.error("Error fetching completed predictions:", error);
+    throw new Error("Failed to fetch completed predictions");
   }
-);
 
-export const getInProgressPredictionsByUser = cache(async () => {
+  return data as PredictionDto[];
+};
+
+export const getInProgressPredictionsByUser = async () => {
   const supabase = createClient();
   const user = await getServerUser();
 
@@ -193,7 +194,7 @@ export const getInProgressPredictionsByUser = cache(async () => {
   }
 
   return data as PredictionDto[];
-});
+};
 
 export const getAllPredictionsByUser = cache(async () => {
   const supabase = createClient();
@@ -215,7 +216,7 @@ export const getAllPredictionsByUser = cache(async () => {
 
 export const getProducts = cache(async () => {
   const supabase = createClient();
-  await getServerUser();
+  // await getServerUserOrNull();
   const { data: products, error } = await supabase
     .from("products")
     .select("*, prices(*)")

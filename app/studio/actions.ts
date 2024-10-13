@@ -4,12 +4,19 @@ import {
   CODEFORMER_FACE_ENHANCE_MODEL,
   CREDITS_PER_UNBLUR,
   MEGVII_ENHANCE_MODEL,
+  ALEXGENOVESE_FACE_UPSCALER,
   UPSCALE_CLARITY_MODEL,
+  TENCENTARC_GFPGAN_FACE_ENHANCE_MODEL
 } from "@/config";
 import { UnblurModel } from "@/types";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
 import { getServerUser } from "@/utils/auth-helpers/server";
-import { getCredits, insertPrediction, withdrawCredits } from "@/utils/supabase/actions";
+import {
+  getCreditsForUser,
+  getUserCredits,
+  insertPrediction,
+  withdrawCreditsForUser
+} from "@/utils/supabase/actions";
 import Replicate, { type Prediction } from "replicate";
 
 interface BasePayloadProps {
@@ -32,7 +39,8 @@ interface OtherModelPayload extends BasePayloadProps {
 type PayloadProps = ImageUpscalingPayload | OtherModelPayload;
 
 interface InputProps {
-  image: string;
+  image?: string;
+  img?: string;
   prompt?: string;
   style?: string;
   task_type?: string;
@@ -42,7 +50,7 @@ interface InputProps {
 export async function initiatePrediction(payload: PayloadProps) {
   const user = await getServerUser();
 
-  const { data: credits, error } = await getCredits(user.id);
+  const { data: credits, error } = await getCreditsForUser(user.id);
 
   if (error) {
     console.error("Error fetching credits:", error);
@@ -63,14 +71,14 @@ export async function initiatePrediction(payload: PayloadProps) {
       replicateModel = UPSCALE_CLARITY_MODEL;
       break;
     case "face_restoration":
-      replicateModel = CODEFORMER_FACE_ENHANCE_MODEL;
+      replicateModel = TENCENTARC_GFPGAN_FACE_ENHANCE_MODEL;
       break;
     default:
       replicateModel = MEGVII_ENHANCE_MODEL;
   }
 
   let input: InputProps = {
-    image: secure_url,
+    image: secure_url
   };
 
   if (model === "image_upscaling") {
@@ -79,33 +87,32 @@ export async function initiatePrediction(payload: PayloadProps) {
       prompt:
         (payload as ImageUpscalingPayload).prompt ||
         "masterpiece, best quality, highres, <lora:more_details:0.5> <lora:SDXLrender_v2.0:1>",
-      style: (payload as ImageUpscalingPayload).upscale_style || "default",
+      style: (payload as ImageUpscalingPayload).upscale_style || "default"
     };
   } else if (model === "face_restoration") {
     input = {
-      ...input,
-      codeformer_fidelity: 0.1,
+      img: secure_url
     };
   } else if (model === "image_restoration") {
     input = {
       ...input,
-      task_type: "Image Debluring (REDS)",
+      task_type: "Image Debluring (REDS)"
     };
   } else if (model === "text_restoration") {
     input = {
       ...input,
-      task_type: "Image Denoising",
+      task_type: "Image Denoising"
     };
   } else {
     throw new Error("Invalid model");
   }
 
   const replicate = new Replicate({
-    auth: process.env.REPLICATE_API_TOKEN,
+    auth: process.env.REPLICATE_API_TOKEN
   });
 
   try {
-    const data = await withdrawCredits(user.id, CREDITS_PER_UNBLUR);
+    const data = await withdrawCreditsForUser(user.id, CREDITS_PER_UNBLUR);
 
     if (data.error) {
       return { error: "Failed to withdraw credits" };
@@ -115,7 +122,7 @@ export async function initiatePrediction(payload: PayloadProps) {
       version: replicateModel,
       input,
       webhook: `${process.env.NGROK_URL}/replicate/webhook?userId=${user?.id}`,
-      webhook_events_filter: ["completed"],
+      webhook_events_filter: ["completed"]
     });
 
     const { id: predictionId } = await insertPrediction({
@@ -125,20 +132,32 @@ export async function initiatePrediction(payload: PayloadProps) {
       started_at: prediction.started_at || null,
       original_image_url: secure_url,
       image_name: image_name || null,
-      predict_time: prediction.metrics?.predict_time || null,
+      predict_time: prediction.metrics?.predict_time?.toString() || null,
       completed_at: prediction.completed_at || null,
       error: prediction.error || null,
       image_url: null,
-      user_id: user?.id,
+      user_id: user?.id
     });
 
     console.log("prediction successfully created on replicate", prediction);
     return { predictionId, secure_url };
-    // return { predictionId: "3kdqpnsf5nrgj0chs5nvxgzk68", secure_url };
+    // return { predictionId: "h8b24nvfq9rgt0cja6aafd2bv0", secure_url };
   } catch (error) {
     console.log("error creating prediction", error);
     const errorMessage =
       error instanceof Error ? error.message : "An unknown error occurred";
     return { error: "Prediction creation failed", details: errorMessage };
+  }
+}
+
+export async function getCredits(): Promise<{
+  credits?: number | null;
+  error?: string;
+}> {
+  try {
+    const data = await getUserCredits();
+    return { credits: data };
+  } catch (error) {
+    return { error: "Failed to fetch credits" };
   }
 }

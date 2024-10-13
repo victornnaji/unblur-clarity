@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get("code");
   const error = requestUrl.searchParams.get("error");
   const error_description = requestUrl.searchParams.get("error_description");
+  const redirectTo = requestUrl.searchParams.get("redirectTo") || links.studio.path;
 
   if (error) {
     return NextResponse.redirect(
@@ -50,7 +51,7 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.redirect(
     getStatusRedirect(
-      `${requestUrl.origin}${links.studio.path}`,
+      `${requestUrl.origin}${decodeURIComponent(redirectTo)}`,
       "success",
       "Success!",
       "You are now signed in. Happy unblurring!"

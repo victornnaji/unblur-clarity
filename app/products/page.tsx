@@ -26,7 +26,9 @@ export default async function Products() {
   return (
     <div>
       <PricingTable products={products} hasSubscription={hasSubscription} />
-      <Faq contents={productsFaq} />
+      <div className="my-20">
+        <Faq contents={productsFaq} />
+      </div>
     </div>
   );
 }

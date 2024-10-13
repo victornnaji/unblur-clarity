@@ -23,13 +23,12 @@ import {
 import { shortenFileName } from "@/utils/helpers";
 import { UserDto } from "@/types/dtos";
 import { links } from "@/config";
+import Credits from "../Credits";
 
 const NavbarLinks = ({
   user,
-  credits,
 }: {
   user: UserDto | null;
-  credits: number;
 }) => {
   const avatar_url = user?.avatar_url ?? "";
   const name = user?.full_name ?? "";
@@ -113,9 +112,8 @@ const NavbarLinks = ({
                 as={"div"}
                 variant="bordered"
               >
-                <span className="font-bold text-base text-white">
-                  Credits: <span className="text-white">{credits} 💰</span>
-                </span>
+
+                <Credits className="font-bold border-0 text-white mb-0 py-0 text-start"/>
               </DropdownItem>
             </DropdownSection>
             <DropdownSection

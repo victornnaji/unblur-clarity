@@ -47,15 +47,23 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith(path)
   );
 
-  if (!user && isProtectedRoute) {
-    // no user, potentially respond by redirecting the user to the login page
-    const url = request.nextUrl.clone();
-    url.pathname = links.auth.path;
-    return NextResponse.redirect(url);
-  }
-
   const loginPath = links.auth.path;
   const isLoginRoute = request.nextUrl.pathname === loginPath;
+
+  if (!user && !isLoginRoute && isProtectedRoute) {
+    const redirectTo = request.nextUrl.pathname;
+    const encodedRedirectTo = encodeURIComponent(redirectTo);
+    const signInUrl = new URL(links.auth.path, request.url);
+    signInUrl.searchParams.set("redirectTo", encodedRedirectTo);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  // if (!user && isProtectedRoute) {
+  //   // no user, potentially respond by redirecting the user to the login page
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = links.auth.path;
+  //   return NextResponse.redirect(url);
+  // }
 
   if (user && isLoginRoute) {
     //user is logged in and tries to access the login page, redirect to home

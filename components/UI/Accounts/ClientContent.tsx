@@ -2,26 +2,28 @@
 
 import StripeCard from "@/components/UI/Accounts/StripeCard";
 import SubscriptionCard from "@/components/UI/Accounts/SubscriptionCard";
+import { links } from "@/config";
 import { PredictionDto, SubscriptionDto } from "@/types/dtos";
 import { createStripePortal } from "@/utils/stripe/admin";
 import { useEffect, useState } from "react";
-
 
 export function ClientContent({
   subscription,
   credits,
   oneTimeCredits,
-  predictions,
+  predictions
 }: {
   subscription: SubscriptionDto | null;
   credits: any;
   oneTimeCredits: any;
   predictions: PredictionDto[];
 }) {
-  const [stripePortalUrl, setStripePortalUrl] = useState("/account");
+  const [stripePortalUrl, setStripePortalUrl] = useState(
+    links.account.path || ""
+  );
   useEffect(() => {
     const fetchStripePortalUrl = async () => {
-      const url = await createStripePortal("/account");
+      const url = await createStripePortal(links.account.path || "");
       setStripePortalUrl(url);
     };
     fetchStripePortalUrl();

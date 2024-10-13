@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useId } from "react";
-import { Modal, ModalContent, ModalBody } from "@nextui-org/react";
-import { Tooltip } from "../Tooltip";
+import Modal from "@/components/UI/Modal";
+import Card from "../Studio/Card";
+import { IconButton } from "../Button";
+import { Maximize2 } from "react-feather";
 
 interface ZoomProps {
   id?: string;
@@ -21,31 +23,20 @@ export const ZoomImage: React.FC<ZoomProps> = ({ id, children }) => {
 
   return (
     <>
-      <div
+      <Card
         key={appliedId}
-        onClick={handleZoom}
-        className="cursor-zoom-in h-full w-full"
+        header={
+          <IconButton
+            Icon={Maximize2}
+            onClick={handleZoom}
+            aria-label="Expand"
+          />
+        }
       >
-        <Tooltip content="Click to Zoom">
-          {children}
-        </Tooltip>
-      </div>
-      <Modal
-        size="3xl"
-        placement="center"
-        backdrop="blur"
-        isOpen={isZoomed}
-        onClose={handleZoom}
-        classNames={{
-          base: "bg-transparent",
-          backdrop: "cursor-zoom-out",
-          closeButton:
-            "fixed block top-10 right-12 font-bold text-3xl text-gray bg-zink rounded-full p-2 hover:bg-gray hover:text-zink"
-        }}
-      >
-        <ModalContent>
-          <ModalBody>{children}</ModalBody>
-        </ModalContent>
+        {children}
+      </Card>
+      <Modal isOpen={isZoomed} onClose={handleZoom}>
+        {children}
       </Modal>
     </>
   );

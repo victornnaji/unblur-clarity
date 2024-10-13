@@ -5,6 +5,7 @@ import { type StoreApi, useStore } from "zustand";
 import { type ReactNode, createContext, useRef, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { NextUIProvider } from "@nextui-org/react";
+import { Provider as BalancerProvider } from "react-wrap-balancer";
 
 export const AppStoreContext = createContext<StoreApi<AppStore> | null>(null);
 
@@ -13,7 +14,10 @@ type RestorationProviderProps = {
   className?: string;
 };
 
-export const AppStoreProvider = ({ children, className }: RestorationProviderProps) => {
+export const AppStoreProvider = ({
+  children,
+  className
+}: RestorationProviderProps) => {
   const storeRef = useRef<StoreApi<AppStore>>();
   const router = useRouter();
 
@@ -24,7 +28,7 @@ export const AppStoreProvider = ({ children, className }: RestorationProviderPro
   return (
     <NextUIProvider navigate={router.push} className={className}>
       <AppStoreContext.Provider value={storeRef.current}>
-        {children}
+        <BalancerProvider>{children}</BalancerProvider>
       </AppStoreContext.Provider>
     </NextUIProvider>
   );

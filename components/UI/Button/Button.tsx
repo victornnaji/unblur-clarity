@@ -24,6 +24,7 @@ export const Button = ({
   href,
   plain,
   isLoading,
+  withFancyGradient,
   ...props
 }: ButtonProps) => {
   const rootClassName = clsx(
@@ -32,7 +33,7 @@ export const Button = ({
     { [styles.disabled]: props.isDisabled },
     {
       [styles.fancyGradient]:
-        props.withFancyGradient && !props.isDisabled && !plain
+        withFancyGradient && !props.isDisabled && !plain
     },
     plain ? "" : "bg-gradient",
     className

@@ -1,11 +1,12 @@
 import "@/styles/globals.css";
-import { Inter } from "next/font/google";
 import { metadata as metadataConfig } from "@/config";
 import { Suspense } from "react";
 import { AppStoreProvider } from "@/hooks/use-store";
 import Navbar from "@/components/UI/Navbar";
 import HotToast from "@/components/UI/HotToast";
 import Footer from "@/components/UI/Footer";
+import { InterFont } from "@/styles/fonts";
+import { clsx } from "@/utils/clsx";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -17,8 +18,6 @@ export const metadata = {
   description: metadataConfig.description
 };
 
-const InterFont = Inter({ subsets: ["latin"] });
-
 export default function RootLayout({
   children
 }: {
@@ -27,10 +26,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={InterFont.className}
+      className={clsx(InterFont.className, "max-w-screen overflow-x-hidden")}
       suppressHydrationWarning={true}
     >
-      <body className="bg-background text-foreground min-h-screen">
+      <body className="bg-background text-foreground min-h-screen max-w-screen overflow-x-hidden">
         <AppStoreProvider className="_grid grid-rows-[auto,1fr,auto] min-h-screen">
           <Navbar />
           <main id="skip">{children}</main>

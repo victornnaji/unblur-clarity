@@ -10,7 +10,7 @@ import Credits from "../Credits";
 const SidebarContainer = ({ credits }: { credits: number }) => {
   return (
     <>
-      <Credits credits={credits} />
+      <Credits />
       <SidebarImageSelector />
       <SidebarModelSelector />
       <div className="lg:h-80 overflow-scroll p-1 box-border">
