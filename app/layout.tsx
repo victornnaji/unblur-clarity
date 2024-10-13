@@ -7,13 +7,10 @@ import HotToast from "@/components/UI/HotToast";
 import Footer from "@/components/UI/Footer";
 import { InterFont } from "@/styles/fonts";
 import { clsx } from "@/utils/clsx";
-
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+import { getURL } from "@/utils/helpers";
 
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
+  metadataBase: getURL(),
   title: metadataConfig.title,
   description: metadataConfig.description
 };
@@ -30,10 +27,12 @@ export default function RootLayout({
       suppressHydrationWarning={true}
     >
       <body className="bg-background text-foreground min-h-screen max-w-screen">
-        <AppStoreProvider className="layout-grid min-h-screen">
-          <Navbar />
-          <main id="skip">{children}</main>
-          <Footer />
+        <AppStoreProvider>
+          <div className="layout-grid min-h-screen">
+            <Navbar />
+            <main id="skip">{children}</main>
+            <Footer />
+          </div>
         </AppStoreProvider>
         <Suspense>
           <HotToast />

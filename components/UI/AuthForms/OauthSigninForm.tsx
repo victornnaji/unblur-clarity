@@ -42,7 +42,7 @@ export default function OauthSignInForm() {
           <input type="hidden" name="provider" value={provider.name} />
           <Button
             type="submit"
-            className="w-full font-normal"
+            className="w-full font-normal text-gray font-bold"
             plain
             isLoading={isSubmitting}
             startContent={provider.icon}
