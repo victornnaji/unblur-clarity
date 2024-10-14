@@ -16,7 +16,7 @@ const InProgress = () => {
   if (isLoading) return <div>Loading your in progress Enhancements...</div>;
   if (error) return <div>Failed to load, please refresh the page</div>;
   if (data?.predictions?.length === 0)
-    return <div>No predictions currently in progress</div>;
+    return <div>No enhancements currently in progress</div>;
 
   return (
     <div className="card-container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-auto-fit-300 gap-3">

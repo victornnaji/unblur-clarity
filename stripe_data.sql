@@ -1,4 +1,5 @@
 
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -10,37 +11,84 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+
 CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
+
+
+
+
+
 
 CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
 
+
+
+
+
+
 COMMENT ON SCHEMA "public" IS 'standard public schema';
+
+
 
 CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
 
+
+
+
+
+
 CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
+
+
+
+
+
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
 
+
+
+
+
+
 CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
+
+
+
+
+
 
 CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
 
+
+
+
+
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+
+
+
+
+
 
 CREATE TYPE "public"."pricing_plan_interval" AS ENUM (
     'month',
     'year'
 );
 
+
 ALTER TYPE "public"."pricing_plan_interval" OWNER TO "postgres";
+
 
 CREATE TYPE "public"."pricing_type" AS ENUM (
     'one_time',
     'recurring'
 );
 
+
 ALTER TYPE "public"."pricing_type" OWNER TO "postgres";
+
 
 CREATE TYPE "public"."subscription_status" AS ENUM (
     'trialing',
@@ -53,7 +101,9 @@ CREATE TYPE "public"."subscription_status" AS ENUM (
     'paused'
 );
 
+
 ALTER TYPE "public"."subscription_status" OWNER TO "postgres";
+
 
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
@@ -65,11 +115,44 @@ begin
 end;
 $$;
 
+
 ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."handle_user_update"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    AS $$
+begin
+  update public.users
+  set full_name = new.raw_user_meta_data->>'full_name',
+      avatar_url = new.raw_user_meta_data->>'avatar_url',
+      email = new.email,
+      updated_at = now()
+  where id = new.id;
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."handle_user_update"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."update_updated_at_column"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+   NEW.updated_at = NOW();
+   RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."update_updated_at_column"() OWNER TO "postgres";
 
 SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
+
 
 CREATE TABLE IF NOT EXISTS "public"."customers" (
     "id" "uuid" NOT NULL,
@@ -77,9 +160,11 @@ CREATE TABLE IF NOT EXISTS "public"."customers" (
     "created_at" timestamp with time zone DEFAULT "now"()
 );
 
+
 ALTER TABLE "public"."customers" OWNER TO "postgres";
 
-CREATE TABLE IF NOT EXISTS "public"."prediction" (
+
+CREATE TABLE IF NOT EXISTS "public"."predictions" (
     "id" "text" NOT NULL,
     "status" "text",
     "completed_at" timestamp with time zone,
@@ -89,10 +174,14 @@ CREATE TABLE IF NOT EXISTS "public"."prediction" (
     "image_url" "text",
     "error" "text",
     "user_id" "uuid",
+    "image_name" "text",
+    "original_image_url" "text",
     CONSTRAINT "prediction_status_check" CHECK (("status" = ANY (ARRAY['starting'::"text", 'processing'::"text", 'succeeded'::"text", 'failed'::"text", 'canceled'::"text"])))
 );
 
-ALTER TABLE "public"."prediction" OWNER TO "postgres";
+
+ALTER TABLE "public"."predictions" OWNER TO "postgres";
+
 
 CREATE TABLE IF NOT EXISTS "public"."prices" (
     "id" "text" NOT NULL,
@@ -109,7 +198,9 @@ CREATE TABLE IF NOT EXISTS "public"."prices" (
     CONSTRAINT "prices_currency_check" CHECK (("char_length"("currency") = 3))
 );
 
+
 ALTER TABLE "public"."prices" OWNER TO "postgres";
+
 
 CREATE TABLE IF NOT EXISTS "public"."products" (
     "id" "text" NOT NULL,
@@ -120,7 +211,9 @@ CREATE TABLE IF NOT EXISTS "public"."products" (
     "metadata" "jsonb"
 );
 
+
 ALTER TABLE "public"."products" OWNER TO "postgres";
+
 
 CREATE TABLE IF NOT EXISTS "public"."subscriptions" (
     "id" "text" NOT NULL,
@@ -133,10 +226,13 @@ CREATE TABLE IF NOT EXISTS "public"."subscriptions" (
     "current_period_end" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
     "ended_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
     "cancel_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
-    "canceled_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"())
+    "canceled_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
+    "product_id" "text"
 );
 
+
 ALTER TABLE "public"."subscriptions" OWNER TO "postgres";
+
 
 CREATE TABLE IF NOT EXISTS "public"."users" (
     "id" "uuid" NOT NULL,
@@ -144,129 +240,455 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
     "avatar_url" "text",
     "email" "text",
     "credits" integer DEFAULT 0,
-    "one_time_credits" integer DEFAULT 0
+    "one_time_credits" integer DEFAULT 0,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
+
 ALTER TABLE "public"."users" OWNER TO "postgres";
+
 
 ALTER TABLE ONLY "public"."customers"
     ADD CONSTRAINT "customers_pkey" PRIMARY KEY ("id", "stripe_customer_id");
 
-ALTER TABLE ONLY "public"."prediction"
+
+
+ALTER TABLE ONLY "public"."predictions"
     ADD CONSTRAINT "prediction_pkey" PRIMARY KEY ("id");
+
+
 
 ALTER TABLE ONLY "public"."prices"
     ADD CONSTRAINT "prices_pkey" PRIMARY KEY ("id");
 
+
+
 ALTER TABLE ONLY "public"."products"
     ADD CONSTRAINT "products_pkey" PRIMARY KEY ("id");
+
+
 
 ALTER TABLE ONLY "public"."subscriptions"
     ADD CONSTRAINT "subscriptions_pkey" PRIMARY KEY ("id");
 
+
+
 ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
+
+
+
+CREATE INDEX "idx_subscriptions_product_id" ON "public"."subscriptions" USING "btree" ("product_id");
+
+
+
+CREATE OR REPLACE TRIGGER "update_users_updated_at" BEFORE UPDATE ON "public"."users" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at_column"();
+
+
 
 ALTER TABLE ONLY "public"."customers"
     ADD CONSTRAINT "customers_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id");
 
-ALTER TABLE ONLY "public"."prediction"
+
+
+ALTER TABLE ONLY "public"."predictions"
     ADD CONSTRAINT "prediction_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+
+
 
 ALTER TABLE ONLY "public"."prices"
     ADD CONSTRAINT "prices_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id");
 
+
+
+ALTER TABLE ONLY "public"."subscriptions"
+    ADD CONSTRAINT "subscriptions_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id");
+
+
+
 ALTER TABLE ONLY "public"."subscriptions"
     ADD CONSTRAINT "subscriptions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+
+
 
 ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "users_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id");
 
+
+
 CREATE POLICY "Allow public read-only access." ON "public"."prices" FOR SELECT USING (true);
+
+
 
 CREATE POLICY "Allow public read-only access." ON "public"."products" FOR SELECT USING (true);
 
+
+
 CREATE POLICY "Can only view own subs data." ON "public"."subscriptions" FOR SELECT USING (("auth"."uid"() = "user_id"));
+
+
 
 CREATE POLICY "Can update own user data." ON "public"."users" FOR UPDATE USING (("auth"."uid"() = "id"));
 
+
+
 CREATE POLICY "Can view own user data." ON "public"."users" FOR SELECT USING (("auth"."uid"() = "id"));
 
-CREATE POLICY "Service role can manage all predictions" ON "public"."prediction" TO "service_role" USING (true);
 
-CREATE POLICY "Users can insert own predictions" ON "public"."prediction" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "user_id"));
 
-CREATE POLICY "Users can read own predictions" ON "public"."prediction" FOR SELECT TO "authenticated" USING (("auth"."uid"() = "user_id"));
+CREATE POLICY "Service role can manage all predictions" ON "public"."predictions" TO "service_role" USING (true);
 
-CREATE POLICY "Users can update own predictions" ON "public"."prediction" FOR UPDATE TO "authenticated" USING (("auth"."uid"() = "user_id")) WITH CHECK (("auth"."uid"() = "user_id"));
+
+
+CREATE POLICY "Users can insert own predictions" ON "public"."predictions" FOR INSERT TO "authenticated" WITH CHECK (("auth"."uid"() = "user_id"));
+
+
+
+CREATE POLICY "Users can read own predictions" ON "public"."predictions" FOR SELECT TO "authenticated" USING (("auth"."uid"() = "user_id"));
+
+
+
+CREATE POLICY "Users can update own predictions" ON "public"."predictions" FOR UPDATE TO "authenticated" USING (("auth"."uid"() = "user_id")) WITH CHECK (("auth"."uid"() = "user_id"));
+
+
 
 ALTER TABLE "public"."customers" ENABLE ROW LEVEL SECURITY;
 
-ALTER TABLE "public"."prediction" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."predictions" ENABLE ROW LEVEL SECURITY;
+
 
 ALTER TABLE "public"."prices" ENABLE ROW LEVEL SECURITY;
 
+
 ALTER TABLE "public"."products" ENABLE ROW LEVEL SECURITY;
+
 
 ALTER TABLE "public"."subscriptions" ENABLE ROW LEVEL SECURITY;
 
+
 ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
 
+
+
+
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
+
+
+
+
 
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."handle_user_update"() TO "anon";
+GRANT ALL ON FUNCTION "public"."handle_user_update"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_user_update"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "anon";
+GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "service_role";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 GRANT ALL ON TABLE "public"."customers" TO "anon";
 GRANT ALL ON TABLE "public"."customers" TO "authenticated";
 GRANT ALL ON TABLE "public"."customers" TO "service_role";
 
-GRANT ALL ON TABLE "public"."prediction" TO "anon";
-GRANT ALL ON TABLE "public"."prediction" TO "authenticated";
-GRANT ALL ON TABLE "public"."prediction" TO "service_role";
+
+
+GRANT ALL ON TABLE "public"."predictions" TO "anon";
+GRANT ALL ON TABLE "public"."predictions" TO "authenticated";
+GRANT ALL ON TABLE "public"."predictions" TO "service_role";
+
+
 
 GRANT ALL ON TABLE "public"."prices" TO "anon";
 GRANT ALL ON TABLE "public"."prices" TO "authenticated";
 GRANT ALL ON TABLE "public"."prices" TO "service_role";
 
+
+
 GRANT ALL ON TABLE "public"."products" TO "anon";
 GRANT ALL ON TABLE "public"."products" TO "authenticated";
 GRANT ALL ON TABLE "public"."products" TO "service_role";
+
+
 
 GRANT ALL ON TABLE "public"."subscriptions" TO "anon";
 GRANT ALL ON TABLE "public"."subscriptions" TO "authenticated";
 GRANT ALL ON TABLE "public"."subscriptions" TO "service_role";
 
+
+
 GRANT ALL ON TABLE "public"."users" TO "anon";
 GRANT ALL ON TABLE "public"."users" TO "authenticated";
 GRANT ALL ON TABLE "public"."users" TO "service_role";
+
+
 
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "service_role";
 
+
+
+
+
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "service_role";
+
+
+
+
+
 
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 RESET ALL;
-
---
--- Dumped schema changes for auth and storage
---
-
-CREATE OR REPLACE TRIGGER "on_auth_user_created" AFTER INSERT ON "auth"."users" FOR EACH ROW EXECUTE FUNCTION "public"."handle_new_user"();
-
