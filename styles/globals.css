@@ -29,7 +29,7 @@
 
 @layer components {
   .layout-grid {
-    @apply grid gap-0 grid-rows-[auto,1fr,auto];
+    @apply grid gap-0 grid-rows-[1fr,auto];
     grid-template-columns: repeat(var(--cols), var(--gridSize));
   }
 

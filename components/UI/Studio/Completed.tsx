@@ -21,7 +21,7 @@ const Completed = () => {
   if (!data?.predictions || isLoading)
     return <div>Loading your completed Enhancements...</div>;
   if (data.predictions.length === 0)
-    return <div>No predictions currently in progress</div>;
+    return <div>No enhancements currently in progress</div>;
 
   if (error) return <p>Failed to load, please refresh the page</p>;
 
