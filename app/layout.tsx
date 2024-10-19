@@ -23,14 +23,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={clsx(InterFont.className, "")}
+      className={clsx(InterFont.className)}
       suppressHydrationWarning={true}
     >
       <body className="bg-background text-foreground">
         <AppStoreProvider>
           <div className="min-h-screen grid grid-rows-[auto,1fr]">
             <Navbar />
-            <div className="layout-grid overflow-x-hidden">
+            <div className="layout-grid w-full overflow-hidden">
               <main id="skip">{children}</main>
               <Footer />
             </div>

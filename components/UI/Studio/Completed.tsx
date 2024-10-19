@@ -22,8 +22,7 @@ const Completed = () => {
     return <div>Loading your completed Enhancements...</div>;
   if (data.predictions.length === 0)
     return <div>No enhancements currently in progress</div>;
-
-  if (error) return <p>Failed to load, please refresh the page</p>;
+  if (error || data?.error) return <p>Failed to load, please refresh the page</p>;
 
   return (
     <div className="card-container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-auto-fit-300 gap-3">

@@ -3,6 +3,8 @@ import Button from "@/components/UI/Button";
 import { useAppStore } from "@/hooks/use-store";
 import { initiatePrediction } from "@/app/studio/actions";
 import { pollPredictionStatus } from "@/utils/api-helpers/server";
+import { showToast } from "../HotToast";
+import { ToastVariants } from "@/types";
 
 const SidebarButton = ({ credits }: { credits: number }) => {
   const {
@@ -35,6 +37,12 @@ const SidebarButton = ({ credits }: { credits: number }) => {
           status: "error",
           message: "Not enough credits to unblur image"
         });
+        showToast(
+          'error',
+          "Not enough credits",
+          "Not enough credits to unblur image",
+          "sidebar-button"
+        );
         return;
       }
       const response = await initiatePrediction({
@@ -103,14 +111,14 @@ const SidebarButton = ({ credits }: { credits: number }) => {
   return (
     <div className="w-full flex justify-center items-center">
       <Button
-      isDisabled={!photo.name}
-      isLoading={appStatus.status === "processing"}
-      onClick={startPrediction}
-      radius="none"
-      className="uppercase sm:w-fit lg:w-full"
-    >
-      {buttonText}
-    </Button>
+        isDisabled={!photo.name}
+        isLoading={appStatus.status === "processing"}
+        onClick={startPrediction}
+        radius="none"
+        className="uppercase sm:w-fit lg:w-full"
+      >
+        {buttonText}
+      </Button>
     </div>
   );
 };
