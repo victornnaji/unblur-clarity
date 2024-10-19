@@ -42,7 +42,7 @@ const PricingCard = ({
     <div
       className={clsx(
         styles.pricing_card,
-        "flex flex-col max-w-md rounded-lg p-8",
+        "flex flex-col max-w-md rounded-lg lg:p-8 p-4",
         isHighlighted && "bg-gray"
       )}
     >

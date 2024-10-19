@@ -1,3 +1,5 @@
+"use client";
+
 import { getCredits } from "@/app/studio/actions";
 import { clsx } from "@/utils/clsx";
 import React from "react";
@@ -9,7 +11,7 @@ const Credits = ({ className }: { className?: string }) => {
   return (
     <div
       className={clsx(
-        "py-2 text-sm border-gray border-3 text-zink text-center mb-3",
+        "py-2 text-sm border-gray border-3 text-zink text-center",
         className
       )}
     >

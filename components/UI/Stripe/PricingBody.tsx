@@ -37,7 +37,7 @@ const PricingBody = ({
     <div
       className={clsx(
         styles.pricing_grid,
-        "w-4/6 mx-auto grid gap-4 items-center justify-center"
+        "xl:w-4/6 mx-auto grid gap-4 items-center justify-center"
       )}
     >
       {sortedProducts.map((product) => {

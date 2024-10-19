@@ -31,7 +31,7 @@ const VideoSection = () => {
           </span>
         </div>
       </div>
-      <div className="relative w-full container w-full lg:w-half-screen mx-auto">
+      <div className="relative container lg:w-half-screen mx-auto">
         <CloudinaryVideoPlayer
           publicId="unblur-videos/unblur.photos-product-demo"
           posterPublicId="unblur-videos/Unblur_Photos_Product_Demo"

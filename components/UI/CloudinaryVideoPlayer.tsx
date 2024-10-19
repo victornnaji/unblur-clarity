@@ -5,6 +5,7 @@ import { getCldImageUrl } from "next-cloudinary";
 import IsInView from "@/components/UI/IsInView";
 import dynamic from "next/dynamic";
 import "next-cloudinary/dist/cld-video-player.css";
+import { Skeleton } from "@nextui-org/react";
 
 interface CloudinaryVideoPlayerProps {
   publicId: string;
@@ -13,7 +14,14 @@ interface CloudinaryVideoPlayerProps {
 
 const DynamicCldVideoPlayer = dynamic(
   () => import("next-cloudinary").then((mod) => mod.CldVideoPlayer),
-  { ssr: false, loading: () => <div>Loading...</div> }
+  {
+    ssr: false,
+    loading: () => (
+      <Skeleton className="rounded-lg">
+        <div className="h-28 lg:h-96 rounded-lg bg-default-300"></div>
+      </Skeleton>
+    )
+  }
 );
 
 const CloudinaryVideoPlayer: React.FC<CloudinaryVideoPlayerProps> = ({
@@ -21,7 +29,7 @@ const CloudinaryVideoPlayer: React.FC<CloudinaryVideoPlayerProps> = ({
   posterPublicId
 }) => {
   return (
-    <IsInView>
+    // <IsInView>
       <DynamicCldVideoPlayer
         id={useId()}
         logo={false}
@@ -33,7 +41,7 @@ const CloudinaryVideoPlayer: React.FC<CloudinaryVideoPlayerProps> = ({
           format: "default"
         })}
       />
-    </IsInView>
+    // </IsInView>
   );
 };
 

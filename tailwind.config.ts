@@ -30,6 +30,12 @@ module.exports = {
       height: {
         "half-screen": "50vh"
       },
+      minWidth: {
+        "half-screen": "50vw"
+      },
+      minHeight: {
+        "half-screen": "50vh"
+      },
       backgroundImage: {
         gradient: "linear-gradient(to right, var(--purple), var(--error))"
       },

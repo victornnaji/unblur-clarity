@@ -14,7 +14,7 @@ const InProgress = () => {
   );
 
   if (isLoading) return <div>Loading your in progress Enhancements...</div>;
-  if (error) return <div>Failed to load, please refresh the page</div>;
+  if (error || data?.error) return <div>Failed to load, please refresh the page</div>;
   if (data?.predictions?.length === 0)
     return <div>No enhancements currently in progress</div>;
 

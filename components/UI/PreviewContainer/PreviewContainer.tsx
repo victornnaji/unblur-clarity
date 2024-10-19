@@ -27,7 +27,7 @@ const PreviewContainer = ({ children }: { children: React.ReactNode }) => {
     }
   ];
   return (
-    <div className="w-full border-t-2 border-gray lg:border-none">
+    <div className="w-full border-y-2 border-gray lg:border-none min-h-40">
       <Tabs
         aria-label="Unblur Previews"
         radius="none"
