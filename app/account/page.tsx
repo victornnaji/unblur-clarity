@@ -1,9 +1,9 @@
 import BioCard from "@/components/UI/Accounts/BioCard";
 import ClientContent from "@/components/UI/Accounts/ClientContent";
+import { getUser } from "@/data/services/user.service";
 
 import {
   getSubscriptionForUser,
-  getUser,
   getAllPredictionsByUser,
   getUsersCreditsOnly,
   getUsersOneTimeCreditsOnly,

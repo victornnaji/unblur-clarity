@@ -1,15 +1,15 @@
 "use server";
 
-import { PredictionDto, UserDto } from "@/types/dtos";
+import { PredictionDto } from "@/types/dtos";
 import { cache } from "react";
 import { createClient } from "./server";
-import { getServerUser, getServerUserOrNull } from "../auth-helpers/server";
+import { getAuthUser, getAuthUserOrNull } from "@/data/services/auth.service";
 
 export const insertPrediction = async (
   prediction: PredictionDto
 ): Promise<{ id: string }> => {
   const supabase = createClient();
-  const user = await getServerUser();
+  const user = await getAuthUser();
 
   if (!prediction.id) {
     throw new Error("Prediction ID is required");
@@ -111,7 +111,7 @@ export const withdrawCreditsForUser = async (
 
 export const getSubscriptionForUser = cache(async () => {
   const supabase = createClient();
-  const user = await getServerUserOrNull();
+  const user = await getAuthUserOrNull();
   if (!user) return null;
   const { data: subscription, error } = await supabase
     .from("subscriptions")
@@ -133,34 +133,11 @@ export const getUserHasSubscription = cache(async (): Promise<boolean> => {
   return !!subscription;
 });
 
-export const getUser = cache(async (): Promise<UserDto | null> => {
-  const supabase = createClient();
-  const user = await getServerUserOrNull();
-
-  if (!user) return null;
-
-  const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (error) {
-    console.error("Error fetching user from public users:", error);
-    throw new Error("Failed to fetch user data");
-  }
-
-  return {
-    ...data,
-    provider: user.app_metadata.provider ?? ""
-  };
-});
-
 export const getCompletedPredictionsByUser = async (): Promise<
   PredictionDto[]
 > => {
   const supabase = createClient();
-  const user = await getServerUser();
+  const user = await getAuthUser();
 
   const { data, error } = await supabase
     .from("predictions")
@@ -179,7 +156,7 @@ export const getCompletedPredictionsByUser = async (): Promise<
 
 export const getInProgressPredictionsByUser = async () => {
   const supabase = createClient();
-  const user = await getServerUser();
+  const user = await getAuthUser();
 
   const { data, error } = await supabase
     .from("predictions")
@@ -198,7 +175,7 @@ export const getInProgressPredictionsByUser = async () => {
 
 export const getAllPredictionsByUser = cache(async () => {
   const supabase = createClient();
-  const user = await getServerUser();
+  const user = await getAuthUser();
 
   const { data, error } = await supabase
     .from("predictions")
@@ -234,7 +211,7 @@ export const getProducts = cache(async () => {
 
 export const getUserCredits = cache(async () => {
   const supabase = createClient();
-  const user = await getServerUserOrNull();
+  const user = await getAuthUserOrNull();
   if (!user) return null;
 
   const { data, error } = await supabase
@@ -255,7 +232,7 @@ export const getUserCredits = cache(async () => {
 
 export const getUsersCreditsOnly = cache(async () => {
   const supabase = createClient();
-  const user = await getServerUserOrNull();
+  const user = await getAuthUserOrNull();
   if (!user) return null;
 
   const { data, error } = await supabase
@@ -274,7 +251,7 @@ export const getUsersCreditsOnly = cache(async () => {
 
 export const getUsersOneTimeCreditsOnly = cache(async () => {
   const supabase = createClient();
-  const user = await getServerUserOrNull();
+  const user = await getAuthUserOrNull();
   if (!user) return null;
 
   const { data, error } = await supabase

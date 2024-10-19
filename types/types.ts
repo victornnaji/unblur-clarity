@@ -7,6 +7,8 @@ export type UnblurModel =
 
 export type UpscalingStyle = "default" | "portrait" | "anime";
 
+export type cloudinaryFolders = 'unblur-photos' | 'unblurred-photos'
+
 export interface UnblurOptionType {
   value: UnblurModel;
   label: string;

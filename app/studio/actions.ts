@@ -8,9 +8,9 @@ import {
   UPSCALE_CLARITY_MODEL,
   TENCENTARC_GFPGAN_FACE_ENHANCE_MODEL
 } from "@/config";
+import { getAuthUser } from "@/data/services/auth.service";
 import { UnblurModel } from "@/types";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
-import { getServerUser } from "@/utils/auth-helpers/server";
 import {
   getCreditsForUser,
   getUserCredits,
@@ -52,7 +52,7 @@ const defaultWebhookUrl = process.env.VERCEL_URL
   : process.env.NGROK_URL || "";
 
 export async function initiatePrediction(payload: PayloadProps) {
-  const user = await getServerUser();
+  const user = await getAuthUser();
 
   const { data: credits, error } = await getCreditsForUser(user.id);
 

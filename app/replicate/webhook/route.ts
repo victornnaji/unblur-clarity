@@ -4,6 +4,7 @@ import { mapReplicateResponseToPredictionDto } from "@/utils/api-helpers/client"
 import invariant from "tiny-invariant";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
 import { validateWebhook } from "replicate";
+import { CloudinaryError } from "@/errors/CloudinaryError";
 
 invariant(
   process.env.REPLICATE_WEBHOOK_SECRET,
@@ -75,6 +76,12 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ success: true, status: 201 });
   } catch (error) {
+    if(error instanceof CloudinaryError) {
+      return NextResponse.json(
+        { error },
+        { status: 500 }
+      );
+    };
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

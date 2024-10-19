@@ -19,3 +19,11 @@ export interface UserDto extends Tables<"users"> {
 export interface SubscriptionDto extends Tables<"subscriptions"> {
   products: ProductDto | null;
 };
+
+export interface UpdateUserDto {
+  email?: string;
+  data?: {
+    full_name?: string;
+    name?: string;
+  };
+}

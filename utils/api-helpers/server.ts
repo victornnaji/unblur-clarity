@@ -3,17 +3,24 @@
 import { PredictionDto } from "@/types/dtos";
 import { v2 as cloudinary } from "cloudinary";
 import { createClient } from "../supabase/server";
+import { CloudinaryError } from "@/errors/CloudinaryError";
+import type { cloudinaryFolders } from "@/types";
 
-export const uploadImageToCloudinary = async (imageUrl: string, folder: string = 'unblur-photos') => {
+const POLLING_INTERVAL = 2000;
+
+export const uploadImageToCloudinary = async (
+  imageUrl: string,
+  folder: cloudinaryFolders = "unblur-photos"
+) => {
   try {
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
+      api_secret: process.env.CLOUDINARY_API_SECRET
     });
 
     const result = await cloudinary.uploader.upload(imageUrl, {
-      folder,
+      folder
     });
 
     return { url: result.secure_url };
@@ -21,12 +28,17 @@ export const uploadImageToCloudinary = async (imageUrl: string, folder: string =
     //   url: "https://res.cloudinary.com/victornnaji/image/upload/v1727945534/unblur-photos/sturdmc9j3nybd5r0zza.jpg",
     // };
   } catch (error) {
-    console.error("Error uploading image to Cloudinary:", error);
-    throw new Error("Failed to upload image");
+    if (error instanceof Error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      throw new CloudinaryError("Failed to upload image", {
+        cause: error,
+        context: { imageUrl, folder }
+      });
+    }
+    console.error("An unexpected error occurred", error);
+    throw error;
   }
 };
-
-const POLLING_INTERVAL = 2000;
 
 export const pollPredictionStatus = async (predictionId: string) => {
   const supabase = createClient();

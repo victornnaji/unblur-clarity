@@ -10,10 +10,10 @@ import {
 } from "react-feather";
 import { IconButton } from "../Button";
 import TextInput from "../TextInput";
-import { updateUserProfile } from "@/utils/auth-helpers/server";
 import { showToast } from "../HotToast";
 import { ToastVariants } from "@/types";
 import AccountCard from "./Card";
+import { updateUserProfile } from "@/data/services/user.service";
 
 const BioCard = ({ user }: { user: UserDto | null }) => {
   const [message, setMessage] = useState("");
