@@ -7,7 +7,7 @@ import {
   getCreditAmount,
   getCreditsForPlan
 } from "@/utils/helpers";
-import { getCustomerByIdByAdmin } from "@/data/services/customers.service";
+import { getCustomerByCustomerIdByAdmin } from "@/data/services/customers.service";
 import { deleteProduct, upsertProduct } from "@/data/services/products.service";
 import { deletePrice, upsertPrice } from "@/data/services/prices.service";
 import {
@@ -18,7 +18,7 @@ import {
 import { upsertSubscriptionByAdmin } from "@/data/services/subscription.service";
 
 export const handleSubscription = async (subscription: Stripe.Subscription) => {
-  const customer = await getCustomerByIdByAdmin(
+  const customer = await getCustomerByCustomerIdByAdmin(
     subscription.customer as string
   );
   if (!customer) {
@@ -39,7 +39,7 @@ export const handleSubscription = async (subscription: Stripe.Subscription) => {
 export const handleSubscriptionUpdate = async (
   subscription: Stripe.CustomerSubscriptionUpdatedEvent
 ) => {
-  const customer = await getCustomerByIdByAdmin(
+  const customer = await getCustomerByCustomerIdByAdmin(
     subscription.data.object.customer as string
   );
   if (!customer) {
@@ -116,7 +116,7 @@ export const handleSubscriptionUpdate = async (
 export const handleSubscriptionDeletion = async (
   subscription: Stripe.Subscription
 ) => {
-  const customer = await getCustomerByIdByAdmin(
+  const customer = await getCustomerByCustomerIdByAdmin(
     subscription.customer as string
   );
   if (!customer) {
@@ -149,7 +149,7 @@ export const handleSubscriptionDeletion = async (
 export const handleCompletedCheckout = async (
   checkout: Stripe.Checkout.Session
 ) => {
-  const customer = await getCustomerByIdByAdmin(checkout.customer as string);
+  const customer = await getCustomerByCustomerIdByAdmin(checkout.customer as string);
   if (!customer) {
     throw new Error("Supabase customer lookup failed");
   }

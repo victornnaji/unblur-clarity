@@ -28,10 +28,7 @@ const PricingTable = ({ products, hasSubscription }: PricingTablesProps) => {
   const handleCheckout = useCallback(
     async (price: PriceDto) => {
       setIsLoading(true);
-      const { errorRedirect, sessionUrl } = await checkoutWithStripe(
-        price,
-        currentPath
-      );
+      const { errorRedirect, sessionUrl } = await checkoutWithStripe(price);
 
       if (errorRedirect) {
         return router.push(errorRedirect);

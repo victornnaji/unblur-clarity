@@ -22,6 +22,22 @@ export const getCustomerByIdByAdmin = async (id: string) => {
   }
 };
 
+export const getCustomerByCustomerIdByAdmin = async (customerId: string) => {
+  try {
+    const { data, error } = await customerRepository.getCustomerByCustomerIdByAdmin(customerId);
+    if (error) {
+      console.error(error);
+      throw new CustomError("Error fetching customer", 500, {
+        cause: error.message || error.details
+      });
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const createCustomer = async (userId: string, customerId: string) => {
   try {
     const { error } = await customerRepository.createCustomer(
