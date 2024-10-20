@@ -2,7 +2,7 @@ import React from "react";
 import NavbarLinks from "./NavbarLinks";
 import BrandLogo from "@/components/Icons/BrandLogo";
 import { Navbar as NextUINavbar } from "@nextui-org/react";
-import { getUser } from "@/data/services/user.service";
+import { getUser } from "@/data/services/users.service";
 
 const Navbar = async () => {
   const user = await getUser();

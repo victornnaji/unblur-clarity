@@ -9,14 +9,13 @@ import {
   TENCENTARC_GFPGAN_FACE_ENHANCE_MODEL
 } from "@/config";
 import { getAuthUser } from "@/data/services/auth.service";
+import {
+  getUserTotalCreditsByUserId,
+  withdrawCredits
+} from "@/data/services/credits.service";
 import { UnblurModel } from "@/types";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
-import {
-  getCreditsForUser,
-  getUserCredits,
-  insertPrediction,
-  withdrawCreditsForUser
-} from "@/utils/supabase/actions";
+import { insertPrediction } from "@/utils/supabase/actions";
 import Replicate, { type Prediction } from "replicate";
 
 interface BasePayloadProps {
@@ -54,12 +53,7 @@ const defaultWebhookUrl = process.env.VERCEL_URL
 export async function initiatePrediction(payload: PayloadProps) {
   const user = await getAuthUser();
 
-  const { data: credits, error } = await getCreditsForUser(user.id);
-
-  if (error) {
-    console.error("Error fetching credits:", error);
-    return { error: "Failed to fetch credits" };
-  }
+  const credits = await getUserTotalCreditsByUserId(user.id);
 
   if (credits <= 12) {
     return { error: "Not enough credits" };
@@ -116,11 +110,7 @@ export async function initiatePrediction(payload: PayloadProps) {
   });
 
   try {
-    const data = await withdrawCreditsForUser(user.id, CREDITS_PER_UNBLUR);
-
-    if (data.error) {
-      return { error: "Failed to withdraw credits" };
-    }
+    await withdrawCredits(user.id, CREDITS_PER_UNBLUR);
 
     const prediction: Prediction = await replicate.predictions.create({
       version: replicateModel,
@@ -151,17 +141,5 @@ export async function initiatePrediction(payload: PayloadProps) {
     const errorMessage =
       error instanceof Error ? error.message : "An unknown error occurred";
     return { error: "Prediction creation failed", details: errorMessage };
-  }
-}
-
-export async function getCredits(): Promise<{
-  credits?: number | null;
-  error?: string;
-}> {
-  try {
-    const data = await getUserCredits();
-    return { credits: data };
-  } catch (error) {
-    return { error: "Failed to fetch credits" };
   }
 }

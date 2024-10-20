@@ -1,12 +1,17 @@
+"use client";
+
 import React, { useCallback } from "react";
 import Button from "@/components/UI/Button";
 import { useAppStore } from "@/hooks/use-store";
 import { initiatePrediction } from "@/app/studio/actions";
 import { pollPredictionStatus } from "@/utils/api-helpers/server";
 import { showToast } from "../HotToast";
-import { ToastVariants } from "@/types";
+import useSWR from "swr";
+import { getUserTotalCredits } from "@/data/services/credits.service";
 
-const SidebarButton = ({ credits }: { credits: number }) => {
+const SidebarButton = () => {
+  const { data: credits } = useSWR("credits", getUserTotalCredits);
+
   const {
     photo,
     model,
@@ -32,13 +37,13 @@ const SidebarButton = ({ credits }: { credits: number }) => {
     setAppStatus({ status: "processing", message: "Gathering image data..." });
 
     try {
-      if (credits < 12) {
+      if (!credits || credits < 12) {
         setAppStatus({
           status: "error",
           message: "Not enough credits to unblur image"
         });
         showToast(
-          'error',
+          "error",
           "Not enough credits",
           "Not enough credits to unblur image",
           "sidebar-button"

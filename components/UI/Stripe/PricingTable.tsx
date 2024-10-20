@@ -5,10 +5,10 @@ import React, { useCallback, useState } from "react";
 import PricingHeader from "./PricingHeader";
 import PricingBody from "./PricingBody";
 import { usePathname, useRouter } from "next/navigation";
-import { checkoutWithStripe } from "@/utils/stripe/admin";
 import { PriceDto } from "@/types/dtos";
 import { getErrorRedirect } from "@/utils/helpers";
 import { getStripe } from "@/utils/stripe/client";
+import { checkoutWithStripe } from "@/utils/stripe/admin";
 
 interface PricingTablesProps {
   products: ProductWithPrices[];

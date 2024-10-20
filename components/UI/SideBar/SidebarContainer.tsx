@@ -6,7 +6,7 @@ import SidebarModelSelector from "./SidebarModelSelector";
 import SidebarImageSelector from "./SidebarImageSelector";
 import SidebarButton from "./SidebarButton";
 
-const SidebarContainer = ({ credits }: { credits: number }) => {
+const SidebarContainer = () => {
   return (
     <>
       <SidebarImageSelector />
@@ -14,7 +14,7 @@ const SidebarContainer = ({ credits }: { credits: number }) => {
       <div className="lg:h-80 overflow-scroll box-border">
         <SidebarUpscalingOptionsSeletors />
       </div>
-      <SidebarButton credits={credits} />
+      <SidebarButton />
     </>
   );
 };

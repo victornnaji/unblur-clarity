@@ -27,3 +27,8 @@ export interface UpdateUserDto {
     name?: string;
   };
 }
+
+export type UpdateCreditsPayloadDto = {
+  credits?: number;
+  oneTimeCredits?: number;
+};

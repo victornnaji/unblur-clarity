@@ -1,42 +1,35 @@
 "use server";
+
 import { CheckoutResponse } from "@/types";
 import { PriceDto } from "@/types/dtos";
-import { createClient } from "@/utils/supabase/server";
-import {
-  createOrRetrieveCustomer,
-  upsertPriceRecord,
-  upsertProductRecord
-} from "@/utils/supabase/admin";
 import { getErrorRedirect, getStatusRedirect, getURL } from "@/utils/helpers";
-import Stripe from "stripe";
-import { stripe } from "./config";
+import type Stripe from "stripe";
 import { links } from "@/config";
+import { createOrRetrieveCustomer } from "@/data/services/customers.service";
+import { getAuthUser } from "@/data/services/auth.service";
+import {
+  createStripePortalSession,
+  createStripeCheckoutSession,
+  retrieveProductsFromStripe,
+  retrievePricesFromStripe
+} from "@/data/services/stripe.service";
+import { upsertProduct } from "@/data/services/products.service";
+import { upsertPrice } from "@/data/services/prices.service";
+import { CustomError } from "@/errors/CustomError";
 
 export async function checkoutWithStripe(
   price: PriceDto,
   redirectPath: string = "/studio"
 ): Promise<CheckoutResponse> {
   try {
-    const supabase = createClient();
-    const {
-      error,
-      data: { user }
-    } = await supabase.auth.getUser();
+    const user = await getAuthUser();
+    const customer = await createOrRetrieveCustomer({
+      userId: user.id,
+      email: user.email || ""
+    });
 
-    if (error || !user) {
-      console.error(error);
-      throw new Error("Please login to continue");
-    }
-
-    let customer: string;
-    try {
-      customer = await createOrRetrieveCustomer({
-        userId: user?.id || "",
-        email: user?.email || ""
-      });
-    } catch (err) {
-      console.error(err);
-      throw new Error("Unable to access customer record.");
+    if (!customer) {
+      throw new Error("Could not get customer.");
     }
 
     const isSubscription = price.type === "recurring";
@@ -71,21 +64,14 @@ export async function checkoutWithStripe(
       success_url: successUrl
     };
 
-    let session;
-    try {
-      session = await stripe.checkout.sessions.create(params);
-    } catch (err) {
-      console.error(err);
-      throw new Error("Unable to create checkout session.");
-    }
-
+    const session = await createStripeCheckoutSession(params);
     if (session) {
       return { sessionUrl: session.url };
     } else {
       throw new Error("Unable to create checkout session.");
     }
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof CustomError) {
       return {
         errorRedirect: getErrorRedirect(
           links.products.path,
@@ -107,36 +93,18 @@ export async function checkoutWithStripe(
 
 export const createStripePortal = async (currentPath: string) => {
   try {
-    const supabase = createClient();
-    const {
-      error,
-      data: { user }
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      if (error) {
-        console.error(error);
-      }
-      throw new Error("Could not get user session.");
-    }
-
-    let customer;
-    try {
-      customer = await createOrRetrieveCustomer({
-        userId: user.id || "",
-        email: user.email || ""
-      });
-    } catch (err) {
-      console.error(err);
-      throw new Error("Unable to access customer record.");
-    }
+    const user = await getAuthUser();
+    const customer = await createOrRetrieveCustomer({
+      userId: user.id || "",
+      email: user.email || ""
+    });
 
     if (!customer) {
       throw new Error("Could not get customer.");
     }
 
     try {
-      const { url } = await stripe.billingPortal.sessions.create({
+      const { url } = await createStripePortalSession({
         customer,
         return_url: getURL(currentPath)
       });
@@ -168,16 +136,16 @@ export const createStripePortal = async (currentPath: string) => {
 
 export const syncStripeProductsAndPrices = async () => {
   try {
-    const products = await stripe.products.list({ active: true });
+    const products = await retrieveProductsFromStripe();
 
-    const prices = await stripe.prices.list({ active: true });
+    const prices = await retrievePricesFromStripe();
 
     for (const product of products.data) {
-      await upsertProductRecord(product);
+      await upsertProduct(product);
     }
 
     for (const price of prices.data) {
-      await upsertPriceRecord(price);
+      await upsertPrice(price);
     }
 
     console.log("Stripe products and prices synced successfully");

@@ -3,15 +3,15 @@
 import { getAuthUserOrNull } from "@/data/services/auth.service";
 import { links } from "@/config";
 import { isValidEmail, getURL, getStatusRedirect } from "@/utils/helpers";
-import { userRepository } from "@/data/repositories/user.repository";
+import { userRepository } from "@/data/repositories/users.repository";
 import { authRepository } from "@/data/repositories/auth.repository";
 import { UserNotFoundError } from "@/errors/UserNotFoundError";
-import { UpdateUserDto, UserDto } from "@/types/dtos";
+import { UpdateUserDto } from "@/types/dtos";
 import { UserUpdate } from "@/types/services";
 import { cache } from "react";
 import { CustomError } from "@/errors/CustomError";
 
-export const getUser = cache(async (): Promise<UserDto | null> => {
+export const getUser = cache(async () => {
   try {
     const user = await getAuthUserOrNull();
 
@@ -33,7 +33,7 @@ export const getUser = cache(async (): Promise<UserDto | null> => {
     return {
       ...data,
       provider: user.app_metadata.provider ?? ""
-    } as UserDto;
+    };
   } catch (error) {
     console.error(error);
     throw error;

@@ -1,24 +1,23 @@
 "use server";
 
 import Stripe from "stripe";
-import {
-  upsertSubscription,
-  updateCustomerCredits,
-  removeCustomerCredits,
-  updateCustomerOneTimeCredits,
-  upsertPriceRecord,
-  upsertProductRecord,
-  deletePriceRecord,
-  deleteProductRecord,
-  getCustomer,
-  getUsersCreditByAdmin,
-} from "../supabase/admin";
+import { upsertSubscription } from "../supabase/admin";
 import { getCreditsForPlan } from "../api-helpers/client";
 import { stripe } from "./config";
 import { calculateFairUpgradeCredits } from "../helpers";
+import { getCustomerByIdByAdmin } from "@/data/services/customers.service";
+import { deleteProduct, upsertProduct } from "@/data/services/products.service";
+import { deletePrice, upsertPrice } from "@/data/services/prices.service";
+import {
+  getUserCreditsByAdmin,
+  removeAllUserSubscriptionCreditsByAdmin,
+  updateUserCreditsByAdmin
+} from "@/data/services/credits.service";
 
 export const handleSubscription = async (subscription: Stripe.Subscription) => {
-  const customer = await getCustomer(subscription.customer as string);
+  const customer = await getCustomerByIdByAdmin(
+    subscription.customer as string
+  );
   if (!customer) {
     throw new Error("Supabase customer lookup failed");
   }
@@ -37,7 +36,7 @@ export const handleSubscription = async (subscription: Stripe.Subscription) => {
 export const handleSubscriptionUpdate = async (
   subscription: Stripe.CustomerSubscriptionUpdatedEvent
 ) => {
-  const customer = await getCustomer(
+  const customer = await getCustomerByIdByAdmin(
     subscription.data.object.customer as string
   );
   if (!customer) {
@@ -68,15 +67,20 @@ export const handleSubscriptionUpdate = async (
           subscription.data.object.latest_invoice as string
         );
         const amountPaid = invoice.amount_paid;
-        const currentCredits = await getUsersCreditByAdmin(userId);
+        const { credits: currentCredits } = await getUserCreditsByAdmin(userId);
         const totalCreditsInNewPlan = getCreditsForPlan(newProductId);
 
         console.log(
-          "amountPaid", amountPaid,
-          "newPlanPrice", newPlanPrice,
-          "previousPlanPrice", previousPlanPrice,
-          "totalCreditsInNewPlan", totalCreditsInNewPlan,
-          "currentCredits", currentCredits
+          "amountPaid",
+          amountPaid,
+          "newPlanPrice",
+          newPlanPrice,
+          "previousPlanPrice",
+          previousPlanPrice,
+          "totalCreditsInNewPlan",
+          totalCreditsInNewPlan,
+          "currentCredits",
+          currentCredits
         );
 
         const fairCredits = calculateFairUpgradeCredits(
@@ -84,10 +88,12 @@ export const handleSubscriptionUpdate = async (
           newPlanPrice,
           totalCreditsInNewPlan,
           amountPaid,
-          currentCredits,
+          currentCredits
         );
 
-        const newCredits = await updateCustomerCredits(userId, fairCredits);
+        const newCredits = await updateUserCreditsByAdmin(userId, {
+          credits: fairCredits
+        });
         console.log(
           `Credits updated successfully for user ${userId} to ${newCredits}`
         );
@@ -111,7 +117,9 @@ export const handleSubscriptionUpdate = async (
 export const handleSubscriptionDeletion = async (
   subscription: Stripe.Subscription
 ) => {
-  const customer = await getCustomer(subscription.customer as string);
+  const customer = await getCustomerByIdByAdmin(
+    subscription.customer as string
+  );
   if (!customer) {
     throw new Error("Supabase customer lookup failed");
   }
@@ -120,21 +128,21 @@ export const handleSubscriptionDeletion = async (
   try {
     await upsertSubscription(subscription, userId);
     if (subscription.status === "canceled") {
-      await removeCustomerCredits(userId);
+      await removeAllUserSubscriptionCreditsByAdmin(userId);
       console.log(
         `Credits removed for user ${userId} on subscription deletion`
       );
     }
     return {
       data: {
-        success: true,
-      },
+        success: true
+      }
     };
   } catch (error) {
     console.error(error);
     return {
       error:
-        error instanceof Error ? error.message : "An unknown error occurred",
+        error instanceof Error ? error.message : "An unknown error occurred"
     };
   }
 };
@@ -142,7 +150,7 @@ export const handleSubscriptionDeletion = async (
 export const handleCompletedCheckout = async (
   checkout: Stripe.Checkout.Session
 ) => {
-  const customer = await getCustomer(checkout.customer as string);
+  const customer = await getCustomerByIdByAdmin(checkout.customer as string);
   if (!customer) {
     throw new Error("Supabase customer lookup failed");
   }
@@ -182,7 +190,9 @@ export const updateCreditsByPlan = async (userId: string, planId: string) => {
     throw new Error("Invalid plan Id");
   }
 
-  const data = await updateCustomerCredits(userId, creditAmount);
+  const data = await updateUserCreditsByAdmin(userId, {
+    credits: creditAmount
+  });
 
   return data;
 };
@@ -197,14 +207,16 @@ export const updateOneTimeCreditsByPlan = async (
     throw new Error("Invalid plan Id");
   }
 
-  const data = await updateCustomerOneTimeCredits(userId, creditAmount);
+  const data = await updateUserCreditsByAdmin(userId, {
+    oneTimeCredits: creditAmount
+  });
 
   return data;
 };
 
 export const handlePriceRecordUpdate = async (price: Stripe.Price) => {
   try {
-    return await upsertPriceRecord(price);
+    return await upsertPrice(price);
   } catch (error) {
     console.error(error);
   }
@@ -212,7 +224,7 @@ export const handlePriceRecordUpdate = async (price: Stripe.Price) => {
 
 export const handleProductRecordUpdate = async (product: Stripe.Product) => {
   try {
-    return await upsertProductRecord(product);
+    return await upsertProduct(product);
   } catch (error) {
     console.error(error);
   }
@@ -220,7 +232,7 @@ export const handleProductRecordUpdate = async (product: Stripe.Product) => {
 
 export const handlePriceRecordDeletion = async (price: Stripe.Price) => {
   try {
-    return await deletePriceRecord(price);
+    return await deletePrice(price.id);
   } catch (error) {
     console.error(error);
   }
@@ -228,7 +240,7 @@ export const handlePriceRecordDeletion = async (price: Stripe.Price) => {
 
 export const handleProductRecordDeletion = async (product: Stripe.Product) => {
   try {
-    return await deleteProductRecord(product);
+    return await deleteProduct(product.id);
   } catch (error) {
     console.error(error);
   }

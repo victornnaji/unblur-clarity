@@ -1,12 +1,16 @@
 "use client";
 
-import { getCredits } from "@/app/studio/actions";
+import { getUserTotalCredits } from "@/data/services/credits.service";
 import { clsx } from "@/utils/clsx";
 import React from "react";
 import useSWR from "swr";
 
 const Credits = ({ className }: { className?: string }) => {
-  const { data: creditsData, error, isLoading } = useSWR("credits", getCredits);
+  const {
+    data: creditsData,
+    error,
+    isLoading
+  } = useSWR("credits", getUserTotalCredits);
 
   return (
     <div
@@ -23,7 +27,7 @@ const Credits = ({ className }: { className?: string }) => {
         <>
           <span>Credits:</span>{" "}
           <span className="font-bold">
-            {isLoading ? "***" : creditsData?.credits ?? 0} 💰
+            {isLoading ? "***" : creditsData ?? 0} 💰
           </span>
         </>
       )}

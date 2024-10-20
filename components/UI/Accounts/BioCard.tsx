@@ -13,7 +13,7 @@ import TextInput from "../TextInput";
 import { showToast } from "../HotToast";
 import { ToastVariants } from "@/types";
 import AccountCard from "./Card";
-import { updateUserProfile } from "@/data/services/user.service";
+import { updateUserProfile } from "@/data/services/users.service";
 
 const BioCard = ({ user }: { user: UserDto | null }) => {
   const [message, setMessage] = useState("");
