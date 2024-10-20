@@ -1,11 +1,12 @@
 import BioCard from "@/components/UI/Accounts/BioCard";
 import ClientContent from "@/components/UI/Accounts/ClientContent";
+
 import { getUserCredits } from "@/data/services/credits.service";
+import { getAllPredictions } from "@/data/services/predictions.service";
 import { getUser } from "@/data/services/users.service";
 
 import {
   getSubscriptionForUser,
-  getAllPredictionsByUser,
 } from "@/utils/supabase/actions";
 
 export default async function AccountPage() {
@@ -14,7 +15,7 @@ export default async function AccountPage() {
       getUser(),
       getSubscriptionForUser(),
       getUserCredits(),
-      getAllPredictionsByUser(),
+      getAllPredictions(),
     ]);
 
   return (

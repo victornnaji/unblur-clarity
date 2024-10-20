@@ -40,12 +40,12 @@ const SidebarButton = () => {
       if (!credits || credits < 12) {
         setAppStatus({
           status: "error",
-          message: "Not enough credits to unblur image"
+          message: `Not enough credits to ${buttonText}`
         });
         showToast(
           "error",
-          "Not enough credits",
-          "Not enough credits to unblur image",
+          "Insufficient credits",
+          `Not enough credits to ${buttonText}`,
           "sidebar-button"
         );
         return;
@@ -59,7 +59,7 @@ const SidebarButton = () => {
       });
 
       if (!response.predictionId) {
-        throw new Error("No prediction ID returned");
+        throw new Error("Prediction was not started. Please try again.");
       }
 
       setAppStatus({ status: "processing", message: "Processing image..." });
@@ -104,6 +104,14 @@ const SidebarButton = () => {
       }
     } catch (error) {
       console.error("Prediction error:", error);
+      showToast(
+        "error",
+        "An error occurred",
+        error instanceof Error
+          ? error.message
+          : "An error occurred while processing your image.",
+        "sidebar-button"
+      );
       setAppStatus({
         status: "error",
         message:

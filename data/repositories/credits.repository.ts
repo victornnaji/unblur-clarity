@@ -30,6 +30,23 @@ const updateUserCreditsByAdmin = async (
   return { error };
 };
 
+const updateUserCredits = async (
+  userId: string,
+  updatePayload: UpdateCreditsPayloadDto
+) => {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("users")
+    .update({
+      credits: updatePayload.credits,
+      one_time_credits: updatePayload.oneTimeCredits
+    })
+    .eq("id", userId)
+    .select();
+
+  return { error };
+};
+
 const removeAllUserSubscriptionCreditsByAdmin = async (userId: string) => {
   const supabaseAdmin = createServiceRoleClient();
   const { error } = await supabaseAdmin
@@ -55,5 +72,6 @@ export const creditsRepository = {
   getUserCreditsByUserId,
   updateUserCreditsByAdmin,
   removeAllUserSubscriptionCreditsByAdmin,
-  getUserCreditsByAdmin
+  getUserCreditsByAdmin,
+  updateUserCredits
 };

@@ -1,10 +1,9 @@
 "use server";
 
 import { PredictionDto } from "@/types/dtos";
-import { v2 as cloudinary } from "cloudinary";
-import { createClient } from "../supabase/server";
-import { CloudinaryError } from "@/errors/CloudinaryError";
 import type { cloudinaryFolders } from "@/types";
+import { getPredictionById } from "@/data/services/predictions.service";
+import { uploadImage } from "@/data/services/upload.service";
 
 const POLLING_INTERVAL = 2000;
 
@@ -12,49 +11,18 @@ export const uploadImageToCloudinary = async (
   imageUrl: string,
   folder: cloudinaryFolders = "unblur-photos"
 ) => {
-  try {
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET
-    });
-
-    const result = await cloudinary.uploader.upload(imageUrl, {
-      folder
-    });
-
-    return { url: result.secure_url };
-    // return {
-    //   url: "https://res.cloudinary.com/victornnaji/image/upload/v1727945534/unblur-photos/sturdmc9j3nybd5r0zza.jpg",
-    // };
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error uploading image to Cloudinary:", error);
-      throw new CloudinaryError("Failed to upload image", {
-        cause: error,
-        context: { imageUrl, folder }
-      });
-    }
-    console.error("An unexpected error occurred", error);
-    throw error;
-  }
+  const result = await uploadImage(imageUrl, folder);
+  return result;
+  // return {
+  //   url: "https://res.cloudinary.com/victornnaji/image/upload/v1727945534/unblur-photos/sturdmc9j3nybd5r0zza.jpg",
+  // };
 };
 
 export const pollPredictionStatus = async (predictionId: string) => {
-  const supabase = createClient();
-
   const checkStatus = async (): Promise<PredictionDto> => {
-    const { data, error }: { data: PredictionDto | null; error: any } =
-      await supabase
-        .from("predictions")
-        .select("*")
-        .eq("id", predictionId)
-        .single();
+    const data = await getPredictionById(predictionId);
 
-    if (error) throw new Error(`Error fetching prediction: ${error.message}`);
-    if (!data) throw new Error("Prediction not found");
-
-    if (!["starting", "processing"].includes(data.status)) {
+    if (!["starting", "processing"].includes(data.status || "")) {
       return data;
     }
 
@@ -66,16 +34,6 @@ export const pollPredictionStatus = async (predictionId: string) => {
 };
 
 export const getPredictionStartTime = async (predictionId: string) => {
-  const supabase = createClient();
-  const { data, error }: { data: PredictionDto | null; error: any } =
-    await supabase
-      .from("predictions")
-      .select("created_at")
-      .eq("id", predictionId)
-      .single();
-
-  if (error) throw new Error(`Error fetching prediction: ${error.message}`);
-  if (!data) throw new Error("Prediction not found");
-
+  const data = await getPredictionById(predictionId);
   return data.created_at;
 };

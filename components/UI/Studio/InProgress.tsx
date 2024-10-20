@@ -1,26 +1,27 @@
 "use client";
 
-import { getInProgressPredictions } from "@/app/studio/in-progress/action";
 import React from "react";
 import useSWR from "swr";
 import PreviewCard from "@/components/UI/PreviewContainer/PreviewCard";
 import { formatTime, shortenFileName } from "@/utils/helpers";
 import { Spinner } from "@nextui-org/react";
+import { getInProgressPredictions } from "@/data/services/predictions.service";
 
 const InProgress = () => {
-  const { data, error, isLoading } = useSWR(
-    "inProgressPredictions",
-    getInProgressPredictions
-  );
+  const {
+    data: predictions,
+    error,
+    isLoading
+  } = useSWR("inProgressPredictions", getInProgressPredictions);
 
+  if (error) return <div>Failed to load, please refresh the page</div>;
   if (isLoading) return <div>Loading your in progress Enhancements...</div>;
-  if (error || data?.error) return <div>Failed to load, please refresh the page</div>;
-  if (data?.predictions?.length === 0)
+  if (predictions?.length === 0)
     return <div>No enhancements currently in progress</div>;
 
   return (
     <div className="card-container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-auto-fit-300 gap-3">
-      {data?.predictions?.map((prediction) => (
+      {predictions?.map((prediction) => (
         <div key={prediction.id} className="relative">
           <PreviewCard
             image={{

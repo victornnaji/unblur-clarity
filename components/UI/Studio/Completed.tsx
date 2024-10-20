@@ -4,31 +4,32 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import { Download, Maximize2, Trash2 } from "react-feather";
 import { downloadPhoto, formatTime, shortenFileName } from "@/utils/helpers";
-import { getCompletedPredictions } from "@/app/studio/completed/action";
 import PreviewCard from "@/components/UI/PreviewContainer/PreviewCard";
 import { IconButton } from "@/components/UI/Button";
 import Modal from "@/components/UI/Modal";
 import PhotoCompare from "@/components/UI/PhotoCompare";
+import { getCompletedPredictions } from "@/data/services/predictions.service";
 
 const Completed = () => {
   const [openPredictionId, setOpenPredictionId] = useState<string | null>(null);
 
-  const { data, error, isLoading } = useSWR(
-    "completedPredictions",
-    getCompletedPredictions
-  );
+  const {
+    data: predictions,
+    error,
+    isLoading
+  } = useSWR("completedPredictions", getCompletedPredictions);
 
-  if (!data?.predictions || isLoading)
+  if (error) return <p>Failed to load, please refresh the page</p>;
+  if (!predictions || isLoading)
     return <div>Loading your completed Enhancements...</div>;
-  if (data.predictions.length === 0)
-    return <div>No enhancements currently in progress</div>;
-  if (error || data?.error) return <p>Failed to load, please refresh the page</p>;
+  if (predictions.length === 0)
+    return <div>No completed Enhancements so far</div>;
 
   return (
     <div className="card-container grid grid-cols-1 md:grid-cols-2 xl:grid-cols-auto-fit-300 gap-3">
       <>
-        {data?.predictions &&
-          data.predictions.map((prediction) => (
+        {predictions &&
+          predictions.map((prediction) => (
             <div key={prediction.id}>
               <PreviewCard
                 header={

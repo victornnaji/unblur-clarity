@@ -145,6 +145,30 @@ export const updateUserCreditsByAdmin = async (
   }
 };
 
+export const updateUserCredits = async (
+  userId: string,
+  { credits, oneTimeCredits }: UpdateCreditsPayload
+) => {
+  try {
+    const { error } = await creditsRepository.updateUserCreditsByAdmin(userId, {
+      credits,
+      oneTimeCredits
+    });
+
+    if (error) {
+      throw new CustomError("Error updating user credits", 500, {
+        cause: error.message || error.details,
+        context: {
+          userId
+        }
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const withdrawCredits = async (
   userId: string,
   creditsToWithdraw: number
@@ -177,7 +201,7 @@ export const withdrawCredits = async (
     const newOneTimeCredits =
       currentOneTimeCredits - creditsToWithdrawFromOneTime;
 
-    await updateUserCreditsByAdmin(userId, {
+    await updateUserCredits(userId, {
       credits: newCredits,
       oneTimeCredits: newOneTimeCredits
     });

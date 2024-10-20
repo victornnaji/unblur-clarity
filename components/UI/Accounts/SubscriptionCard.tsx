@@ -42,7 +42,7 @@ const SubscriptionCard = ({
               </span>
             </>
           ) : (
-            <span>No subscription</span>
+            <span className="text-error">No subscription</span>
           )}
         </div>
         <div className="border-t border-gray-200">

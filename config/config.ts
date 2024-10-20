@@ -15,6 +15,9 @@ export const imageUpscalingStyleOptions: ImageUpscalingStyleOptionType[] = [
 ];
 export const DEFAULT_UPSCALING_STYLE = imageUpscalingStyleOptions[0];
 
+export const UPSCALE_CLARITY_SYSTEM_PROMPT =
+  "masterpiece, best quality, highres, <lora:more_details:0.5> <lora:SDXLrender_v2.0:1>";
+
 export const UPSCALE_CLARITY_MODEL =
   "dfad41707589d68ecdccd1dfa600d55a208f9310748e44bfe35b4a6291453d5e";
 export const MEGVII_ENHANCE_MODEL =
