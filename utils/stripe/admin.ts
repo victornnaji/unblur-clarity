@@ -1,10 +1,10 @@
 "use server";
 
+import type Stripe from "stripe";
+import { links } from "@/config";
 import { CheckoutResponse } from "@/types";
 import { PriceDto } from "@/types/dtos";
 import { getErrorRedirect, getStatusRedirect, getURL } from "@/utils/helpers";
-import type Stripe from "stripe";
-import { links } from "@/config";
 import { createOrRetrieveCustomer } from "@/data/services/customers.service";
 import { getAuthUser } from "@/data/services/auth.service";
 import {

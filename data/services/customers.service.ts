@@ -106,12 +106,12 @@ export const createOrRetrieveCustomer = async ({
       console.warn(
         `Supabase customer record was missing. A new record was created.`
       );
-
       // If Supabase has no record, create a new record and return Stripe customer ID
       const upsertedStripeCustomer = await createCustomer(
         userId,
         stripeIdToInsert
       );
+
       if (!upsertedStripeCustomer)
         throw new Error("Supabase customer record creation failed.");
 

@@ -31,6 +31,13 @@ const retrievePricesFromStripe = async () => {
   return prices;
 };
 
+const retrieveSubscriptionFromStripe = async () => {
+  const subscription = await stripe.subscriptions.list({
+    status: "active"
+  });
+  return subscription;
+};
+
 const retrieveCustomerFromStripeById = async (customerId: string) => {
   const customer = await stripe.customers.retrieve(customerId);
   return customer;
@@ -48,5 +55,6 @@ export const stripeRepository = {
   retrieveProductsFromStripe,
   retrieveCustomerFromStripeById,
   retrieveCustomerFromStripeByEmail,
-  retrievePricesFromStripe
+  retrievePricesFromStripe,
+  retrieveSubscriptionFromStripe
 };

@@ -1,3 +1,5 @@
+"use server";
+
 import { ProductDto } from "@/types/dtos";
 import { productRepository } from "@/data/repositories/products.repository";
 import { CustomError } from "@/errors/CustomError";

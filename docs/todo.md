@@ -1,6 +1,6 @@
 TODO: 
 Version 1:
-- [ ] Propagate cloudinary error to user
+- [x] Propagate cloudinary error to user
 - [ ] Check cloudinary image restriction based on size (check if we can resize on the server)
 - [x] Use SWR library for completed and in-progress prediction pages (https://swr.vercel.app/docs/with-nextjs)
 - [ ] Add reset tab functionality

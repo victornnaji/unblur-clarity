@@ -1,9 +1,22 @@
 import { createServiceRoleClient } from "@/utils/supabase/admin";
+import { createClient } from "@/utils/supabase/server";
 
-const getCustomerByIdByAdmin = async (customerId: string) => {
+const getCustomerByIdByAdmin = async (userId: string) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { data, error } = await supabaseAdmin
+    .from("customers")
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle();
+
+  return { data, error };
+};
+
+const getCustomerByCustomerId = async (customerId: string) => {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
     .from("customers")
     .select("*")
     .eq("stripe_customer_id", customerId)
@@ -26,10 +39,7 @@ const createCustomer = async (userId: string, customerId: string) => {
   return { error };
 };
 
-const updateCustomer = async (
-  userId: string,
-  stripeCustomerId: string
-) => {
+const updateCustomer = async (userId: string, stripeCustomerId: string) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { error } = await supabaseAdmin
@@ -43,5 +53,6 @@ const updateCustomer = async (
 export const customerRepository = {
   getCustomerByIdByAdmin,
   createCustomer,
-  updateCustomer
+  updateCustomer,
+  getCustomerByCustomerId
 };

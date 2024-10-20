@@ -1,3 +1,5 @@
+"use server";
+
 import { stripeRepository } from "@/data/repositories/stripe.repository";
 import { CustomError } from "@/errors/CustomError";
 import type Stripe from "stripe";
@@ -90,4 +92,14 @@ export const retrieveCustomerFromStripeByEmail = async (email: string) => {
     );
     return customers;
   } catch (error) {}
+};
+
+export const retrieveSubscriptionFromStripe = async () => {
+  try {
+    const subscription = await stripeRepository.retrieveSubscriptionFromStripe();
+    return subscription;
+  } catch (error) {
+    console.error(error);
+    throw new CustomError("Unable to retrieve subscription.", 500);
+  }
 };

@@ -10,6 +10,7 @@ import { UpdateUserDto } from "@/types/dtos";
 import { UserUpdate } from "@/types/services";
 import { cache } from "react";
 import { CustomError } from "@/errors/CustomError";
+import { customerRepository } from "@/data/repositories/customers.repository";
 
 export const getUser = cache(async () => {
   try {
@@ -20,10 +21,10 @@ export const getUser = cache(async () => {
     }
     const { data, error } = await userRepository.getUserById(user.id);
 
-    if(error) {
+    if (error) {
       throw new CustomError(error.message, 500, {
         cause: error.details
-      })
+      });
     }
 
     if (!data) {
@@ -39,6 +40,35 @@ export const getUser = cache(async () => {
     throw error;
   }
 });
+
+export const getUserIdByCustomerId = async (customerId: string) => {
+  try {
+    const user = await getAuthUserOrNull();
+
+    if (!user) {
+      return null;
+    }
+
+    const { data, error } = await customerRepository.getCustomerByIdByAdmin(
+      customerId
+    );
+
+    if (error) {
+      throw new CustomError(error.message, 500, {
+        cause: error.details
+      });
+    }
+
+    if (!data) {
+      throw new UserNotFoundError();
+    }
+
+    return data.id;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 export const updateUserProfile = async (updateData: UserUpdate) => {
   try {
