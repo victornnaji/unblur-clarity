@@ -1,8 +1,4 @@
-import {
-  BillingInterval,
-  ProductWithPrices,
-  SubscriptionWithProducts
-} from "@/types";
+import { BillingInterval, ProductWithPrices } from "@/types";
 import React from "react";
 import PricingCard from "./PricingCard";
 import styles from "./pricing.module.css";

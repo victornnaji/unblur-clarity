@@ -11,7 +11,7 @@ import {
   handleSubscription,
   handleSubscriptionDeletion,
   handleSubscriptionUpdate
-} from "@/utils/stripe/server";
+} from "@/utils/stripe/actions";
 import { stripe } from "@/utils/stripe/config";
 
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;

@@ -1,10 +1,10 @@
 import React from "react";
 import Faq from "@/components/UI/FAQ";
 import { productsFaq } from "@/config";
-import { getUserHasSubscription } from "@/utils/supabase/actions";
 import dynamic from "next/dynamic";
 import LoadingDots from "@/components/UI/LoadingDots";
 import { getAllProducts } from "@/data/services/products.service";
+import { checkSubscriptionStatus } from "@/data/services/subscription.service";
 
 const PricingTable = dynamic(
   () => import("@/components/UI/Stripe/PricingTable"),
@@ -20,7 +20,7 @@ const PricingTable = dynamic(
 export default async function Products() {
   const [products, hasSubscription] = await Promise.all([
     getAllProducts(),
-    getUserHasSubscription(),
+    checkSubscriptionStatus(),
   ]);
 
   return (

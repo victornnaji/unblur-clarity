@@ -7,7 +7,7 @@ export type UnblurModel =
 
 export type UpscalingStyle = "default" | "portrait" | "anime";
 
-export type cloudinaryFolders = 'unblur-photos' | 'unblurred-photos'
+export type cloudinaryFolders = "unblur-photos" | "unblurred-photos";
 
 export interface UnblurOptionType {
   value: UnblurModel;
@@ -33,7 +33,7 @@ export enum AppStatusEnum {
   PROCESSING = "processing",
   CANCELED = "canceled",
   SUCCESS = "success",
-  ERROR = "error",
+  ERROR = "error"
 }
 
 export type BillingInterval = "month" | "year" | "one_time";
@@ -42,7 +42,7 @@ export enum PlanName {
   STANDARD = "STANDARD",
   PREMIUM = "PREMIUM",
   ONE_TIME_BASIC = "ONE_TIME_BASIC",
-  ONE_TIME_STANDARD = "ONE_TIME_STANDARD",
+  ONE_TIME_STANDARD = "ONE_TIME_STANDARD"
 }
 
 export interface PlanDetails {
@@ -63,6 +63,11 @@ export interface ProductWithPrices extends ProductDto {
   prices: PriceDto[];
 }
 
-export interface SubscriptionWithProducts extends SubscriptionDto {
+export interface SubscriptionWithProduct extends SubscriptionDto {
+  products: ProductDto | null;
+}
+
+export interface SubscriptionWithProductsAndPrice
+  extends SubscriptionWithProduct {
   prices: PriceWithProduct | null;
 }

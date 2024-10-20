@@ -148,3 +148,26 @@ export const getPredictionById = async (predictionId: string) => {
     throw error;
   }
 };
+
+export const updatePredictionByAdmin = async (
+  prediction: Partial<PredictionDto>
+) => {
+  try {
+    if (!prediction.id) {
+      throw new CustomError("Prediction ID is required for update", 400);
+    }
+    const { data, error } = await predictionRepository.updatePredictionByAdmin(
+      prediction
+    );
+    if (error) {
+      console.error(error);
+      throw new CustomError("Failed to update prediction", 500, {
+        cause: error.message || error.details
+      });
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

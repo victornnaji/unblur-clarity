@@ -1,11 +1,7 @@
 import clsx from "clsx";
 import React from "react";
 import styles from "./pricing.module.css";
-import {
-  BillingInterval,
-  ProductWithPrices,
-  SubscriptionWithProducts
-} from "@/types";
+import { BillingInterval, ProductWithPrices } from "@/types";
 import { PriceDto } from "@/types/dtos";
 import { Button } from "@/components/UI/Button";
 

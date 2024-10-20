@@ -1,13 +1,14 @@
 "use client";
 
-import { PredictionDto, SubscriptionDto } from "@/types/dtos";
-import { getCreditsForPlan } from "@/utils/api-helpers/client";
+import { PredictionDto } from "@/types/dtos";
 import { Chip } from "@nextui-org/react";
 import React from "react";
 import { Button } from "@/components/UI/Button";
 import { SubscriptionRow } from "./SubscriptionRow";
 import AccountCard from "./Card";
 import { links } from "@/config";
+import { SubscriptionWithProduct } from "@/types";
+import { getCreditsForPlan } from "@/utils/helpers";
 
 const SubscriptionCard = ({
   subscription,
@@ -16,7 +17,7 @@ const SubscriptionCard = ({
   subscriptionUpgradeUrl,
   predictions
 }: {
-  subscription: SubscriptionDto | null;
+  subscription: SubscriptionWithProduct | null;
   credits: number | null;
   oneTimeCredits: number | null;
   subscriptionUpgradeUrl: string | null;
@@ -89,7 +90,9 @@ const SubscriptionCard = ({
         </div>
         {subscriptionUpgradeUrl ? (
           <div className="flex justify-start sm:w-fit">
-            <Button href={subscriptionUpgradeUrl} className="w-full">Upgrade Subscription</Button>
+            <Button href={subscriptionUpgradeUrl} className="w-full">
+              Upgrade Subscription
+            </Button>
           </div>
         ) : (
           <div className="flex justify-start sm:w-fit">

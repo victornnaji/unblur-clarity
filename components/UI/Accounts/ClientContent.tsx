@@ -3,7 +3,8 @@
 import StripeCard from "@/components/UI/Accounts/StripeCard";
 import SubscriptionCard from "@/components/UI/Accounts/SubscriptionCard";
 import { links } from "@/config";
-import { PredictionDto, SubscriptionDto } from "@/types/dtos";
+import { SubscriptionWithProduct } from "@/types";
+import { PredictionDto } from "@/types/dtos";
 import { createStripePortal } from "@/utils/stripe/admin";
 import { useEffect, useState } from "react";
 
@@ -13,7 +14,7 @@ export function ClientContent({
   oneTimeCredits,
   predictions
 }: {
-  subscription: SubscriptionDto | null;
+  subscription: SubscriptionWithProduct | null;
   credits: any;
   oneTimeCredits: any;
   predictions: PredictionDto[];

@@ -1,4 +1,3 @@
-import { creditsByPlan } from "@/config";
 import { PredictionDto } from "@/types/dtos";
 import { type Prediction } from "replicate";
 
@@ -17,9 +16,4 @@ export const mapReplicateResponseToPredictionDto = (response: Prediction) => {
   };
 
   return mappedResponse;
-};
-
-export const getCreditsForPlan = (planId: string) => {
-  const plan = Object.values(creditsByPlan).find((plan) => plan.id === planId);
-  return plan?.credits || 0;
 };

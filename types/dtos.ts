@@ -6,19 +6,18 @@ export interface PredictionDto extends Tables<"predictions"> {
   predict_time: string | null;
 }
 
-export interface ProductDto extends Tables<"products"> {};
+export interface ProductDto extends Tables<"products"> {}
 
 export interface PriceDto extends Tables<"prices"> {
   type: "recurring" | "one_time" | null;
-};
+}
 
 export interface UserDto extends Tables<"users"> {
   provider: string;
-};
+}
 
-export interface SubscriptionDto extends Tables<"subscriptions"> {
-  products: ProductDto | null;
-};
+export interface SubscriptionDto extends Tables<"subscriptions"> {}
+
 
 export interface UpdateUserDto {
   email?: string;
@@ -38,4 +37,4 @@ export type CreateReplicatePredictionDto = {
   input: any;
   userId: string;
   webhookUrl: string;
-}
+};

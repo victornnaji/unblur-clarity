@@ -1,4 +1,5 @@
 import { PredictionDto } from "@/types/dtos";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 
 const getAllPredictionsByUserId = async (userId: string) => {
@@ -65,10 +66,24 @@ const createPrediction = async (prediction: PredictionDto) => {
   return { id: data?.id, error };
 };
 
+const updatePredictionByAdmin = async (prediction: Partial<PredictionDto>) => {
+  const supabaseAdmin = createServiceRoleClient();
+
+  const { data, error } = await supabaseAdmin
+    .from("predictions")
+    .update(prediction)
+    .eq("id", prediction.id!)
+    .select()
+    .single();
+
+  return { data, error };
+};
+
 export const predictionRepository = {
   getAllPredictionsByUserId,
   getInProgressPredictionsByUserId,
   getCompletedPredictionsByUserId,
   createPrediction,
-  getPredictionById
+  getPredictionById,
+  updatePredictionByAdmin
 };

@@ -1,10 +1,12 @@
 "use server";
 
 import Stripe from "stripe";
-import { upsertSubscription } from "../supabase/admin";
-import { getCreditsForPlan } from "../api-helpers/client";
 import { stripe } from "./config";
-import { calculateFairUpgradeCredits } from "../helpers";
+import {
+  calculateFairUpgradeCredits,
+  getCreditAmount,
+  getCreditsForPlan
+} from "@/utils/helpers";
 import { getCustomerByIdByAdmin } from "@/data/services/customers.service";
 import { deleteProduct, upsertProduct } from "@/data/services/products.service";
 import { deletePrice, upsertPrice } from "@/data/services/prices.service";
@@ -13,6 +15,7 @@ import {
   removeAllUserSubscriptionCreditsByAdmin,
   updateUserCreditsByAdmin
 } from "@/data/services/credits.service";
+import { upsertSubscriptionByAdmin } from "@/data/services/subscription.service";
 
 export const handleSubscription = async (subscription: Stripe.Subscription) => {
   const customer = await getCustomerByIdByAdmin(
@@ -23,7 +26,7 @@ export const handleSubscription = async (subscription: Stripe.Subscription) => {
   }
   const userId = customer.id;
   try {
-    await upsertSubscription(subscription, userId);
+    await upsertSubscriptionByAdmin(subscription, userId);
     console.log(
       `Subscription ${subscription.id} updated successfully for user ${userId}`
     );
@@ -45,7 +48,7 @@ export const handleSubscriptionUpdate = async (
   const userId = customer.id;
 
   try {
-    await upsertSubscription(
+    await upsertSubscriptionByAdmin(
       subscription.data.object as Stripe.Subscription,
       userId
     );
@@ -91,13 +94,9 @@ export const handleSubscriptionUpdate = async (
           currentCredits
         );
 
-        const newCredits = await updateUserCreditsByAdmin(userId, {
+        await updateUserCreditsByAdmin(userId, {
           credits: fairCredits
         });
-        console.log(
-          `Credits updated successfully for user ${userId} to ${newCredits}`
-        );
-        return newCredits;
       } else {
         console.log(
           `Plan changed for user ${userId}, but no credit update needed`
@@ -126,7 +125,7 @@ export const handleSubscriptionDeletion = async (
   const userId = customer.id;
 
   try {
-    await upsertSubscription(subscription, userId);
+    await upsertSubscriptionByAdmin(subscription, userId);
     if (subscription.status === "canceled") {
       await removeAllUserSubscriptionCreditsByAdmin(userId);
       console.log(
@@ -162,7 +161,10 @@ export const handleCompletedCheckout = async (
     );
     const planId = subscription.data[0].price?.product as string;
     try {
-      await updateCreditsByPlan(userId, planId);
+      const creditAmount = getCreditAmount(planId);
+      await updateUserCreditsByAdmin(userId, {
+        credits: creditAmount
+      });
       console.log(`Credits updated for user ${userId} on completed checkout`);
     } catch (error) {
       console.error(error);
@@ -172,7 +174,10 @@ export const handleCompletedCheckout = async (
     const payment = await stripe.checkout.sessions.listLineItems(checkout.id);
     const planId = payment.data[0].price?.product as string;
     try {
-      await updateOneTimeCreditsByPlan(userId, planId);
+      const creditAmount = getCreditAmount(planId);
+      await updateUserCreditsByAdmin(userId, {
+        oneTimeCredits: creditAmount
+      });
       console.log(
         `One-time credits updated for user ${userId} on completed checkout`
       );
@@ -181,37 +186,6 @@ export const handleCompletedCheckout = async (
       throw error;
     }
   }
-};
-
-export const updateCreditsByPlan = async (userId: string, planId: string) => {
-  const creditAmount = getCreditsForPlan(planId);
-
-  if (!creditAmount) {
-    throw new Error("Invalid plan Id");
-  }
-
-  const data = await updateUserCreditsByAdmin(userId, {
-    credits: creditAmount
-  });
-
-  return data;
-};
-
-export const updateOneTimeCreditsByPlan = async (
-  userId: string,
-  planId: string
-) => {
-  const creditAmount = getCreditsForPlan(planId);
-
-  if (!creditAmount) {
-    throw new Error("Invalid plan Id");
-  }
-
-  const data = await updateUserCreditsByAdmin(userId, {
-    oneTimeCredits: creditAmount
-  });
-
-  return data;
 };
 
 export const handlePriceRecordUpdate = async (price: Stripe.Price) => {

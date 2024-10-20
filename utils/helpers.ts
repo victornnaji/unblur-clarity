@@ -1,3 +1,4 @@
+import { creditsByPlan } from "@/config";
 import { ToastVariants } from "@/types";
 import moment from "moment";
 
@@ -171,3 +172,16 @@ export function calculateFairUpgradeCredits(
   
   return Math.max(fairCredits, 0);
 }
+
+export const getCreditsForPlan = (planId: string) => {
+  const plan = Object.values(creditsByPlan).find((plan) => plan.id === planId);
+  return plan?.credits || 0;
+};
+
+export const getCreditAmount = (planId: string) => {
+  const creditAmount = getCreditsForPlan(planId);
+  if (!creditAmount) {
+    throw new Error("Invalid plan Id");
+  }
+  return creditAmount;
+};
