@@ -1,8 +1,10 @@
+"use server";
+
 import { UpdateCreditsPayloadDto } from "@/types/dtos";
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 
-const getUserCreditsByUserId = async (userId: string) => {
+export const getUserCreditsByUserIdRepository = async (userId: string) => {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("users")
@@ -13,7 +15,7 @@ const getUserCreditsByUserId = async (userId: string) => {
   return { data, error };
 };
 
-const updateUserCreditsByAdmin = async (
+export const updateUserCreditsByAdminRepository = async (
   userId: string,
   updatePayload: UpdateCreditsPayloadDto
 ) => {
@@ -30,7 +32,7 @@ const updateUserCreditsByAdmin = async (
   return { error };
 };
 
-const updateUserCredits = async (
+export const updateUserCreditsRepository = async (
   userId: string,
   updatePayload: UpdateCreditsPayloadDto
 ) => {
@@ -47,7 +49,7 @@ const updateUserCredits = async (
   return { error };
 };
 
-const removeAllUserSubscriptionCreditsByAdmin = async (userId: string) => {
+export const removeAllUserSubscriptionCreditsByAdminRepository = async (userId: string) => {
   const supabaseAdmin = createServiceRoleClient();
   const { error } = await supabaseAdmin
     .from("users")
@@ -57,7 +59,7 @@ const removeAllUserSubscriptionCreditsByAdmin = async (userId: string) => {
   return { error };
 };
 
-const getUserCreditsByAdmin = async (userId: string) => {
+export const getUserCreditsByAdminRepository = async (userId: string) => {
   const supabaseAdmin = createServiceRoleClient();
   const { data, error } = await supabaseAdmin
     .from("users")
@@ -68,10 +70,3 @@ const getUserCreditsByAdmin = async (userId: string) => {
   return { data, error };
 };
 
-export const creditsRepository = {
-  getUserCreditsByUserId,
-  updateUserCreditsByAdmin,
-  removeAllUserSubscriptionCreditsByAdmin,
-  getUserCreditsByAdmin,
-  updateUserCredits
-};

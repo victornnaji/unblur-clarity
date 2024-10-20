@@ -1,7 +1,9 @@
+"use server";
+
 import { UpdateUserDto } from "@/types/dtos";
 import { createClient } from "@/utils/supabase/server";
 
-const getUserById = async (id: string) => {
+export const getUserByIdRepository = async (id: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -13,7 +15,7 @@ const getUserById = async (id: string) => {
   return { data, error };
 };
 
-const updateUser = async (
+export const updateUserRepository = async (
   updatePayload: UpdateUserDto,
   redirectTo?: string
 ) => {
@@ -24,9 +26,4 @@ const updateUser = async (
   });
 
   return { error: error ? new Error(error.message) : null };
-};
-
-export const userRepository = {
-  updateUser,
-  getUserById
 };

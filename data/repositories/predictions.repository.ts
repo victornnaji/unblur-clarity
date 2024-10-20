@@ -1,8 +1,10 @@
+"use server";
+
 import { PredictionDto } from "@/types/dtos";
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 
-const getAllPredictionsByUserId = async (userId: string) => {
+export const getAllPredictionsByUserIdRepository = async (userId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -14,7 +16,7 @@ const getAllPredictionsByUserId = async (userId: string) => {
   return { data, error };
 };
 
-const getPredictionById = async (predictionId: string) => {
+export const getPredictionByIdRepository = async (predictionId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -26,7 +28,7 @@ const getPredictionById = async (predictionId: string) => {
   return { data, error };
 };
 
-const getInProgressPredictionsByUserId = async (userId: string) => {
+export const getInProgressPredictionsByUserIdRepository = async (userId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -39,7 +41,7 @@ const getInProgressPredictionsByUserId = async (userId: string) => {
   return { data, error };
 };
 
-const getCompletedPredictionsByUserId = async (userId: string) => {
+export const getCompletedPredictionsByUserIdRepository = async (userId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -52,7 +54,7 @@ const getCompletedPredictionsByUserId = async (userId: string) => {
   return { data, error };
 };
 
-const createPrediction = async (prediction: PredictionDto) => {
+export const createPredictionRepository = async (prediction: PredictionDto) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -66,7 +68,7 @@ const createPrediction = async (prediction: PredictionDto) => {
   return { id: data?.id, error };
 };
 
-const updatePredictionByAdmin = async (prediction: Partial<PredictionDto>) => {
+export const updatePredictionByAdminRepository = async (prediction: Partial<PredictionDto>) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { data, error } = await supabaseAdmin
@@ -77,13 +79,4 @@ const updatePredictionByAdmin = async (prediction: Partial<PredictionDto>) => {
     .single();
 
   return { data, error };
-};
-
-export const predictionRepository = {
-  getAllPredictionsByUserId,
-  getInProgressPredictionsByUserId,
-  getCompletedPredictionsByUserId,
-  createPrediction,
-  getPredictionById,
-  updatePredictionByAdmin
 };

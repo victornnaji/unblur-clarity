@@ -1,8 +1,10 @@
+"use server";
+
 import { v2 as cloudinary } from "cloudinary";
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { randomUUID } from "node:crypto";
 
-const uploadImageToCloudinary = async (imageUrl: string, folder: string) => {
+export const uploadImageToCloudinaryRepository = async (imageUrl: string, folder: string) => {
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -16,7 +18,7 @@ const uploadImageToCloudinary = async (imageUrl: string, folder: string) => {
   return uploadResult;
 };
 
-const uploadImageToSupabase = async (imageUrl: string, folder: string) => {
+export const uploadImageToSupabaseRepository = async (imageUrl: string, folder: string) => {
   const fileName = `${randomUUID()}-unblurred.png`;
   const supabaseAdmin = createServiceRoleClient();
 
@@ -30,15 +32,9 @@ const uploadImageToSupabase = async (imageUrl: string, folder: string) => {
   return { fileName, error: uploadResult.error };
 };
 
-const getImageFromSupabase = async (fileName: string, folder: string) => {
+export const getImageFromSupabaseRepository = async (fileName: string, folder: string) => {
   const supabaseAdmin = createServiceRoleClient();
   const { data } = supabaseAdmin.storage.from(folder).getPublicUrl(fileName);
 
   return { data };
-};
-
-export const uploadRepository = {
-  uploadImageToCloudinary,
-  uploadImageToSupabase,
-  getImageFromSupabase
 };

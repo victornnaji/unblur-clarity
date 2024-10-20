@@ -1,7 +1,12 @@
-import { priceRepository } from "@/data/repositories/prices.repository";
+"use server";
+
 import { CustomError } from "@/errors/CustomError";
 import { PriceDto } from "@/types/dtos";
 import type Stripe from "stripe";
+import {
+  deletePriceRepository,
+  upsertPriceRepository
+} from "@/data/repositories/prices.repository";
 
 export const upsertPrice = async (
   price: Stripe.Price,
@@ -23,7 +28,7 @@ export const upsertPrice = async (
   };
 
   try {
-    const { error } = await priceRepository.upsertPrice(priceData);
+    const { error } = await upsertPriceRepository(priceData);
     if (error) {
       if (error.message.includes("foreign key constraint")) {
         if (retryCount < maxRetries) {
@@ -61,7 +66,7 @@ export const upsertPrice = async (
 
 export const deletePrice = async (priceId: string) => {
   try {
-    const { error } = await priceRepository.deletePrice(priceId);
+    const { error } = await deletePriceRepository(priceId);
     if (error) {
       throw new CustomError("Error deleting price", 500, {
         cause: error.message || error.details

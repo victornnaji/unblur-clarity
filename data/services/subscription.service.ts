@@ -1,12 +1,15 @@
 "use server";
 
 import type Stripe from "stripe";
-import { subscriptionRepository } from "../repositories/subscription.repository";
 import { SubscriptionDto } from "@/types/dtos";
 import { toDateTime } from "@/utils/helpers";
 import { CustomError } from "@/errors/CustomError";
 import { getAuthUserOrNull } from "./auth.service";
 import { cache } from "react";
+import {
+  getSubscriptionByUserIdRepository,
+  upsertSubscriptionByAdminRepository
+} from "@/data/repositories/subscription.repository";
 
 export const upsertSubscriptionByAdmin = async (
   subscription: Stripe.Subscription,
@@ -38,8 +41,9 @@ export const upsertSubscriptionByAdmin = async (
   };
 
   try {
-    const { data, error } =
-      await subscriptionRepository.upsertSubscriptionByAdmin(subscriptionData);
+    const { data, error } = await upsertSubscriptionByAdminRepository(
+      subscriptionData
+    );
 
     if (error) {
       console.error(error);
@@ -57,8 +61,7 @@ export const upsertSubscriptionByAdmin = async (
 
 export const getSubscriptionByUserId = async (userId: string) => {
   try {
-    const { data, error } =
-      await subscriptionRepository.getSubscriptionByUserId(userId);
+    const { data, error } = await getSubscriptionByUserIdRepository(userId);
 
     if (error) {
       console.error(error);

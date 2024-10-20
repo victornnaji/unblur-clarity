@@ -1,13 +1,13 @@
 "use server";
 
-import { authRepository } from "@/data/repositories/auth.repository";
 import { getErrorRedirect, getStatusRedirect } from "@/utils/helpers";
 import { links } from "@/config/links";
 import { UnAuthorizedError } from "@/errors/UnAuthorizedError";
+import { getAuthUserRepository, signOutRepository } from "../repositories/auth.repository";
 
 export const getAuthUser = async () => {
   try {
-    const user = await authRepository.getAuthUser();
+    const user = await getAuthUserRepository();
     if (!user) {
       throw new UnAuthorizedError("User not found");
     }
@@ -19,14 +19,14 @@ export const getAuthUser = async () => {
 };
 
 export const getAuthUserOrNull = async () => {
-  const user = await authRepository.getAuthUser();
+  const user = await getAuthUserRepository();
   return user || null;
 };
 
 export const signOut = async (formData: FormData) => {
   const pathName = String(formData.get("pathName")).trim();
 
-  const { error } = await authRepository.signOut();
+  const { error } = await signOutRepository();
 
   if (error) {
     return getErrorRedirect(

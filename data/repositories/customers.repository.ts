@@ -1,6 +1,8 @@
+"use server";
+
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 
-const getCustomerByIdByAdmin = async (userId: string) => {
+export const getCustomerByIdByAdminRepository = async (userId: string) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { data, error } = await supabaseAdmin
@@ -12,7 +14,7 @@ const getCustomerByIdByAdmin = async (userId: string) => {
   return { data, error };
 };
 
-const getCustomerByCustomerIdByAdmin = async (customerId: string) => {
+export const getCustomerByCustomerIdByAdminRepository = async (customerId: string) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { data, error } = await supabaseAdmin
@@ -24,7 +26,7 @@ const getCustomerByCustomerIdByAdmin = async (customerId: string) => {
   return { data, error };
 };
 
-const createCustomer = async (userId: string, customerId: string) => {
+export const createCustomerRepository = async (userId: string, customerId: string) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { error } = await supabaseAdmin.from("customers").upsert(
@@ -38,7 +40,10 @@ const createCustomer = async (userId: string, customerId: string) => {
   return { error };
 };
 
-const updateCustomer = async (userId: string, stripeCustomerId: string) => {
+export const updateCustomerRepository = async (
+  userId: string,
+  stripeCustomerId: string
+) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { error } = await supabaseAdmin
@@ -49,9 +54,3 @@ const updateCustomer = async (userId: string, stripeCustomerId: string) => {
   return { error };
 };
 
-export const customerRepository = {
-  getCustomerByIdByAdmin,
-  createCustomer,
-  updateCustomer,
-  getCustomerByCustomerIdByAdmin
-};

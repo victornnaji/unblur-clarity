@@ -13,9 +13,9 @@ import {
   retrieveProductsFromStripe,
   retrievePricesFromStripe
 } from "@/data/services/stripe.service";
-import { upsertProduct } from "@/data/services/products.service";
 import { upsertPrice } from "@/data/services/prices.service";
 import { CustomError } from "@/errors/CustomError";
+import { upsertProduct } from "@/data/services/products.service";
 
 export async function checkoutWithStripe(
   price: PriceDto,

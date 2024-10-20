@@ -1,10 +1,14 @@
 "use server";
 
 import { ProductDto } from "@/types/dtos";
-import { productRepository } from "@/data/repositories/products.repository";
 import { CustomError } from "@/errors/CustomError";
 import type Stripe from "stripe";
 import { cache } from "react";
+import {
+  deleteProductRepository,
+  getAllProductsRepository,
+  upsertProductRepository
+} from "@/data/repositories/products.repository";
 
 export const upsertProduct = async (product: Stripe.Product) => {
   const productData: ProductDto = {
@@ -18,7 +22,7 @@ export const upsertProduct = async (product: Stripe.Product) => {
     }
   };
   try {
-    const { error } = await productRepository.upsertProduct(productData);
+    const { error } = await upsertProductRepository(productData);
     if (error) {
       console.error(error);
       throw new CustomError(error.message, 500, {
@@ -36,7 +40,7 @@ export const upsertProduct = async (product: Stripe.Product) => {
 
 export const deleteProduct = async (productId: string) => {
   try {
-    const { error } = await productRepository.deleteProduct(productId);
+    const { error } = await deleteProductRepository(productId);
     if (error) {
       console.error(error);
       throw new CustomError(error.message, 500, {
@@ -54,7 +58,7 @@ export const deleteProduct = async (productId: string) => {
 
 export const getAllProducts = cache(async () => {
   try {
-    const { data: products, error } = await productRepository.getAllProducts();
+    const { data: products, error } = await getAllProductsRepository();
     if (error) {
       console.error(error);
       throw new CustomError(error.message, 500, {

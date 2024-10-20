@@ -1,6 +1,8 @@
+"use server";
+
 import { createClient } from "@/utils/supabase/server";
 
-const getAuthUser = async () => {
+export const getAuthUserRepository = async () => {
   const supabase = createClient();
 
   const {
@@ -10,16 +12,11 @@ const getAuthUser = async () => {
   return user;
 };
 
-const signOut = async () => {
+export const signOutRepository = async () => {
   const supabase = createClient();
 
   const { error } = await supabase.auth.signOut();
 
   return { error: error ? new Error(error.message) : null };
-};
-
-export const authRepository = {
-  getAuthUser,
-  signOut
 };
 

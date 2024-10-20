@@ -1,8 +1,10 @@
+"use server";
+
 import { ProductDto } from "@/types/dtos";
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 
-const getAllProducts = async () => {
+export const getAllProductsRepository = async () => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -15,7 +17,7 @@ const getAllProducts = async () => {
   return { data, error };
 };
 
-const upsertProduct = async (product: ProductDto) => {
+export const upsertProductRepository = async (product: ProductDto) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { error } = await supabaseAdmin.from("products").upsert([product]);
@@ -23,7 +25,7 @@ const upsertProduct = async (product: ProductDto) => {
   return { error };
 };
 
-const deleteProduct = async (productId: string) => {
+export const deleteProductRepository = async (productId: string) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { error } = await supabaseAdmin
@@ -32,10 +34,4 @@ const deleteProduct = async (productId: string) => {
     .eq("id", productId);
 
   return { error };
-};
-
-export const productRepository = {
-  upsertProduct,
-  deleteProduct,
-  getAllProducts
 };

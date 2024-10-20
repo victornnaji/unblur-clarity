@@ -1,8 +1,10 @@
+"use server";
+
 import { SubscriptionDto } from "@/types/dtos";
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 
-const upsertSubscriptionByAdmin = async (subscription: SubscriptionDto) => {
+export const upsertSubscriptionByAdminRepository = async (subscription: SubscriptionDto) => {
   const supabaseAdmin = createServiceRoleClient();
 
   const { data, error } = await supabaseAdmin
@@ -12,7 +14,7 @@ const upsertSubscriptionByAdmin = async (subscription: SubscriptionDto) => {
   return { data, error };
 };
 
-const getSubscriptionByUserId = async (userId: string) => {
+export const getSubscriptionByUserIdRepository = async (userId: string) => {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -23,9 +25,4 @@ const getSubscriptionByUserId = async (userId: string) => {
     .maybeSingle();
 
   return { data, error };
-};
-
-export const subscriptionRepository = {
-  upsertSubscriptionByAdmin,
-  getSubscriptionByUserId
 };

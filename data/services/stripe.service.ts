@@ -1,14 +1,23 @@
 "use server";
 
-import { stripeRepository } from "@/data/repositories/stripe.repository";
 import { CustomError } from "@/errors/CustomError";
 import type Stripe from "stripe";
+import {
+  createCustomerInStripeRepository,
+  createStripePortalRepository,
+  createStripeSessionRepository,
+  retrieveCustomerFromStripeByEmailRepository,
+  retrieveCustomerFromStripeByIdRepository,
+  retrievePricesFromStripeRepository,
+  retrieveProductsFromStripeRepository,
+  retrieveSubscriptionFromStripeRepository
+} from "@/data/repositories/stripe.repository";
 
 export const createStripeCheckoutSession = async (
   params: Stripe.Checkout.SessionCreateParams
 ) => {
   try {
-    const session = await stripeRepository.createStripeSession(params);
+    const session = await createStripeSessionRepository(params);
     return session;
   } catch (error) {
     console.error(error);
@@ -20,7 +29,7 @@ export const createStripePortalSession = async (
   params: Stripe.BillingPortal.SessionCreateParams
 ) => {
   try {
-    const portal = await stripeRepository.createStripePortal(params);
+    const portal = await createStripePortalRepository(params);
     return portal;
   } catch (error) {
     console.error(error);
@@ -33,10 +42,7 @@ export const createCustomerInStripe = async (
   email: string
 ): Promise<string> => {
   try {
-    const customer = await stripeRepository.createCustomerInStripe(
-      userId,
-      email
-    );
+    const customer = await createCustomerInStripeRepository(userId, email);
     if (!customer) {
       throw new CustomError("Stripe customer creation failed.", 500, {
         cause: "Stripe customer creation failed.",
@@ -55,7 +61,7 @@ export const createCustomerInStripe = async (
 
 export const retrieveProductsFromStripe = async () => {
   try {
-    const products = await stripeRepository.retrieveProductsFromStripe();
+    const products = await retrieveProductsFromStripeRepository();
     return products;
   } catch (error) {
     console.error(error);
@@ -65,7 +71,7 @@ export const retrieveProductsFromStripe = async () => {
 
 export const retrievePricesFromStripe = async () => {
   try {
-    const prices = await stripeRepository.retrievePricesFromStripe();
+    const prices = await retrievePricesFromStripeRepository();
     return prices;
   } catch (error) {
     console.error(error);
@@ -75,9 +81,7 @@ export const retrievePricesFromStripe = async () => {
 
 export const retrieveCustomerFromStripeById = async (customerId: string) => {
   try {
-    const customer = await stripeRepository.retrieveCustomerFromStripeById(
-      customerId
-    );
+    const customer = await retrieveCustomerFromStripeByIdRepository(customerId);
     return customer;
   } catch (error) {
     console.error(error);
@@ -87,16 +91,14 @@ export const retrieveCustomerFromStripeById = async (customerId: string) => {
 
 export const retrieveCustomerFromStripeByEmail = async (email: string) => {
   try {
-    const customers = await stripeRepository.retrieveCustomerFromStripeByEmail(
-      email
-    );
+    const customers = await retrieveCustomerFromStripeByEmailRepository(email);
     return customers;
   } catch (error) {}
 };
 
 export const retrieveSubscriptionFromStripe = async () => {
   try {
-    const subscription = await stripeRepository.retrieveSubscriptionFromStripe();
+    const subscription = await retrieveSubscriptionFromStripeRepository();
     return subscription;
   } catch (error) {
     console.error(error);

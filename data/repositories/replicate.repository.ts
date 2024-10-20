@@ -1,7 +1,9 @@
+"use server";
+
 import { CreateReplicatePredictionDto } from "@/types/dtos";
 import { createReplicateClient } from "@/utils/replicate/server";
 
-const createPrediction = async ({
+export const createReplicatePredictionRepository = async ({
   replicateModel,
   input,
   webhookUrl
@@ -18,6 +20,3 @@ const createPrediction = async ({
   return prediction;
 };
 
-export const replicateRepository = {
-  createPrediction
-};

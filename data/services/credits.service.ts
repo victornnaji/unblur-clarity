@@ -1,14 +1,14 @@
 "use server";
 
 import { CustomError } from "@/errors/CustomError";
-import { creditsRepository } from "@/data/repositories/credits.repository";
 import { getAuthUserOrNull } from "@/data/services/auth.service";
 import { cache } from "react";
 import { UpdateCreditsPayload } from "@/types/services";
+import { getUserCreditsByAdminRepository, getUserCreditsByUserIdRepository, removeAllUserSubscriptionCreditsByAdminRepository, updateUserCreditsByAdminRepository } from "../repositories/credits.repository";
 
 export const getUserTotalCreditsByUserId = async (userId: string) => {
   try {
-    const { data, error } = await creditsRepository.getUserCreditsByUserId(
+    const { data, error } = await getUserCreditsByUserIdRepository(
       userId
     );
 
@@ -42,7 +42,7 @@ export const getUserTotalCredits = async () => {
 };
 
 export const getUserCreditsByUserId = async (userId: string) => {
-  const { data, error } = await creditsRepository.getUserCreditsByUserId(
+  const { data, error } = await getUserCreditsByUserIdRepository(
     userId
   );
 
@@ -91,7 +91,7 @@ export const getUserCredits = cache(async () => {
 
 export const getUserCreditsByAdmin = async (userId: string) => {
   try {
-    const { data, error } = await creditsRepository.getUserCreditsByAdmin(
+    const { data, error } = await getUserCreditsByAdminRepository(
       userId
     );
     if (error) {
@@ -126,7 +126,7 @@ export const updateUserCreditsByAdmin = async (
   { credits, oneTimeCredits }: UpdateCreditsPayload
 ) => {
   try {
-    const { error } = await creditsRepository.updateUserCreditsByAdmin(userId, {
+    const { error } = await updateUserCreditsByAdminRepository(userId, {
       credits,
       oneTimeCredits
     });
@@ -150,7 +150,7 @@ export const updateUserCredits = async (
   { credits, oneTimeCredits }: UpdateCreditsPayload
 ) => {
   try {
-    const { error } = await creditsRepository.updateUserCreditsByAdmin(userId, {
+    const { error } = await updateUserCreditsByAdminRepository(userId, {
       credits,
       oneTimeCredits
     });
@@ -216,7 +216,7 @@ export const removeAllUserSubscriptionCreditsByAdmin = async (
 ) => {
   try {
     const { error } =
-      await creditsRepository.removeAllUserSubscriptionCreditsByAdmin(userId);
+      await removeAllUserSubscriptionCreditsByAdminRepository(userId);
 
     if (error) {
       throw new CustomError("Error removing user credits", 500, {

@@ -1,14 +1,21 @@
-import { customerRepository } from "@/data/repositories/customers.repository";
+"use server";
+
 import { CustomError } from "@/errors/CustomError";
 import {
   createCustomerInStripe,
   retrieveCustomerFromStripeByEmail,
   retrieveCustomerFromStripeById
 } from "@/data/services/stripe.service";
+import {
+  createCustomerRepository,
+  getCustomerByCustomerIdByAdminRepository,
+  getCustomerByIdByAdminRepository,
+  updateCustomerRepository
+} from "@/data/repositories/customers.repository";
 
 export const getCustomerByIdByAdmin = async (id: string) => {
   try {
-    const { data, error } = await customerRepository.getCustomerByIdByAdmin(id);
+    const { data, error } = await getCustomerByIdByAdminRepository(id);
     if (error) {
       console.error(error);
       throw new CustomError("Error fetching customer", 500, {
@@ -24,7 +31,9 @@ export const getCustomerByIdByAdmin = async (id: string) => {
 
 export const getCustomerByCustomerIdByAdmin = async (customerId: string) => {
   try {
-    const { data, error } = await customerRepository.getCustomerByCustomerIdByAdmin(customerId);
+    const { data, error } = await getCustomerByCustomerIdByAdminRepository(
+      customerId
+    );
     if (error) {
       console.error(error);
       throw new CustomError("Error fetching customer", 500, {
@@ -40,10 +49,7 @@ export const getCustomerByCustomerIdByAdmin = async (customerId: string) => {
 
 export const createCustomer = async (userId: string, customerId: string) => {
   try {
-    const { error } = await customerRepository.createCustomer(
-      userId,
-      customerId
-    );
+    const { error } = await createCustomerRepository(userId, customerId);
     if (error) {
       console.error(error);
       throw new CustomError("Error creating customer", 500, {
@@ -62,10 +68,7 @@ export const updateCustomer = async (
   stripeCustomerId: string
 ) => {
   try {
-    const { error } = await customerRepository.updateCustomer(
-      userId,
-      stripeCustomerId
-    );
+    const { error } = await updateCustomerRepository(userId, stripeCustomerId);
     if (error) {
       console.error(error);
       throw new CustomError("Error updating customer", 500, {

@@ -1,16 +1,18 @@
 "use server";
 
-import { getAuthUserOrNull } from "@/data/services/auth.service";
+import { getAuthUser, getAuthUserOrNull } from "@/data/services/auth.service";
 import { links } from "@/config";
 import { isValidEmail, getURL, getStatusRedirect } from "@/utils/helpers";
-import { userRepository } from "@/data/repositories/users.repository";
-import { authRepository } from "@/data/repositories/auth.repository";
 import { UserNotFoundError } from "@/errors/UserNotFoundError";
 import { UpdateUserDto } from "@/types/dtos";
 import { UserUpdate } from "@/types/services";
 import { cache } from "react";
 import { CustomError } from "@/errors/CustomError";
-import { customerRepository } from "@/data/repositories/customers.repository";
+import {
+  getUserByIdRepository,
+  updateUserRepository
+} from "@/data/repositories/users.repository";
+import { getCustomerByIdByAdminRepository } from "@/data/repositories/customers.repository";
 
 export const getUser = cache(async () => {
   try {
@@ -19,7 +21,7 @@ export const getUser = cache(async () => {
     if (!user) {
       return null;
     }
-    const { data, error } = await userRepository.getUserById(user.id);
+    const { data, error } = await getUserByIdRepository(user.id);
 
     if (error) {
       throw new CustomError(error.message, 500, {
@@ -49,9 +51,7 @@ export const getUserIdByCustomerId = async (customerId: string) => {
       return null;
     }
 
-    const { data, error } = await customerRepository.getCustomerByIdByAdmin(
-      customerId
-    );
+    const { data, error } = await getCustomerByIdByAdminRepository(customerId);
 
     if (error) {
       throw new CustomError(error.message, 500, {
@@ -72,7 +72,7 @@ export const getUserIdByCustomerId = async (customerId: string) => {
 
 export const updateUserProfile = async (updateData: UserUpdate) => {
   try {
-    await authRepository.getAuthUser();
+    await getAuthUser();
 
     let updatePayload: UpdateUserDto = {};
     let emailRedirectTo: string | undefined;
@@ -100,7 +100,7 @@ export const updateUserProfile = async (updateData: UserUpdate) => {
       };
     }
 
-    const { error } = await userRepository.updateUser(
+    const { error } = await updateUserRepository(
       updatePayload,
       emailRedirectTo
     );

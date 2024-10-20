@@ -1,10 +1,16 @@
+"use server";
+
 import { CustomError } from "@/errors/CustomError";
-import { uploadRepository } from "../repositories/upload.repository";
 import { CloudinaryError } from "@/errors/CloudinaryError";
+import {
+  getImageFromSupabaseRepository,
+  uploadImageToCloudinaryRepository,
+  uploadImageToSupabaseRepository
+} from "@/data/repositories/upload.repository";
 
 export const uploadImage = async (imageUrl: string, folder: string) => {
   try {
-    const uploadResult = await uploadRepository.uploadImageToCloudinary(
+    const uploadResult = await uploadImageToCloudinaryRepository(
       imageUrl,
       folder
     );
@@ -28,7 +34,7 @@ export const uploadImageToSupabase = async (
   folder: string
 ) => {
   try {
-    const uploadResult = await uploadRepository.uploadImageToSupabase(
+    const uploadResult = await uploadImageToSupabaseRepository(
       imageUrl,
       (folder = "unblurred-photos")
     );
@@ -52,10 +58,7 @@ export const getImageFromSupabase = async (
   folder: string
 ) => {
   try {
-    const { data } = await uploadRepository.getImageFromSupabase(
-      fileName,
-      folder
-    );
+    const { data } = await getImageFromSupabaseRepository(fileName, folder);
 
     if (!data) {
       throw new CustomError("Image not found", 404, {
