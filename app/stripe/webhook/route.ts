@@ -10,8 +10,8 @@ import {
   handleProductRecordUpdate,
   handleSubscription,
   handleSubscriptionDeletion,
-  handleSubscriptionUpdate,
-} from "@/utils/stripe/server";
+  handleSubscriptionUpdate
+} from "@/utils/stripe/actions";
 import { stripe } from "@/utils/stripe/config";
 
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   if (!sig) {
     return NextResponse.json(
       {
-        message: `Missing signature`,
+        message: `Missing signature`
       },
       { status: 400 }
     );
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   if (!request.body) {
     return NextResponse.json(
       {
-        message: `Missing body`,
+        message: `Missing body`
       },
       { status: 400 }
     );
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
   } catch (err) {
     return NextResponse.json(
       {
-        message: `Webhook signature verification failed`,
+        message: `Webhook signature verification failed`
       },
       { status: 400 }
     );
@@ -100,13 +100,13 @@ export async function POST(request: Request) {
     console.error(error);
     return NextResponse.json(
       {
-        message: `Webhook failed`,
+        message: `Webhook failed`
       },
       { status: 500 }
     );
   }
 
   return NextResponse.json({
-    message: `Webhook received`,
+    message: `Webhook received`
   });
 }

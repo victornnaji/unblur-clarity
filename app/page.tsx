@@ -2,8 +2,6 @@ import { Spacer } from "@nextui-org/react";
 
 import { productsFaq } from "@/config";
 
-import { getProducts, getUserHasSubscription } from "@/utils/supabase/actions";
-
 import PricingTable from "@/components/UI/Stripe/PricingTable";
 import InteractiveSliders from "@/components/UI/Home/InteractiveSliders";
 import Testimonials from "@/components/UI/Home/Testimonials";
@@ -11,11 +9,13 @@ import Hero from "@/components/UI/Home/Hero";
 import VideoSection from "@/components/UI/Home/VideoSection";
 import FAQ from "@/components/UI/FAQ";
 import Features from "@/components/UI/Home/Features";
+import { getAllProducts } from "@/data/services/products.service";
+import { checkSubscriptionStatus } from "@/data/services/subscription.service";
 
 export default async function Index() {
   const [products, hasSubscription] = await Promise.all([
-    getProducts(),
-    getUserHasSubscription()
+    getAllProducts(),
+    checkSubscriptionStatus()
   ]);
 
   return (

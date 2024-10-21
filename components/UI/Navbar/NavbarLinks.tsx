@@ -4,7 +4,6 @@ import Link from "next/link";
 import React, { useCallback, useId } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { handleRequest } from "@/utils/auth-helpers/client";
-import { SignOut } from "@/utils/auth-helpers/server";
 import Button from "@/components/UI/Button";
 import {
   Dropdown,
@@ -24,6 +23,7 @@ import { shortenFileName } from "@/utils/helpers";
 import { UserDto } from "@/types/dtos";
 import { links } from "@/config";
 import Credits from "../Credits";
+import { signOut } from "@/data/services/auth.service";
 
 const NavbarLinks = ({
   user,
@@ -149,7 +149,7 @@ const NavbarLinks = ({
                 onSubmit={(e) =>
                   handleRequest(
                     e as unknown as React.FormEvent<HTMLFormElement>,
-                    SignOut,
+                    signOut,
                     router
                   )
                 }

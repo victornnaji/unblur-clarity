@@ -1,4 +1,4 @@
-import { syncStripeProductsAndPrices } from '@/utils/stripe/admin';
+import { syncStripeProductsAndPrices } from "@/utils/stripe/admin";
 
 const main = async () => {
   try {

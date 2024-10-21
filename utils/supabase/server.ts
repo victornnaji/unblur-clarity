@@ -1,6 +1,10 @@
 import { Database } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import invariant from "tiny-invariant";
+
+invariant(process.env.NEXT_PUBLIC_SUPABASE_URL, "Missing Supabase environment variables");
+invariant(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, "Missing Supabase environment variables");
 
 export const createClient = () => {
   const cookieStore = cookies();

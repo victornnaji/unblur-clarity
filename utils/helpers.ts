@@ -1,3 +1,4 @@
+import { creditsByPlan } from "@/config";
 import { ToastVariants } from "@/types";
 import moment from "moment";
 
@@ -135,25 +136,6 @@ export async function downloadPhoto(photoUrl: string, name: string) {
   window.URL.revokeObjectURL(url);
 }
 
-export async function streamToString(
-  stream: ReadableStream<Uint8Array>
-): Promise<string> {
-  const reader = stream.getReader();
-  const decoder = new TextDecoder("utf-8");
-  let result = "";
-
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) {
-      break;
-    }
-    result += decoder.decode(value);
-  }
-
-  reader.releaseLock();
-  return result;
-}
-
 export const toDateTime = (secs: number) => {
   var t = new Date(+0); // Unix epoch start.
   t.setSeconds(secs);
@@ -190,3 +172,16 @@ export function calculateFairUpgradeCredits(
   
   return Math.max(fairCredits, 0);
 }
+
+export const getCreditsForPlan = (planId: string) => {
+  const plan = Object.values(creditsByPlan).find((plan) => plan.id === planId);
+  return plan?.credits || 0;
+};
+
+export const getCreditAmount = (planId: string) => {
+  const creditAmount = getCreditsForPlan(planId);
+  if (!creditAmount) {
+    throw new Error("Invalid plan Id");
+  }
+  return creditAmount;
+};

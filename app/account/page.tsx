@@ -1,22 +1,18 @@
 import BioCard from "@/components/UI/Accounts/BioCard";
 import ClientContent from "@/components/UI/Accounts/ClientContent";
 
-import {
-  getSubscriptionForUser,
-  getUser,
-  getAllPredictionsByUser,
-  getUsersCreditsOnly,
-  getUsersOneTimeCreditsOnly,
-} from "@/utils/supabase/actions";
+import { getUserCredits } from "@/data/services/credits.service";
+import { getAllPredictions } from "@/data/services/predictions.service";
+import { getSubscription } from "@/data/services/subscription.service";
+import { getUser } from "@/data/services/users.service";
 
 export default async function AccountPage() {
-  const [user, subscription, credits, oneTimeCredits, predictions] =
+  const [user, subscription, creditsData, predictions] =
     await Promise.all([
       getUser(),
-      getSubscriptionForUser(),
-      getUsersCreditsOnly(),
-      getUsersOneTimeCreditsOnly(),
-      getAllPredictionsByUser(),
+      getSubscription(),
+      getUserCredits(),
+      getAllPredictions(),
     ]);
 
   return (
@@ -31,8 +27,8 @@ export default async function AccountPage() {
         </div>
         <ClientContent
           subscription={subscription}
-          credits={credits}
-          oneTimeCredits={oneTimeCredits}
+          credits={creditsData.credits}
+          oneTimeCredits={creditsData.oneTimeCredits}
           predictions={predictions}
         />
       </div>
