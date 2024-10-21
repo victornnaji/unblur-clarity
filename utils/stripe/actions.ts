@@ -8,7 +8,6 @@ import {
   getCreditsForPlan
 } from "@/utils/helpers";
 import { getCustomerByCustomerIdByAdmin } from "@/data/services/customers.service";
-import { deleteProduct, upsertProduct } from "@/data/services/products.service";
 import { deletePrice, upsertPrice } from "@/data/services/prices.service";
 import {
   getUserCreditsByAdmin,
@@ -16,6 +15,7 @@ import {
   updateUserCreditsByAdmin
 } from "@/data/services/credits.service";
 import { upsertSubscriptionByAdmin } from "@/data/services/subscription.service";
+import { deleteProduct, upsertProduct } from "@/data/services/products.service";
 
 export const handleSubscription = async (subscription: Stripe.Subscription) => {
   const customer = await getCustomerByCustomerIdByAdmin(

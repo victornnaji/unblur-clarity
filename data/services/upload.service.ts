@@ -2,15 +2,13 @@
 
 import { CustomError } from "@/errors/CustomError";
 import { CloudinaryError } from "@/errors/CloudinaryError";
-import {
-  getImageFromSupabaseRepository,
-  uploadImageToCloudinaryRepository,
-  uploadImageToSupabaseRepository
-} from "@/data/repositories/upload.repository";
+import { createUploadRepository } from "@/data/repositories/upload.repository";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
 
 export const uploadImage = async (imageUrl: string, folder: string) => {
+  const uploadRepository = await createUploadRepository();
   try {
-    const uploadResult = await uploadImageToCloudinaryRepository(
+    const uploadResult = await uploadRepository.uploadImageToCloudinary(
       imageUrl,
       folder
     );
@@ -33,10 +31,13 @@ export const uploadImageToSupabase = async (
   imageUrl: string,
   folder: string
 ) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const uploadRepository = await createUploadRepository();
   try {
-    const uploadResult = await uploadImageToSupabaseRepository(
+    const uploadResult = await uploadRepository.uploadImageToSupabase(
+      supabaseAdmin,
       imageUrl,
-      (folder = "unblurred-photos")
+      folder
     );
 
     if (uploadResult.error) {
@@ -57,8 +58,14 @@ export const getImageFromSupabase = async (
   fileName: string,
   folder: string
 ) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const uploadRepository = await createUploadRepository();
   try {
-    const { data } = await getImageFromSupabaseRepository(fileName, folder);
+    const { data } = await uploadRepository.getImageFromSupabase(
+      supabaseAdmin,
+      fileName,
+      folder
+    );
 
     if (!data) {
       throw new CustomError("Image not found", 404, {

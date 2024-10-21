@@ -8,20 +8,22 @@ import { UpdateUserDto } from "@/types/dtos";
 import { UserUpdate } from "@/types/services";
 import { cache } from "react";
 import { CustomError } from "@/errors/CustomError";
-import {
-  getUserByIdRepository,
-  updateUserRepository
-} from "@/data/repositories/users.repository";
-import { getCustomerByIdByAdminRepository } from "@/data/repositories/customers.repository";
+import { createUsersRepository } from "@/data/repositories/users.repository";
+import { createClient } from "@/utils/supabase/server";
 
 export const getUser = cache(async () => {
+  const supabase = createClient();
+  const usersRepository = await createUsersRepository();
   try {
     const user = await getAuthUserOrNull();
 
     if (!user) {
       return null;
     }
-    const { data, error } = await getUserByIdRepository(user.id);
+    const { data, error } = await usersRepository.getUserById(
+      supabase,
+      user.id
+    );
 
     if (error) {
       throw new CustomError(error.message, 500, {
@@ -43,34 +45,9 @@ export const getUser = cache(async () => {
   }
 });
 
-export const getUserIdByCustomerId = async (customerId: string) => {
-  try {
-    const user = await getAuthUserOrNull();
-
-    if (!user) {
-      return null;
-    }
-
-    const { data, error } = await getCustomerByIdByAdminRepository(customerId);
-
-    if (error) {
-      throw new CustomError(error.message, 500, {
-        cause: error.details
-      });
-    }
-
-    if (!data) {
-      throw new UserNotFoundError();
-    }
-
-    return data.id;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
 export const updateUserProfile = async (updateData: UserUpdate) => {
+  const supabase = createClient();
+  const usersRepository = await createUsersRepository();
   try {
     await getAuthUser();
 
@@ -100,7 +77,8 @@ export const updateUserProfile = async (updateData: UserUpdate) => {
       };
     }
 
-    const { error } = await updateUserRepository(
+    const { error } = await usersRepository.updateUser(
+      supabase,
       updatePayload,
       emailRedirectTo
     );

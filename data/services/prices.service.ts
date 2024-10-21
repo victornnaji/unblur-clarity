@@ -3,10 +3,10 @@
 import { CustomError } from "@/errors/CustomError";
 import { PriceDto } from "@/types/dtos";
 import type Stripe from "stripe";
-import {
-  deletePriceRepository,
-  upsertPriceRepository
-} from "@/data/repositories/prices.repository";
+import { createPricesRepository } from "@/data/repositories/prices.repository";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
+
+const supabaseAdmin = createServiceRoleClient();
 
 export const upsertPrice = async (
   price: Stripe.Price,
@@ -27,8 +27,13 @@ export const upsertPrice = async (
     metadata: null
   };
 
+  const pricesRepository = await createPricesRepository();
+
   try {
-    const { error } = await upsertPriceRepository(priceData);
+    const { error } = await pricesRepository.upsertPrice(
+      supabaseAdmin,
+      priceData
+    );
     if (error) {
       if (error.message.includes("foreign key constraint")) {
         if (retryCount < maxRetries) {
@@ -65,8 +70,12 @@ export const upsertPrice = async (
 };
 
 export const deletePrice = async (priceId: string) => {
+  const pricesRepository = await createPricesRepository();
   try {
-    const { error } = await deletePriceRepository(priceId);
+    const { error } = await pricesRepository.deletePrice(
+      supabaseAdmin,
+      priceId
+    );
     if (error) {
       throw new CustomError("Error deleting price", 500, {
         cause: error.message || error.details

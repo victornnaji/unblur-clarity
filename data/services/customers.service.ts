@@ -1,21 +1,25 @@
 "use server";
 
 import { CustomError } from "@/errors/CustomError";
+
 import {
   createCustomerInStripe,
   retrieveCustomerFromStripeByEmail,
   retrieveCustomerFromStripeById
 } from "@/data/services/stripe.service";
-import {
-  createCustomerRepository,
-  getCustomerByCustomerIdByAdminRepository,
-  getCustomerByIdByAdminRepository,
-  updateCustomerRepository
-} from "@/data/repositories/customers.repository";
+
+import { createCustomersRepository } from "@/data/repositories/customers.repository";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
+
+const supabaseAdmin = createServiceRoleClient();
 
 export const getCustomerByIdByAdmin = async (id: string) => {
+  const customersRepository = await createCustomersRepository();
   try {
-    const { data, error } = await getCustomerByIdByAdminRepository(id);
+    const { data, error } = await customersRepository.getCustomerById(
+      supabaseAdmin,
+      id
+    );
     if (error) {
       console.error(error);
       throw new CustomError("Error fetching customer", 500, {
@@ -30,8 +34,10 @@ export const getCustomerByIdByAdmin = async (id: string) => {
 };
 
 export const getCustomerByCustomerIdByAdmin = async (customerId: string) => {
+  const customersRepository = await createCustomersRepository();
   try {
-    const { data, error } = await getCustomerByCustomerIdByAdminRepository(
+    const { data, error } = await customersRepository.getCustomerByCustomerId(
+      supabaseAdmin,
       customerId
     );
     if (error) {
@@ -48,8 +54,13 @@ export const getCustomerByCustomerIdByAdmin = async (customerId: string) => {
 };
 
 export const createCustomer = async (userId: string, customerId: string) => {
+  const customersRepository = await createCustomersRepository();
   try {
-    const { error } = await createCustomerRepository(userId, customerId);
+    const { error } = await customersRepository.createCustomer(
+      supabaseAdmin,
+      userId,
+      customerId
+    );
     if (error) {
       console.error(error);
       throw new CustomError("Error creating customer", 500, {
@@ -67,8 +78,13 @@ export const updateCustomer = async (
   userId: string,
   stripeCustomerId: string
 ) => {
+  const customersRepository = await createCustomersRepository();
   try {
-    const { error } = await updateCustomerRepository(userId, stripeCustomerId);
+    const { error } = await customersRepository.updateCustomer(
+      supabaseAdmin,
+      userId,
+      stripeCustomerId
+    );
     if (error) {
       console.error(error);
       throw new CustomError("Error updating customer", 500, {

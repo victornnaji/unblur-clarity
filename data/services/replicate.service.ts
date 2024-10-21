@@ -1,14 +1,18 @@
 "use server";
 
 import { CreateReplicatePredictionDto } from "@/types/dtos";
-import { createReplicatePredictionRepository } from "@/data/repositories/replicate.repository";
+import { createReplicateRepository } from "@/data/repositories/replicate.repository";
 import { CustomError } from "@/errors/CustomError";
+import { createReplicateClient } from "@/utils/replicate/server";
 
 export const queueReplicatePrediction = async (
   createPredictionData: CreateReplicatePredictionDto
 ) => {
+  const replicate = createReplicateClient();
+  const replicateRepository = await createReplicateRepository();
   try {
-    const prediction = await createReplicatePredictionRepository(
+    const prediction = await replicateRepository.createReplicatePrediction(
+      replicate,
       createPredictionData
     );
 

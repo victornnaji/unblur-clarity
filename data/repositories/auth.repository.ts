@@ -1,22 +1,25 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { SupabaseClient } from "@supabase/supabase-js";
 
-export const getAuthUserRepository = async () => {
-  const supabase = createClient();
+class AuthRepository {
+  
+  async getAuthUser(supabase: SupabaseClient) {
+    const {
+      data: { user }
+    } = await supabase.auth.getUser();
 
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+    return user;
+  }
 
-  return user;
-};
+  async signOut(supabase: SupabaseClient) {
+    const { error } = await supabase.auth.signOut();
 
-export const signOutRepository = async () => {
-  const supabase = createClient();
+    return { error: error ? new Error(error.message) : null };
+  }
+}
 
-  const { error } = await supabase.auth.signOut();
-
-  return { error: error ? new Error(error.message) : null };
-};
+export async function createAuthRepository() {
+  return new AuthRepository();
+}
 

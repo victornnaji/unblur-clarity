@@ -1,23 +1,28 @@
 "use server";
 
 import { PriceDto } from "@/types/dtos";
-import { createServiceRoleClient } from "@/utils/supabase/admin";
+import { SupabaseClient } from "@supabase/supabase-js";
 
-export const upsertPriceRepository = async (price: PriceDto) => {
-  const supabaseAdmin = createServiceRoleClient();
 
-  const { error } = await supabaseAdmin.from("prices").upsert([price]);
+class PricesRepository {
+  async upsertPrice(supabase: SupabaseClient, price: PriceDto) {
+    const { error } = await supabase
+      .from("prices")
+      .upsert([price]);
 
-  return { error };
-};
+    return { error };
+  }
 
-export const deletePriceRepository = async (priceId: string) => {
-  const supabaseAdmin = createServiceRoleClient();
+  async deletePrice(supabase: SupabaseClient, priceId: string) {
+    const { error } = await supabase
+      .from("prices")
+      .delete()
+      .eq("id", priceId);
 
-  const { error } = await supabaseAdmin
-    .from("prices")
-    .delete()
-    .eq("id", priceId);
+    return { error };
+  }
+}
 
-  return { error };
-};
+export async function createPricesRepository() {
+  return new PricesRepository();
+}

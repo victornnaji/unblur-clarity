@@ -3,20 +3,19 @@
 import { CustomError } from "@/errors/CustomError";
 import { getAuthUser, getAuthUserOrNull } from "./auth.service";
 import { PredictionDto } from "@/types/dtos";
-import {
-  createPredictionRepository,
-  getAllPredictionsByUserIdRepository,
-  getCompletedPredictionsByUserIdRepository,
-  getInProgressPredictionsByUserIdRepository,
-  getPredictionByIdRepository,
-  updatePredictionByAdminRepository
-} from "@/data/repositories/predictions.repository";
+import { createPredictionsRepository } from "@/data/repositories/predictions.repository";
+import { createClient } from "@/utils/supabase/server";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
 
 export const getCompletedPredictionsByUserId = async (userId: string) => {
+  const supabase = createClient();
+  const predictionsRepository = await createPredictionsRepository();
   try {
-    const { data, error } = await getCompletedPredictionsByUserIdRepository(
-      userId
-    );
+    const { data, error } =
+      await predictionsRepository.getCompletedPredictionsByUserId(
+        supabase,
+        userId
+      );
 
     if (error) {
       console.error(error);
@@ -36,10 +35,14 @@ export const getCompletedPredictionsByUserId = async (userId: string) => {
 };
 
 export const getInProgressPredictionsByUserId = async (userId: string) => {
+  const supabase = createClient();
+  const predictionsRepository = await createPredictionsRepository();
   try {
-    const { data, error } = await getInProgressPredictionsByUserIdRepository(
-      userId
-    );
+    const { data, error } =
+      await predictionsRepository.getInProgressPredictionsByUserId(
+        supabase,
+        userId
+      );
 
     if (error) {
       console.error(error);
@@ -59,8 +62,11 @@ export const getInProgressPredictionsByUserId = async (userId: string) => {
 };
 
 export const getAllPredictionsByUserId = async (userId: string) => {
+  const supabase = createClient();
+  const predictionsRepository = await createPredictionsRepository();
   try {
-    const { data, error } = await getAllPredictionsByUserIdRepository(userId);
+    const { data, error } =
+      await predictionsRepository.getAllPredictionsByUserId(supabase, userId);
 
     if (error) {
       console.error(error);
@@ -79,9 +85,14 @@ export const getAllPredictionsByUserId = async (userId: string) => {
 };
 
 export const createPrediction = async (prediction: PredictionDto) => {
+  const supabase = createClient();
+  const predictionsRepository = await createPredictionsRepository();
   try {
     const user = await getAuthUser();
-    const { id, error } = await createPredictionRepository(prediction);
+    const { id, error } = await predictionsRepository.createPrediction(
+      supabase,
+      prediction
+    );
 
     if (error) {
       console.error(error);
@@ -120,15 +131,41 @@ export const getInProgressPredictions = async () => {
 };
 
 export const getAllPredictions = async () => {
-  const user = await getAuthUserOrNull();
-  if (!user) return [];
-  const predictions = await getAllPredictionsByUserId(user.id);
-  return predictions as PredictionDto[];
+  const supabase = createClient();
+  const predictionsRepository = await createPredictionsRepository();
+
+  try {
+    const user = await getAuthUserOrNull();
+    if (!user) return [];
+
+    const { data, error } =
+      await predictionsRepository.getAllPredictionsByUserId(supabase, user.id);
+
+    if (error) {
+      console.error(error);
+      throw new CustomError("Failed to fetch all predictions", 500, {
+        cause: error.message || error.details,
+        context: {
+          userId: user.id
+        }
+      });
+    }
+
+    return data as PredictionDto[];
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export const getPredictionById = async (predictionId: string) => {
+  const supabase = createClient();
+  const predictionsRepository = await createPredictionsRepository();
   try {
-    const { data, error } = await getPredictionByIdRepository(predictionId);
+    const { data, error } = await predictionsRepository.getPredictionById(
+      supabase,
+      predictionId
+    );
     if (error) {
       console.error(error);
       throw new CustomError("Failed to fetch prediction", 500, {
@@ -156,11 +193,16 @@ export const getPredictionById = async (predictionId: string) => {
 export const updatePredictionByAdmin = async (
   prediction: Partial<PredictionDto>
 ) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const predictionsRepository = await createPredictionsRepository();
   try {
     if (!prediction.id) {
       throw new CustomError("Prediction ID is required for update", 400);
     }
-    const { data, error } = await updatePredictionByAdminRepository(prediction);
+    const { data, error } = await predictionsRepository.updatePrediction(
+      supabaseAdmin,
+      prediction
+    );
     if (error) {
       console.error(error);
       throw new CustomError("Failed to update prediction", 500, {

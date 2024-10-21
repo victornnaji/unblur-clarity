@@ -1,29 +1,31 @@
 "use server";
 
 import { UpdateUserDto } from "@/types/dtos";
-import { createClient } from "@/utils/supabase/server";
+import { SupabaseClient } from "@supabase/supabase-js";
 
-export const getUserByIdRepository = async (id: string) => {
-  const supabase = createClient();
+class UsersRepository {
+  async getUserById(supabase: SupabaseClient, id: string) {
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", id)
+      .single();
+    return { data, error };
+  }
 
-  const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", id)
-    .single();
+  async updateUser(
+    supabase: SupabaseClient,
+    updatePayload: UpdateUserDto,
+    redirectTo?: string
+  ) {
+    const { error } = await supabase.auth.updateUser(updatePayload, {
+      emailRedirectTo: redirectTo
+    });
 
-  return { data, error };
-};
+    return { error: error ? new Error(error.message) : null };
+  }
+}
 
-export const updateUserRepository = async (
-  updatePayload: UpdateUserDto,
-  redirectTo?: string
-) => {
-  const supabase = createClient();
-
-  const { error } = await supabase.auth.updateUser(updatePayload, {
-    emailRedirectTo: redirectTo
-  });
-
-  return { error: error ? new Error(error.message) : null };
-};
+export async function createUsersRepository() {
+  return new UsersRepository();
+}

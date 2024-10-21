@@ -1,56 +1,50 @@
 "use server";
 
-import { createServiceRoleClient } from "@/utils/supabase/admin";
+import { SupabaseClient } from "@supabase/supabase-js";
 
-export const getCustomerByIdByAdminRepository = async (userId: string) => {
-  const supabaseAdmin = createServiceRoleClient();
+class CustomersRepository {
+  async getCustomerById(supabase: SupabaseClient, userId: string) {
+    const { data, error } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
 
-  const { data, error } = await supabaseAdmin
-    .from("customers")
-    .select("*")
-    .eq("id", userId)
-    .maybeSingle();
+    return { data, error };
+  }
 
-  return { data, error };
-};
+  async getCustomerByCustomerId(
+    supabase: SupabaseClient,
+    customerId: string
+  ) {
+    const { data, error } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("stripe_customer_id", customerId)
+      .maybeSingle();
 
-export const getCustomerByCustomerIdByAdminRepository = async (customerId: string) => {
-  const supabaseAdmin = createServiceRoleClient();
+    return { data, error };
+  }
 
-  const { data, error } = await supabaseAdmin
-    .from("customers")
-    .select("*")
-    .eq("stripe_customer_id", customerId)
-    .maybeSingle();
-
-  return { data, error };
-};
-
-export const createCustomerRepository = async (userId: string, customerId: string) => {
-  const supabaseAdmin = createServiceRoleClient();
-
-  const { error } = await supabaseAdmin.from("customers").upsert(
-    {
+  async createCustomer(supabase: SupabaseClient, userId: string, customerId: string) {
+    const { error } = await supabase.from("customers").upsert({
       id: userId,
       stripe_customer_id: customerId
-    },
-    { onConflict: "id,stripe_customer_id" }
-  );
+    });
 
-  return { error };
-};
+    return { error };
+  }
 
-export const updateCustomerRepository = async (
-  userId: string,
-  stripeCustomerId: string
-) => {
-  const supabaseAdmin = createServiceRoleClient();
+  async updateCustomer(supabase: SupabaseClient, userId: string, stripeCustomerId: string) {
+    const { error } = await supabase
+      .from("customers")
+      .update({ stripe_customer_id: stripeCustomerId })
+      .eq("id", userId);
 
-  const { error } = await supabaseAdmin
-    .from("customers")
-    .update({ stripe_customer_id: stripeCustomerId })
-    .eq("id", userId);
+    return { error };
+  }
+}
 
-  return { error };
-};
-
+export async function createCustomersRepository() {
+  return new CustomersRepository();
+}

@@ -4,45 +4,15 @@ import { CustomError } from "@/errors/CustomError";
 import { getAuthUserOrNull } from "@/data/services/auth.service";
 import { cache } from "react";
 import { UpdateCreditsPayload } from "@/types/services";
-import { getUserCreditsByAdminRepository, getUserCreditsByUserIdRepository, removeAllUserSubscriptionCreditsByAdminRepository, updateUserCreditsByAdminRepository } from "../repositories/credits.repository";
-
-export const getUserTotalCreditsByUserId = async (userId: string) => {
-  try {
-    const { data, error } = await getUserCreditsByUserIdRepository(
-      userId
-    );
-
-    if (error) {
-      throw new CustomError("Error fetching user credits", 500, {
-        cause: error.message || error.details,
-        context: {
-          userId
-        }
-      });
-    }
-    const totalCredits = (data?.credits || 0) + (data?.one_time_credits || 0);
-    return totalCredits;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
-export const getUserTotalCredits = async () => {
-  try {
-    const user = await getAuthUserOrNull();
-    if (!user) {
-      return 0;
-    }
-    return getUserTotalCreditsByUserId(user.id);
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+import { createCreditsRepository } from "@/data/repositories/credits.repository";
+import { createClient } from "@/utils/supabase/server";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
 
 export const getUserCreditsByUserId = async (userId: string) => {
-  const { data, error } = await getUserCreditsByUserIdRepository(
+  const supabase = createClient();
+  const creditsRepository = await createCreditsRepository();
+  const { data, error } = await creditsRepository.getUserCreditsByUserId(
+    supabase,
     userId
   );
 
@@ -68,8 +38,10 @@ export const getUserCreditsByUserId = async (userId: string) => {
 };
 
 export const getUserCredits = cache(async () => {
+  createClient();
   try {
     const user = await getAuthUserOrNull();
+
     if (!user) {
       return {
         credits: 0,
@@ -89,9 +61,37 @@ export const getUserCredits = cache(async () => {
   }
 });
 
-export const getUserCreditsByAdmin = async (userId: string) => {
+export const getUserTotalCreditsByUserId = async (userId: string) => {
   try {
-    const { data, error } = await getUserCreditsByAdminRepository(
+    const data = await getUserCreditsByUserId(userId);
+    const totalCredits = (data?.credits || 0) + (data?.one_time_credits || 0);
+    return totalCredits;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getUserTotalCredits = async () => {
+  try {
+    const user = await getAuthUserOrNull();
+    if (!user) {
+      return 0;
+    }
+    return getUserTotalCreditsByUserId(user.id);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getUserCreditsByAdmin = async (userId: string) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const creditsRepository = await createCreditsRepository();
+
+  try {
+    const { data, error } = await creditsRepository.getUserCreditsByUserId(
+      supabaseAdmin,
       userId
     );
     if (error) {
@@ -125,11 +125,18 @@ export const updateUserCreditsByAdmin = async (
   userId: string,
   { credits, oneTimeCredits }: UpdateCreditsPayload
 ) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const creditsRepository = await createCreditsRepository();
+
   try {
-    const { error } = await updateUserCreditsByAdminRepository(userId, {
-      credits,
-      oneTimeCredits
-    });
+    const { error } = await creditsRepository.updateUserCredits(
+      supabaseAdmin,
+      userId,
+      {
+        credits,
+        oneTimeCredits
+      }
+    );
 
     if (error) {
       throw new CustomError("Error updating user credits", 500, {
@@ -149,11 +156,17 @@ export const updateUserCredits = async (
   userId: string,
   { credits, oneTimeCredits }: UpdateCreditsPayload
 ) => {
+  const supabase = createClient();
+  const creditsRepository = await createCreditsRepository();
   try {
-    const { error } = await updateUserCreditsByAdminRepository(userId, {
-      credits,
-      oneTimeCredits
-    });
+    const { error } = await creditsRepository.updateUserCredits(
+      supabase,
+      userId,
+      {
+        credits,
+        oneTimeCredits
+      }
+    );
 
     if (error) {
       throw new CustomError("Error updating user credits", 500, {
@@ -214,9 +227,14 @@ export const withdrawCredits = async (
 export const removeAllUserSubscriptionCreditsByAdmin = async (
   userId: string
 ) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const creditsRepository = await createCreditsRepository();
   try {
     const { error } =
-      await removeAllUserSubscriptionCreditsByAdminRepository(userId);
+      await creditsRepository.removeAllUserSubscriptionCreditsByAdmin(
+        supabaseAdmin,
+        userId
+      );
 
     if (error) {
       throw new CustomError("Error removing user credits", 500, {

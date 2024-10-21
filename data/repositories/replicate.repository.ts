@@ -1,22 +1,24 @@
 "use server";
 
 import { CreateReplicatePredictionDto } from "@/types/dtos";
-import { createReplicateClient } from "@/utils/replicate/server";
+import Replicate from "replicate";
 
-export const createReplicatePredictionRepository = async ({
-  replicateModel,
-  input,
-  webhookUrl
-}: CreateReplicatePredictionDto) => {
-  const replicate = createReplicateClient();
+class ReplicateRepository {
+  async createReplicatePrediction(
+    replicate: Replicate,
+    { replicateModel, input, webhookUrl }: CreateReplicatePredictionDto
+  ) {
+    const prediction = await replicate.predictions.create({
+      version: replicateModel,
+      input,
+      webhook: webhookUrl,
+      webhook_events_filter: ["completed"]
+    });
 
-  const prediction = await replicate.predictions.create({
-    version: replicateModel,
-    input,
-    webhook: webhookUrl,
-    webhook_events_filter: ["completed"]
-  });
+    return prediction;
+  }
+}
 
-  return prediction;
-};
-
+export async function createReplicateRepository() {
+  return new ReplicateRepository();
+}

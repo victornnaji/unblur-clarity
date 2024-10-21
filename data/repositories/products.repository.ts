@@ -1,37 +1,36 @@
 "use server";
 
 import { ProductDto } from "@/types/dtos";
-import { createServiceRoleClient } from "@/utils/supabase/admin";
-import { createClient } from "@/utils/supabase/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-export const getAllProductsRepository = async () => {
-  const supabase = createClient();
+class ProductsRepository {
+  async getAllProducts(supabase: SupabaseClient) {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*, prices(*)")
+      .eq("active", true)
+      .eq("prices.active", true)
+      .order("metadata->index");
 
-  const { data, error } = await supabase
-    .from("products")
-    .select("*, prices(*)")
-    .eq("active", true)
-    .eq("prices.active", true)
-    .order("metadata->index");
+    return { data, error };
+  }
 
-  return { data, error };
-};
+  async upsertProduct(supabase: SupabaseClient, product: ProductDto) {
+    const { error } = await supabase.from("products").upsert([product]);
 
-export const upsertProductRepository = async (product: ProductDto) => {
-  const supabaseAdmin = createServiceRoleClient();
+    return { error };
+  }
 
-  const { error } = await supabaseAdmin.from("products").upsert([product]);
+  async deleteProduct(supabase: SupabaseClient, productId: string) {
+    const { error } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", productId);
 
-  return { error };
-};
+    return { error };
+  }
+}
 
-export const deleteProductRepository = async (productId: string) => {
-  const supabaseAdmin = createServiceRoleClient();
-
-  const { error } = await supabaseAdmin
-    .from("products")
-    .delete()
-    .eq("id", productId);
-
-  return { error };
-};
+export async function createProductsRepository() {
+  return new ProductsRepository();
+}

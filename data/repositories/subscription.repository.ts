@@ -1,28 +1,30 @@
 "use server";
 
 import { SubscriptionDto } from "@/types/dtos";
-import { createServiceRoleClient } from "@/utils/supabase/admin";
-import { createClient } from "@/utils/supabase/server";
+import { SupabaseClient } from "@supabase/supabase-js";
 
-export const upsertSubscriptionByAdminRepository = async (subscription: SubscriptionDto) => {
-  const supabaseAdmin = createServiceRoleClient();
+class SubscriptionRepository {
+  async upsertSubscription(
+    supabase: SupabaseClient,
+    subscription: SubscriptionDto
+  ) {
+    const { data, error } = await supabase
+      .from("subscriptions")
+      .upsert(subscription, { onConflict: "id" });
+    return { data, error };
+  }
 
-  const { data, error } = await supabaseAdmin
-    .from("subscriptions")
-    .upsert(subscription, { onConflict: "id" });
+  async getSubscriptionByUserId(supabase: SupabaseClient, userId: string) {
+    const { data, error } = await supabase
+      .from("subscriptions")
+      .select("*, products(*)")
+      .in("status", ["active"])
+      .eq("user_id", userId)
+      .maybeSingle();
+    return { data, error };
+  }
+}
 
-  return { data, error };
-};
-
-export const getSubscriptionByUserIdRepository = async (userId: string) => {
-  const supabase = createClient();
-
-  const { data, error } = await supabase
-    .from("subscriptions")
-    .select("*, products(*)")
-    .in("status", ["active"])
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  return { data, error };
-};
+export async function createSubscriptionRepository() {
+  return new SubscriptionRepository();
+}

@@ -4,13 +4,14 @@ import { ProductDto } from "@/types/dtos";
 import { CustomError } from "@/errors/CustomError";
 import type Stripe from "stripe";
 import { cache } from "react";
-import {
-  deleteProductRepository,
-  getAllProductsRepository,
-  upsertProductRepository
-} from "@/data/repositories/products.repository";
+import { createProductsRepository } from "@/data/repositories/products.repository";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
+import { createClient } from "@/utils/supabase/server";
 
 export const upsertProduct = async (product: Stripe.Product) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const productsRepository = await createProductsRepository();
+
   const productData: ProductDto = {
     id: product.id,
     active: product.active,
@@ -22,7 +23,10 @@ export const upsertProduct = async (product: Stripe.Product) => {
     }
   };
   try {
-    const { error } = await upsertProductRepository(productData);
+    const { error } = await productsRepository.upsertProduct(
+      supabaseAdmin,
+      productData
+    );
     if (error) {
       console.error(error);
       throw new CustomError(error.message, 500, {
@@ -39,8 +43,13 @@ export const upsertProduct = async (product: Stripe.Product) => {
 };
 
 export const deleteProduct = async (productId: string) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const productsRepository = await createProductsRepository();
   try {
-    const { error } = await deleteProductRepository(productId);
+    const { error } = await productsRepository.deleteProduct(
+      supabaseAdmin,
+      productId
+    );
     if (error) {
       console.error(error);
       throw new CustomError(error.message, 500, {
@@ -57,8 +66,12 @@ export const deleteProduct = async (productId: string) => {
 };
 
 export const getAllProducts = cache(async () => {
+  const supabase = createClient();
+  const productsRepository = await createProductsRepository();
   try {
-    const { data: products, error } = await getAllProductsRepository();
+    const { data: products, error } = await productsRepository.getAllProducts(
+      supabase
+    );
     if (error) {
       console.error(error);
       throw new CustomError(error.message, 500, {

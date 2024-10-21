@@ -6,15 +6,17 @@ import { toDateTime } from "@/utils/helpers";
 import { CustomError } from "@/errors/CustomError";
 import { getAuthUserOrNull } from "./auth.service";
 import { cache } from "react";
-import {
-  getSubscriptionByUserIdRepository,
-  upsertSubscriptionByAdminRepository
-} from "@/data/repositories/subscription.repository";
+import { createSubscriptionRepository } from "@/data/repositories/subscription.repository";
+import { createServiceRoleClient } from "@/utils/supabase/admin";
+import { createClient } from "@/utils/supabase/server";
 
 export const upsertSubscriptionByAdmin = async (
   subscription: Stripe.Subscription,
   userId: string
 ) => {
+  const supabaseAdmin = createServiceRoleClient();
+  const subscriptionRepository = await createSubscriptionRepository();
+
   const subscriptionData: SubscriptionDto = {
     metadata: subscription.metadata,
     status: subscription.status,
@@ -41,9 +43,11 @@ export const upsertSubscriptionByAdmin = async (
   };
 
   try {
-    const { data, error } = await upsertSubscriptionByAdminRepository(
-      subscriptionData
-    );
+    const { data, error } =
+      await subscriptionRepository.upsertSubscription(
+        supabaseAdmin,
+        subscriptionData
+      );
 
     if (error) {
       console.error(error);
@@ -60,8 +64,11 @@ export const upsertSubscriptionByAdmin = async (
 };
 
 export const getSubscriptionByUserId = async (userId: string) => {
+  const supabase = createClient();
+  const subscriptionRepository = await createSubscriptionRepository();
   try {
-    const { data, error } = await getSubscriptionByUserIdRepository(userId);
+    const { data, error } =
+      await subscriptionRepository.getSubscriptionByUserId(supabase, userId);
 
     if (error) {
       console.error(error);
@@ -78,6 +85,7 @@ export const getSubscriptionByUserId = async (userId: string) => {
 };
 
 export const getSubscription = cache(async () => {
+  createClient();
   try {
     const user = await getAuthUserOrNull();
     if (!user) return null;

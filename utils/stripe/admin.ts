@@ -64,9 +64,9 @@ export async function checkoutWithStripe(
       success_url: successUrl
     };
 
-    const session = await createStripeCheckoutSession(params);
-    if (session) {
-      return { sessionUrl: session.url };
+    const sessionUrl = await createStripeCheckoutSession(params);
+    if (sessionUrl) {
+      return { sessionUrl };
     } else {
       throw new Error("Unable to create checkout session.");
     }
