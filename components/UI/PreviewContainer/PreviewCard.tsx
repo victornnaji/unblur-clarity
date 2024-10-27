@@ -19,10 +19,19 @@ interface CardProps {
     image?: string;
     footer?: string;
   };
+  onPress?: () => void;
 }
-const PreviewCard = ({ header, image, footer, classNames }: CardProps) => {
+const PreviewCard = ({
+  header,
+  image,
+  footer,
+  classNames,
+  onPress
+}: CardProps) => {
   return (
     <PrimitiveCard
+      isPressable
+      onPress={onPress}
       isFooterBlurred
       className="w-full h-96 col-span-12 sm:col-span-5"
       radius="none"
@@ -47,7 +56,7 @@ const PreviewCard = ({ header, image, footer, classNames }: CardProps) => {
       />
       <CardFooter
         className={clsx(
-          "absolute bg-white/30 bottom-0 z-10 justify-between text-background",
+          "absolute bg-white/30 bottom-0 z-20 justify-between text-background",
           classNames?.footer
         )}
       >

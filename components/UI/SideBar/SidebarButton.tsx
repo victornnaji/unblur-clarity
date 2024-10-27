@@ -8,6 +8,7 @@ import { pollPredictionStatus } from "@/utils/api-helpers/server";
 import { showToast } from "../HotToast";
 import useSWR from "swr";
 import { getUserTotalCredits } from "@/data/services/credits.service";
+import { CREDITS_PER_UNBLUR } from "@/config";
 
 const SidebarButton = () => {
   const { data: credits } = useSWR("credits", getUserTotalCredits);
@@ -37,10 +38,11 @@ const SidebarButton = () => {
     setAppStatus({ status: "processing", message: "Gathering image data..." });
 
     try {
-      if (!credits || credits < 12) {
+      if (!credits || credits < CREDITS_PER_UNBLUR) {
         setAppStatus({
           status: "error",
-          message: `Not enough credits to ${buttonText}`
+          message: `Not enough credits to ${buttonText}`,
+          type: "credit"
         });
         showToast(
           "error",
@@ -107,24 +109,20 @@ const SidebarButton = () => {
       showToast(
         "error",
         "An error occurred",
-        error instanceof Error
-          ? error.message
-          : "An error occurred while processing your image.",
+        "An error occurred while processing your image.",
         "sidebar-button"
       );
       setAppStatus({
         status: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "An error occurred while processing your image."
+        message: "An error occurred while processing your image."
       });
     }
   }, [setAppStatus, photo, model, payload, setPhoto]);
+
   return (
     <div className="w-full flex justify-center items-center">
       <Button
-        isDisabled={!photo.name}
+        isDisabled={!photo.name || appStatus.status === "processing"}
         isLoading={appStatus.status === "processing"}
         onClick={startPrediction}
         radius="none"

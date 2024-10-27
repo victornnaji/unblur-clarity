@@ -9,10 +9,15 @@ import {
 } from "@/config";
 import { getAuthUser } from "@/data/services/auth.service";
 import {
+  getUserCredits,
   getUserTotalCreditsByUserId,
+  updateUserCredits,
   withdrawCredits
 } from "@/data/services/credits.service";
-import { createPrediction } from "@/data/services/predictions.service";
+import {
+  createPrediction,
+  deletePrediction
+} from "@/data/services/predictions.service";
 import { queueReplicatePrediction } from "@/data/services/replicate.service";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
 import { UnblurModel } from "@/types";
@@ -75,6 +80,7 @@ export async function initiatePrediction(payload: PayloadProps) {
         image: secure_url
       } as InputProps
     };
+
     switch (model) {
       case "image_upscaling":
         modelConfig = {
@@ -103,6 +109,7 @@ export async function initiatePrediction(payload: PayloadProps) {
             task_type: "Image Debluring (REDS)"
           }
         };
+        break;
       case "text_restoration":
         modelConfig = {
           replicateModel: MEGVII_ENHANCE_MODEL,
@@ -111,6 +118,7 @@ export async function initiatePrediction(payload: PayloadProps) {
             task_type: "Image Denoising"
           }
         };
+        break;
       default:
         throw new Error("Invalid model");
     }
@@ -134,7 +142,8 @@ export async function initiatePrediction(payload: PayloadProps) {
       completed_at: prediction.completed_at || null,
       error: prediction.error || null,
       image_url: null,
-      user_id: user?.id
+      user_id: user.id,
+      model: model
     });
 
     console.log("prediction successfully created on replicate", prediction);
@@ -142,6 +151,22 @@ export async function initiatePrediction(payload: PayloadProps) {
     // return { predictionId: "h8b24nvfq9rgt0cja6aafd2bv0", secure_url };
   } catch (error) {
     console.log("error creating prediction", error);
+    //return back the credit taken
+    const user = await getAuthUser();
+    const { credits } = await getUserCredits();
+    await updateUserCredits(user.id, {
+      credits: credits + CREDITS_PER_UNBLUR
+    });
+    console.log("credits updated", credits + CREDITS_PER_UNBLUR);
+    throw error;
+  }
+}
+
+export async function initiatePredictionDeletion(predictionId: string) {
+  try {
+    await deletePrediction(predictionId);
+  } catch (error) {
+    console.log("error deleting prediction", error);
     throw error;
   }
 }

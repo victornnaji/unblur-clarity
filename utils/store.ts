@@ -10,6 +10,7 @@ export type PayloadStore = {
 type AppStatusStore = {
   status: "idle" | "reset" | "processing" | "canceled" | "success" | "error";
   message: string;
+  type?: "credit" | "default";
 };
 
 type PredictionStore = {

@@ -3,8 +3,8 @@ import { ImageUpscalingStyleOptionType, UnblurOptionType } from "@/types";
 export const unblurOptions: UnblurOptionType[] = [
   { value: "image_upscaling", label: "Image Upscaling" },
   { value: "face_restoration", label: "Face Restoration" },
-  { value: "image_restoration", label: "Image Restoration" },
-  { value: "text_restoration", label: "Text Restoration" }
+  // { value: "image_restoration", label: "Image Restoration" },
+  // { value: "text_restoration", label: "Text Restoration" }
 ];
 export const DEFAULT_UNBLUR_OPTION = unblurOptions[0];
 

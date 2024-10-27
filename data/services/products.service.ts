@@ -20,7 +20,10 @@ export const upsertProduct = async (product: Stripe.Product) => {
     image: product.images?.[0] ?? null,
     metadata: {
       marketing_features: JSON.stringify(product.marketing_features)
-    }
+    },
+    credit_amounts: product.metadata.credit_amounts
+      ? parseInt(product.metadata.credit_amounts)
+      : null
   };
   try {
     const { error } = await productsRepository.upsertProduct(

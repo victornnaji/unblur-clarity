@@ -26,7 +26,7 @@ const InProgress = () => {
           <PreviewCard
             image={{
               src: prediction.original_image_url!,
-              alt: prediction.image_name ?? "restored Image"
+              alt: prediction.image_name ?? "Original Image"
             }}
             footer={
               <div className="flex flex-col">
