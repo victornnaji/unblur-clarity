@@ -14,7 +14,7 @@ const Uploader = () => {
     appStatus: state.appStatus,
     setAppStatus: state.setAppStatus,
     photo: state.photo,
-    setPhoto: state.setPhoto,
+    setPhoto: state.setPhoto
   }));
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Uploader = () => {
         name: "",
         originalImage: "",
         restoredImage: "",
-        previewImage: "",
+        previewImage: ""
       });
     }
   }, [appStatus.status, setPhoto]);
@@ -42,13 +42,13 @@ const Uploader = () => {
         }
         setAppStatus({
           ...appStatus,
-          status: "idle",
+          status: "idle"
         });
         const newPhoto = {
           name: file.name,
           originalImage: reader.result as string,
           restoredImage: "",
-          previewImage: URL.createObjectURL(file),
+          previewImage: URL.createObjectURL(file)
         };
         setPhoto(newPhoto);
       };
@@ -63,7 +63,7 @@ const Uploader = () => {
     setPhoto({
       ...photo,
       name: "",
-      previewImage: "",
+      previewImage: ""
     });
   };
 
@@ -73,10 +73,10 @@ const Uploader = () => {
       accept: {
         "image/jpeg": [],
         "image/png": [],
-        "image/jpg": [],
+        "image/jpg": []
       },
       maxFiles: 1,
-      maxSize: 2 * 1024 * 1024,
+      maxSize: 2 * 1024 * 1024
     });
 
   if (photo.previewImage) {
@@ -90,9 +90,9 @@ const Uploader = () => {
             height={120}
             alt="Preview photo"
             style={{
-              width: '100px',
-              height: '100px',
-              objectFit: 'cover',
+              width: "100px",
+              height: "100px",
+              objectFit: "cover"
             }}
           />
           <div className="flex text-zink">
@@ -113,8 +113,8 @@ const Uploader = () => {
   return (
     <Zone>
       <div {...getRootProps({ className: "dropzone flex flex-col w-full" })}>
-        <label
-          htmlFor="uploader"
+        <div
+          aria-label="upload"
           className="m-auto mb-2 transition-colors text-zink cursor-pointer"
         >
           <span className="flex items-center justify-center mb-2">
@@ -123,12 +123,12 @@ const Uploader = () => {
           <span>Click to upload your Image</span>
           <input
             {...getInputProps({
-              "aria-label": "upload",
+              "aria-label": "upload"
             })}
             name="uploader"
             id="uploader"
           />
-        </label>
+        </div>
         <div className="flex items-center justify-center flex-col">
           <Message
             fileRejections={fileRejections}
@@ -142,7 +142,7 @@ const Uploader = () => {
 
 export const Zone = ({
   children,
-  className,
+  className
 }: {
   children: React.ReactNode;
   className?: string;
@@ -161,7 +161,7 @@ export const Zone = ({
 
 const Message = ({
   fileRejections,
-  isDragActive,
+  isDragActive
 }: {
   fileRejections: FileRejection[];
   isDragActive: boolean;
@@ -171,9 +171,9 @@ const Message = ({
       (fileRejection) => fileRejection.errors
     );
 
-    if (errors.some((error) => error.code === "file-too-large")) {
+    if (errors.some((error) => error.code === "too-many-files")) {
       return (
-        <ErrorMessage message="File is too large. Please upload a file smaller than 1MB." />
+        <ErrorMessage message="Too many files. Please upload only one image." />
       );
     }
 
@@ -183,9 +183,9 @@ const Message = ({
       );
     }
 
-    if (errors.some((error) => error.code === "too-many-files")) {
+    if (errors.some((error) => error.code === "file-too-large")) {
       return (
-        <ErrorMessage message="Too many files. Please upload only one image." />
+        <ErrorMessage message="File is too large. Please upload a file smaller than 1MB." />
       );
     }
 

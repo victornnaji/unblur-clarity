@@ -40,7 +40,7 @@ const PreviewContainer = ({ children }: { children: React.ReactNode }) => {
           tab: "w-full",
           tabList: "w-full bg-gray border-2 border-gray",
           tabContent: "text-white font-bold",
-          cursor: "w-full bg-gradient"
+          cursor: "w-full bg-gradient",
         }}
       >
         {(item) => (
@@ -49,9 +49,10 @@ const PreviewContainer = ({ children }: { children: React.ReactNode }) => {
             key={item.href}
             title={item.title}
             href={item.href}
+            data-focus-visible={false}
             className={clsx(item.key === "in-progress" && "divider")}
           >
-            <div className="lg:rounded-md shadow-md lg:mt-0 pt-6 lg:p-6 h-auto lg:h-[49rem] lg:border-gray lg:border-2">
+            <div className="lg:rounded-md shadow-md lg:mt-0 pt-3 lg:p-6 h-auto lg:h-[49rem] lg:border-gray lg:border-2 mb-8 lg:mb-0">
               {children}
             </div>
           </Tab>

@@ -6,6 +6,11 @@ import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
 import { validateWebhook } from "replicate";
 import { CloudinaryError } from "@/errors/CloudinaryError";
 import { updatePredictionByAdmin } from "@/data/services/predictions.service";
+import {
+  getUserCreditsByAdmin,
+  updateUserCreditsByAdmin
+} from "@/data/services/credits.service";
+import { CREDITS_PER_UNBLUR } from "@/config";
 
 invariant(
   process.env.REPLICATE_WEBHOOK_SECRET,
@@ -42,14 +47,14 @@ export async function POST(req: Request) {
 
   const {
     data: { user },
-    error: userError,
+    error: userError
   } = await supabase.auth.admin.getUserById(userId);
 
   if (userError) {
     console.error("Error fetching user:", userError);
     return NextResponse.json(
       {
-        message: userError.message,
+        message: userError.message
       },
       { status: 401 }
     );
@@ -58,7 +63,7 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json(
       {
-        message: "Unauthorized",
+        message: "Unauthorized"
       },
       { status: 401 }
     );
@@ -66,26 +71,49 @@ export async function POST(req: Request) {
 
   try {
     const response = mapReplicateResponseToPredictionDto(body);
-    const replicateImage = Array.isArray(body.output) ? body.output[0] : body.output;
+
+    console.log("response", response, body);
+
+    if (response.status === "failed") {
+      // return back their credits
+      const { credits } = await getUserCreditsByAdmin(userId);
+      await updateUserCreditsByAdmin(userId, {
+        credits: credits + CREDITS_PER_UNBLUR
+      });
+
+      //update the prediction even when errored
+
+      await updatePredictionByAdmin(
+        {
+          ...response
+        },
+        userId
+      );
+
+      return NextResponse.json({ success: true, status: 201 });
+    }
+
+    const replicateImage = Array.isArray(body.output)
+      ? body.output[0]
+      : body.output;
+
     const { url: secureUrl } = await uploadImageToCloudinary(
       replicateImage,
       "unblurred-photos"
     );
-    await updatePredictionByAdmin({
-      ...response,
-      image_url: secureUrl,
-    });
+
+    await updatePredictionByAdmin(
+      {
+        ...response,
+        image_url: secureUrl
+      },
+      userId
+    );
     return NextResponse.json({ success: true, status: 201 });
   } catch (error) {
-    if(error instanceof CloudinaryError) {
-      return NextResponse.json(
-        { error },
-        { status: 500 }
-      );
-    };
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    if (error instanceof CloudinaryError) {
+      return NextResponse.json({ error }, { status: 500 });
+    }
+    return NextResponse.json({ error }, { status: 500 });
   }
 }

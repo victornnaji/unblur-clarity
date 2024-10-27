@@ -191,7 +191,8 @@ export const getPredictionById = async (predictionId: string) => {
 };
 
 export const updatePredictionByAdmin = async (
-  prediction: Partial<PredictionDto>
+  prediction: Partial<PredictionDto>,
+  userId: string
 ) => {
   const supabaseAdmin = createServiceRoleClient();
   const predictionsRepository = await createPredictionsRepository();
@@ -201,7 +202,8 @@ export const updatePredictionByAdmin = async (
     }
     const { data, error } = await predictionsRepository.updatePrediction(
       supabaseAdmin,
-      prediction
+      prediction,
+      userId
     );
     if (error) {
       console.error(error);
@@ -210,6 +212,31 @@ export const updatePredictionByAdmin = async (
       });
     }
     return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const deletePrediction = async (
+  predictionId: string
+) => {
+  const supabase = createClient();
+  const predictionsRepository = await createPredictionsRepository();
+  try {
+    const user = await getAuthUser();
+    const { error } = await predictionsRepository.deletePrediction(
+      supabase,
+      predictionId,
+      user.id
+    );
+    if (error) {
+      console.error(error);
+      throw new CustomError("Failed to delete prediction", 500, {
+        cause: error.message || error.details
+      });
+    }
+    console.log("prediction deleted successfully");
   } catch (error) {
     console.error(error);
     throw error;

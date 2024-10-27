@@ -68,6 +68,7 @@ export type Database = {
           id: string
           image_name: string | null
           image_url: string | null
+          model: string | null
           original_image_url: string | null
           predict_time: string | null
           started_at: string | null
@@ -81,6 +82,7 @@ export type Database = {
           id: string
           image_name?: string | null
           image_url?: string | null
+          model?: string | null
           original_image_url?: string | null
           predict_time?: string | null
           started_at?: string | null
@@ -94,6 +96,7 @@ export type Database = {
           id?: string
           image_name?: string | null
           image_url?: string | null
+          model?: string | null
           original_image_url?: string | null
           predict_time?: string | null
           started_at?: string | null
@@ -163,6 +166,7 @@ export type Database = {
       products: {
         Row: {
           active: boolean | null
+          credit_amounts: number | null
           description: string | null
           id: string
           image: string | null
@@ -171,6 +175,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean | null
+          credit_amounts?: number | null
           description?: string | null
           id: string
           image?: string | null
@@ -179,6 +184,7 @@ export type Database = {
         }
         Update: {
           active?: boolean | null
+          credit_amounts?: number | null
           description?: string | null
           id?: string
           image?: string | null

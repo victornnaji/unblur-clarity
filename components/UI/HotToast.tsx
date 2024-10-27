@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { toast, Toaster, ToastBar } from "react-hot-toast";
 import { ToastVariants } from "@/types";
+import XIcon from "@/components/Icons/XIcon";
 
 const DURATION = 15000;
 
@@ -60,7 +61,8 @@ const HotToast = () => {
                   onClick={() => toast.dismiss(t.id)}
                   className="absolute right-2.5 top-2.5 font-bold cursor-pointer w-7 flex justify-end"
                 >
-                  X<span className="sr-only">Close Notification</span>
+                  <XIcon />
+                  <span className="sr-only">Close Notification</span>
                 </button>
               )}
             </>
