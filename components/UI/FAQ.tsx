@@ -5,7 +5,7 @@ import { Accordion, AccordionItem } from "@nextui-org/react";
 interface FaqProps {
   contents: {
     question: string;
-    answer: string;
+    answer: string | React.ReactNode;
   }[];
   title?: string;
 }
@@ -27,7 +27,7 @@ const Faq = ({ contents, title = "Frequently Asked Questions" }: FaqProps) => {
                 content: "text-zinc-50"
               }}
             >
-              <span className="text-darkzink">{content.answer}</span>
+              <span className="text-zink">{content.answer}</span>
             </AccordionItem>
           ))}
         </Accordion>

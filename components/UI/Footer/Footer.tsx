@@ -6,7 +6,7 @@ import React from "react";
 import BrandLogo from "@/components/Icons/BrandLogo";
 import FooterList from "./FooterList";
 import CustomLink from "@/components/UI/CustomLink";
-import { links } from "@/config";
+import { FooterLinks, links } from "@/config";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -37,8 +37,11 @@ const Footer = () => {
               className="md:col-start-2 md:col-span-2"
               title="Resources"
               items={[
-                { href: "/pricing", label: "Pricing" },
-                { href: "/faq", label: "FAQ" },
+                { href: links.products.path, label: "Pricing" },
+                {
+                  href: FooterLinks.knowledgeBase.path,
+                  label: FooterLinks.knowledgeBase.label
+                },
                 { href: "/blog", label: "Blog" }
               ]}
             />

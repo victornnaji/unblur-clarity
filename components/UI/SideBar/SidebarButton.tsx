@@ -4,7 +4,7 @@ import React, { useCallback } from "react";
 import Button from "@/components/UI/Button";
 import { useAppStore } from "@/hooks/use-store";
 import { initiatePrediction } from "@/app/studio/actions";
-import { pollPredictionStatus } from "@/utils/api-helpers/server";
+import { pollPredictionStatus } from "@/utils/api-helpers/client";
 import { showToast } from "../HotToast";
 import useSWR from "swr";
 import { getUserTotalCredits } from "@/data/services/credits.service";

@@ -146,9 +146,14 @@ export async function initiatePrediction(payload: PayloadProps) {
       model: model
     });
 
+    const result = { predictionId, secure_url };
     console.log("prediction successfully created on replicate", prediction);
-    return { predictionId, secure_url };
-    // return { predictionId: "h8b24nvfq9rgt0cja6aafd2bv0", secure_url };
+    return result;
+    // return {
+    //   predictionId: "w774s3kjc9rj20cjx88v57hcrc",
+    //   secure_url:
+    //     "https://res.cloudinary.com/victornnaji/image/upload/v1730503863/unblur-photos/m49ceqp710ar7gnvcij6.png"
+    // };
   } catch (error) {
     console.log("error creating prediction", error);
     //return back the credit taken

@@ -36,10 +36,10 @@ export const links = {
   }
 };
 
-export const FooterLinks = [
-  {
-    path: "/",
-    label: "Home",
-    key: "home"
+export const FooterLinks = { 
+  knowledgeBase: {
+    path: "/knowledge-base",
+    label: "Knowledge Base",
+    key: "knowledge-base"
   }
-]
+}

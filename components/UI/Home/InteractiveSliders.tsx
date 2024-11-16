@@ -27,7 +27,7 @@ const interactiveSliderItems = [
     id: 2,
     title: "Face Restoration",
     description:
-      "Our most impressive model yet. Restore photos of people's faces, remove blemishes and more.",
+      "Our Face Restoration feature works wonders, smoothing out blemishes and bringing faces back to life. It’s perfect for reviving those special moments. Suitable for portraits, and photos of people.",
     link: {
       text: "Learn more about Face Restoration in our knowledge base",
       href: "/unblur-styles"
@@ -39,7 +39,7 @@ const interactiveSliderItems = [
     id: 3,
     title: "Text Sharpening",
     description:
-      "Restore images with noisy text. This is useful for old photos, receipts, and more.",
+      "Don’t let blurry text ruin important documents or old photos! Our Text Sharpening tool helps you restore clarity, making sure everything is legible again.",
     link: {
       text: "Learn more about Text Sharpening in our knowledge base",
       href: "/unblur-styles"
@@ -51,7 +51,7 @@ const interactiveSliderItems = [
     id: 4,
     title: "General Image Restoration",
     description:
-      "Restore other blurry images such as outside, objects and many non human images",
+      "Whether it’s nature shots, objects, or other non-human images, our General Image Restoration tool can help. It’s great for bringing back the details you thought were lost!",
     link: {
       text: "Learn more about Image Restoration in our knowledge base",
       href: "/unblur-styles"
@@ -79,10 +79,7 @@ const InteractiveSliders = () => {
             <ContentBlock
               title={`${item.id}. ${item.title}`}
               description={item.description}
-              link={{
-                text: "Learn more about Image Upscaling in our knowledge base",
-                href: "/unblur-styles"
-              }}
+              link={item.link}
             />
           </div>
           <div className="w-full md:w-3/4 mx-auto lg:w-2/3">
