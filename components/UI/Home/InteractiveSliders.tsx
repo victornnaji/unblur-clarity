@@ -16,10 +16,6 @@ const interactiveSliderItems = [
     title: "Image Upscaling",
     description:
       "Using Clarity AI's powerful model, you can upscale your images to improve their quality. This enhancement is suitable for photos of outside, landscape, designs and many more",
-    link: {
-      text: "Learn more about Image Upscaling in our knowledge base",
-      href: "/unblur-styles"
-    },
     leftImage: BlurryParrot.src,
     rightImage: ClearParrot.src
   },
@@ -28,37 +24,33 @@ const interactiveSliderItems = [
     title: "Face Restoration",
     description:
       "Our Face Restoration feature works wonders, smoothing out blemishes and bringing faces back to life. It’s perfect for reviving those special moments. Suitable for portraits, and photos of people.",
-    link: {
-      text: "Learn more about Face Restoration in our knowledge base",
-      href: "/unblur-styles"
-    },
     leftImage: BlurryGirl.src,
     rightImage: ClearGirl.src
   },
-  {
-    id: 3,
-    title: "Text Sharpening",
-    description:
-      "Don’t let blurry text ruin important documents or old photos! Our Text Sharpening tool helps you restore clarity, making sure everything is legible again.",
-    link: {
-      text: "Learn more about Text Sharpening in our knowledge base",
-      href: "/unblur-styles"
-    },
-    leftImage: BlurryText.src,
-    rightImage: ClearText.src
-  },
-  {
-    id: 4,
-    title: "General Image Restoration",
-    description:
-      "Whether it’s nature shots, objects, or other non-human images, our General Image Restoration tool can help. It’s great for bringing back the details you thought were lost!",
-    link: {
-      text: "Learn more about Image Restoration in our knowledge base",
-      href: "/unblur-styles"
-    },
-    leftImage: BlurryText.src,
-    rightImage: ClearText.src
-  }
+  // {
+  //   id: 3,
+  //   title: "Text Sharpening",
+  //   description:
+  //     "Don’t let blurry text ruin important documents or old photos! Our Text Sharpening tool helps you restore clarity, making sure everything is legible again.",
+  //   // link: {
+  //   //   text: "Learn more about Text Sharpening in our knowledge base",
+  //   //   href: "/unblur-styles"
+  //   // },
+  //   leftImage: BlurryText.src,
+  //   rightImage: ClearText.src
+  // },
+  // {
+  //   id: 4,
+  //   title: "General Image Restoration",
+  //   description:
+  //     "Whether it’s nature shots, objects, or other non-human images, our General Image Restoration tool can help. It’s great for bringing back the details you thought were lost!",
+  //   // link: {
+  //   //   text: "Learn more about Image Restoration in our knowledge base",
+  //   //   href: "/unblur-styles"
+  //   // },
+  //   leftImage: BlurryText.src,
+  //   rightImage: ClearText.src
+  // }
 ];
 
 const InteractiveSliders = () => {
@@ -79,7 +71,7 @@ const InteractiveSliders = () => {
             <ContentBlock
               title={`${item.id}. ${item.title}`}
               description={item.description}
-              link={item.link}
+              // link={item.link}
             />
           </div>
           <div className="w-full md:w-3/4 mx-auto lg:w-2/3">

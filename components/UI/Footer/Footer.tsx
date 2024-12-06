@@ -32,35 +32,38 @@ const Footer = () => {
               </CustomLink>
             </div>
           </div>
-          <div className="navigation grid grid-cols-2 md:grid-cols-9 size-full sm:gap-4 gap-8">
+          <div className="navigation grid grid-cols-2 md:grid-cols-6 size-full sm:gap-4 gap-8">
             <FooterList
               className="md:col-start-2 md:col-span-2"
-              title="Resources"
+              title="Links"
               items={[
                 { href: links.products.path, label: "Pricing" },
                 {
-                  href: FooterLinks.knowledgeBase.path,
-                  label: FooterLinks.knowledgeBase.label
+                  href: FooterLinks.billing.path,
+                  label: FooterLinks.billing.label
                 },
-                { href: "/blog", label: "Blog" }
+                {
+                  href: FooterLinks.login.path,
+                  label: FooterLinks.login.label
+                }
               ]}
             />
             <FooterList
               className="md:col-start-4 md:col-span-2"
               title="Resources"
               items={[
-                { href: "/pricing", label: "Pricing" },
-                { href: "/faq", label: "FAQ" },
-                { href: "/blog", label: "Blog" }
-              ]}
-            />
-            <FooterList
-              className="md:col-start-6 md:col-span-2"
-              title="Resources"
-              items={[
-                { href: "/pricing", label: "Pricing" },
-                { href: "/faq", label: "FAQ" },
-                { href: "/blog", label: "Blog" }
+                {
+                  href: FooterLinks.contact.path,
+                  label: FooterLinks.contact.label
+                },
+                {
+                  href: "",
+                  label: ""
+                },
+                {
+                  href: "",
+                  label: ""
+                }
               ]}
             />
           </div>

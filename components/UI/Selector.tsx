@@ -14,7 +14,7 @@ interface SelectorProps extends React.HTMLProps<HTMLSelectElement> {
   id: string;
   name: string;
   label: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   tooltipContent?: string;
   options: OptionType[];
   defaultOption: OptionType;

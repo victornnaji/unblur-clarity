@@ -5,7 +5,6 @@ import Selector from "@/components/UI/Selector";
 import { DEFAULT_UNBLUR_OPTION, tooltipText, unblurOptions } from "@/config";
 import { useAppStore } from "@/hooks/use-store";
 import { UnblurOptionType } from "@/types";
-import ExtraInfo from "../ExtraInfo";
 
 const SidebarModelSelector = () => {
   const { model, setModel } = useAppStore((state) => ({
@@ -34,11 +33,11 @@ const SidebarModelSelector = () => {
       handleSelect={handleSelectOptions}
       tooltipContent={tooltipText.modelSelector}
     >
-      <ExtraInfo
-        link="/unblur-styles"
+      {/* <ExtraInfo
+        link="/knowledge-base"
         text="Choose a style for your enhancement."
         linkText="Learn what they mean &#8594;"
-      />
+      /> */}
     </Selector>
   );
 };

@@ -1,6 +1,6 @@
 export const tooltipText = {
   imageUpscalingInput:
-    "Add a prompt or leave empty to use system prompt. Make sure to add a prompt that is relevant to the image you are upscaling.",
+    "Prompts help guide the AI on more specific details to enhance your image. Leave empty to use system prompt",
   imageUpscalingSelector:
     "Add a style to change the way your image is upscaled. Leave default to match the original image style as close as possible.",
   modelSelector: "The type of enhancement you want to apply to your image."
@@ -18,9 +18,34 @@ export const productsFaq = [
       "You can apply enhancements such as upscaling, image deblurring, and face enhancements to your image. New enhancements are added regularly."
   },
   {
+    question: "What is Image Upscaling?",
+    answer:
+      "Image upscaling is our enhancement type used to add more details and sharpness to your image. Image upscaling can add or remove details and even create new details that were not present in the original image. Image upscaling is not recommended for unblurring images as it will likely return a much different image from the original."
+  },
+  {
+    question: "What is Face Restoration?",
+    answer:
+      "Face Restoration is our enhancement type used to remove blurriness from a photo with human faces in it. This is a special model due to the complexity of human faces and so, is only specialized in faces and nothing else. For other image types, please see General Image Restoration or Image Upscaling."
+  },
+  {
+    question: "What is General Image Restoration?",
+    answer:
+      "General Image Restoration is our enhancement type used to remove blurriness from your image. This model is useful for removing blurriness from images of animals, objects, and other non-human subjects such as cars, and paintings. This model is not specialized in faces and so, is not recommended for face restoration."
+  },
+  {
+    question: "What is Text Sharpening?",
+    answer:
+      "Text Sharpening is our enhancement type used to make text in your image more clear and readable. The texts that can successfully be sharpened are text that there is possibility to make out the letters. For example, if the letters are very blurry that you can't determine what the letters are, this enhancement will not work."
+  },
+  {
     question: "How long does it take to enhance an image?",
     answer:
       "The time it takes to enhance an image depends on the type of enhancement you are applying and the complexity of the image. Simple enhancements take less time, while complex enhancements can take up to 15 minutes."
+  },
+  {
+    question: "My image did not enhance as expected. What should I do?",
+    answer:
+      "Our AI is not perfect and sometimes it may not enhance your image as expected. If this happens, please contact us and we will do our best to help you."
   },
   {
     question: "What is the difference between credits and subscriptions?",
@@ -55,6 +80,6 @@ export const productsFaq = [
   {
     question: "Can I get a refund?",
     answer:
-      "Refunds are not offered once a purchase is made and credits are used. We can consider a refund in special cases."
+      "Refunds are not offered once a purchase is made and credits are used. We can consider a refund ONLY in special cases."
   }
 ];

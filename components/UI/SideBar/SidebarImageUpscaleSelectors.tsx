@@ -6,17 +6,16 @@ import Selector from "../Selector";
 import {
   DEFAULT_UPSCALING_STYLE,
   imageUpscalingStyleOptions,
-  tooltipText,
+  tooltipText
 } from "@/config";
 import { useAppStore } from "@/hooks/use-store";
 import { ImageUpscalingStyleOptionType } from "@/types";
-import ExtraInfo from "../ExtraInfo";
 
 const SidebarUpscalingOptionsSeletors = () => {
   const { payload, model, setPayload } = useAppStore((state) => ({
     payload: state.payload,
     model: state.model,
-    setPayload: state.setPayload,
+    setPayload: state.setPayload
   }));
 
   const handlePromptChange = React.useCallback(
@@ -57,7 +56,7 @@ const SidebarUpscalingOptionsSeletors = () => {
         onChange={handlePromptChange}
         tooltipContent={tooltipText.imageUpscalingInput}
       />
-      <Selector
+      {/* <Selector
         label="Upscaling Style"
         options={imageUpscalingStyleOptions}
         defaultOption={selectedOption}
@@ -66,13 +65,13 @@ const SidebarUpscalingOptionsSeletors = () => {
         handleSelect={handleSelectorChange}
         id="unblurStyle"
         tooltipContent={tooltipText.imageUpscalingSelector}
-      >
-        <ExtraInfo
-          link="/unblur-styles"
+      > */}
+        {/* <ExtraInfo
+          link="/knowledge-base"
           text="Choose a style for your image upscale."
           linkText="Learn what they mean &#8594;"
-        />
-      </Selector>
+        /> */}
+      {/* </Selector> */}
     </div>
   );
 };
