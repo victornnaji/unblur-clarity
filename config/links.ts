@@ -36,10 +36,20 @@ export const links = {
   }
 };
 
-export const FooterLinks = [
-  {
-    path: "/",
-    label: "Home",
-    key: "home"
+export const FooterLinks = { 
+  billing: {
+    path: "/account",
+    label: "Billing",
+    key: "billing"
+  },
+  login: {
+    path: "/signin",
+    label: "Sign In",
+    key: "signin"
+  },
+  contact: {
+    path: "/conny",
+    label: "Report Issue",
+    key: "report-issue"
   }
-]
+};

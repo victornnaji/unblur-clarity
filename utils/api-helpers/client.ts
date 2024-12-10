@@ -1,3 +1,6 @@
+"use client";
+
+import { getPredictionById } from "@/data/services/predictions.service";
 import { PredictionDto } from "@/types/dtos";
 import { type Prediction } from "replicate";
 
@@ -15,4 +18,33 @@ export const mapReplicateResponseToPredictionDto = (response: Prediction) => {
     predict_time: response.metrics?.predict_time?.toString() || "0"
   };
   return mappedResponse;
+};
+
+export const pollPredictionStatus = async (predictionId: string) => {
+  const MAX_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
+  const POLLING_INTERVAL = 5000; // 5 seconds
+  const startTime = Date.now();
+
+  const checkStatus = async (): Promise<PredictionDto> => {
+    if (Date.now() - startTime >= MAX_DURATION) {
+      throw new Error('Polling timeout exceeded: Operation took longer than 15 minutes');
+    }
+
+    const data = await getPredictionById(predictionId);
+
+    if (!["starting", "processing"].includes(data.status || "")) {
+      return data;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, POLLING_INTERVAL));
+    return checkStatus();
+  };
+
+  return Promise.race([
+    checkStatus(),
+    new Promise<never>((_, reject) => 
+      setTimeout(() => reject(new Error('Polling timeout exceeded: Operation took longer than 15 minutes')), 
+      MAX_DURATION
+    ))
+  ]);
 };
