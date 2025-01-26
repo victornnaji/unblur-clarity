@@ -57,11 +57,11 @@ const Footer = () => {
                   label: FooterLinks.contact.label
                 },
                 {
-                  href: "",
+                  href: "#",
                   label: ""
                 },
                 {
-                  href: "",
+                  href: "##",
                   label: ""
                 }
               ]}

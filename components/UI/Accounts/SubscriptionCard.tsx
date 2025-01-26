@@ -8,22 +8,22 @@ import { SubscriptionRow } from "./SubscriptionRow";
 import AccountCard from "./Card";
 import { links } from "@/config";
 import { SubscriptionWithProduct } from "@/types";
-import { getCreditsForPlan } from "@/utils/helpers";
 
 const SubscriptionCard = ({
   subscription,
   credits,
   oneTimeCredits,
   subscriptionUpgradeUrl,
-  predictions
+  predictions,
+  planCredit
 }: {
   subscription: SubscriptionWithProduct | null;
   credits: number | null;
   oneTimeCredits: number | null;
   subscriptionUpgradeUrl: string | null;
   predictions: PredictionDto[];
+  planCredit: number | null;
 }) => {
-  const plan = getCreditsForPlan(subscription?.products?.id || "");
   const completedPredictions = predictions.filter(
     (prediction) => prediction.status === "succeeded"
   ).length;
@@ -60,7 +60,7 @@ const SubscriptionCard = ({
                     <span> / </span>
                     <div>
                       <span className="text-darkzink">Total: </span>
-                      <span>{plan}</span>
+                      <span>{planCredit}</span>
                     </div>
                   </div>
                 }

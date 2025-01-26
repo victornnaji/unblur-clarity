@@ -10,5 +10,6 @@
 
     
 # syncing data
-1. To sync data, change the database url in the env.local file to be that of the production db.
-2. run `npm run sync-data` to sync the data to the production db. This should ideally be done one time or whenever changes are changed on stripe. 
+1. To sync data, copy the env variable in the env.production to the env.local file.
+2. Remove the cache import from products.service.ts
+3. run `npm run sync-data` to sync the data to the production db. This should ideally be done one time or whenever changes are changed on stripe. 

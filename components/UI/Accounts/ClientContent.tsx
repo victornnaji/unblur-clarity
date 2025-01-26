@@ -12,12 +12,14 @@ export function ClientContent({
   subscription,
   credits,
   oneTimeCredits,
-  predictions
+  predictions,
+  planCredit,
 }: {
   subscription: SubscriptionWithProduct | null;
   credits: any;
   oneTimeCredits: any;
   predictions: PredictionDto[];
+  planCredit: number | null;
 }) {
   const [stripePortalUrl, setStripePortalUrl] = useState(
     links.account.path || ""
@@ -43,6 +45,7 @@ export function ClientContent({
           oneTimeCredits={oneTimeCredits}
           subscriptionUpgradeUrl={subscriptionUpgradeUrl}
           predictions={predictions}
+          planCredit={planCredit}
         />
       </div>
       <div className="_grid-area-stripe h-full">
