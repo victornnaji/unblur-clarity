@@ -6,8 +6,8 @@ import BlurryParrot from "@/assets/1-before.png";
 import ClearParrot from "@/assets/1-after.png";
 import BlurryGirl from "@/assets/2-before.png";
 import ClearGirl from "@/assets/2-after.png";
-import BlurryText from "@/assets/3-before.png";
-import ClearText from "@/assets/3-after.png";
+// import BlurryText from "@/assets/3-before.png";
+// import ClearText from "@/assets/3-after.png";
 
 import { Tabs, Tab } from "@nextui-org/react";
 
@@ -42,21 +42,21 @@ const features = [
       }
     ]
   },
-  {
-    id: "Text Sharpening",
-    content: [
-      {
-        src: BlurryText,
-        alt: "Blurry Text",
-        caption: "Blurry Text"
-      },
-      {
-        src: ClearText,
-        alt: "Clear Text",
-        caption: "Sharpened Text"
-      }
-    ]
-  }
+  // {
+  //   id: "Text Sharpening",
+  //   content: [
+  //     {
+  //       src: BlurryText,
+  //       alt: "Blurry Text",
+  //       caption: "Blurry Text"
+  //     },
+  //     {
+  //       src: ClearText,
+  //       alt: "Clear Text",
+  //       caption: "Sharpened Text"
+  //     }
+  //   ]
+  // }
 ];
 
 const Features = () => {

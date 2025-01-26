@@ -1,6 +1,5 @@
 import React from "react";
 import Balancer from "react-wrap-balancer";
-import CloudinaryVideoPlayer from "../CloudinaryVideoPlayer";
 import CurvedArrow from "@/components/Icons/CurvedArrow";
 import { HandwritingFont } from "@/styles/fonts";
 import { clsx } from "@/utils/clsx";
@@ -32,9 +31,11 @@ const VideoSection = () => {
         </div>
       </div>
       <div className="relative container lg:w-half-screen mx-auto">
-        <CloudinaryVideoPlayer
-          publicId="unblur-videos/unblur.photos-product-demo"
-          posterPublicId="unblur-videos/Unblur_Photos_Product_Demo"
+        <video
+          src="https://res.cloudinary.com/victornnaji/video/upload/v1737852860/unblur-videos/unblur-photos-demo-4k.mp4"
+          poster="https://res.cloudinary.com/victornnaji/image/upload/v1728755448/unblur-videos/Unblur_Photos_Product_Demo.jpg"
+          controls
+          className="w-full"
         />
         <div className="absolute hidden lg:block top-[-10%] right-[-10%] transform rotate-[170deg]">
           <div className="w-20">

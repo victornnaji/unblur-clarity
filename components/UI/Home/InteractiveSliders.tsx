@@ -2,13 +2,12 @@ import React from "react";
 import PhotoCompare from "@/components/UI/PhotoCompare";
 import BlurryGirl from "@/assets/2-before.png";
 import ClearGirl from "@/assets/2-after.png";
-import BlurryText from "@/assets/3-before.png";
-import ClearText from "@/assets/3-after.png";
 import BlurryParrot from "@/assets/1-before.png";
 import ClearParrot from "@/assets/1-after.png";
 import ContentBlock from "@/components/UI/Home/ContentBlock";
 import { clsx } from "@/utils/clsx";
 import Balancer from "react-wrap-balancer";
+import { HandwritingFont } from "@/styles/fonts";
 
 const interactiveSliderItems = [
   {
@@ -26,7 +25,7 @@ const interactiveSliderItems = [
       "Our Face Restoration feature works wonders, smoothing out blemishes and bringing faces back to life. It’s perfect for reviving those special moments. Suitable for portraits, and photos of people.",
     leftImage: BlurryGirl.src,
     rightImage: ClearGirl.src
-  },
+  }
   // {
   //   id: 3,
   //   title: "Text Sharpening",
@@ -71,7 +70,6 @@ const InteractiveSliders = () => {
             <ContentBlock
               title={`${item.id}. ${item.title}`}
               description={item.description}
-              // link={item.link}
             />
           </div>
           <div className="w-full md:w-3/4 mx-auto lg:w-2/3">
@@ -84,6 +82,15 @@ const InteractiveSliders = () => {
           </div>
         </div>
       ))}
+
+      <div
+        className={clsx(
+          "flex items-center justify-center w-full mt-6 text-4xl",
+          HandwritingFont.className
+        )}
+      >
+        More Features coming soon... 🔥
+      </div>
     </section>
   );
 };
