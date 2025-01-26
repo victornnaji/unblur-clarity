@@ -5,15 +5,19 @@ import { getUserCredits } from "@/data/services/credits.service";
 import { getAllPredictions } from "@/data/services/predictions.service";
 import { getSubscription } from "@/data/services/subscription.service";
 import { getUser } from "@/data/services/users.service";
+import { getCreditAmountByProductId } from "@/utils/api-helpers/server";
 
 export default async function AccountPage() {
-  const [user, subscription, creditsData, predictions] =
-    await Promise.all([
-      getUser(),
-      getSubscription(),
-      getUserCredits(),
-      getAllPredictions(),
-    ]);
+  const [user, subscription, creditsData, predictions] = await Promise.all([
+    getUser(),
+    getSubscription(),
+    getUserCredits(),
+    getAllPredictions()
+  ]);
+
+  const planCredit = subscription?.product_id
+    ? await getCreditAmountByProductId(subscription?.product_id)
+    : 0;
 
   return (
     <>
@@ -30,6 +34,7 @@ export default async function AccountPage() {
           credits={creditsData.credits}
           oneTimeCredits={creditsData.oneTimeCredits}
           predictions={predictions}
+          planCredit={planCredit}
         />
       </div>
     </>

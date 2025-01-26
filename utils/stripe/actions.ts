@@ -4,8 +4,7 @@ import Stripe from "stripe";
 import { stripe } from "./config";
 import {
   calculateFairUpgradeCredits,
-  getCreditAmount,
-  getCreditsForPlan
+  // getCreditsForPlan
 } from "@/utils/helpers";
 import { getCustomerByCustomerIdByAdmin } from "@/data/services/customers.service";
 import { deletePrice, upsertPrice } from "@/data/services/prices.service";
@@ -16,6 +15,7 @@ import {
 } from "@/data/services/credits.service";
 import { upsertSubscriptionByAdmin } from "@/data/services/subscription.service";
 import { deleteProduct, upsertProduct } from "@/data/services/products.service";
+import { getCreditAmountByProductId } from "../api-helpers/server";
 
 export const handleSubscription = async (subscription: Stripe.Subscription) => {
   const customer = await getCustomerByCustomerIdByAdmin(
@@ -71,7 +71,7 @@ export const handleSubscriptionUpdate = async (
         );
         const amountPaid = invoice.amount_paid;
         const { credits: currentCredits } = await getUserCreditsByAdmin(userId);
-        const totalCreditsInNewPlan = getCreditsForPlan(newProductId);
+        const totalCreditsInNewPlan = await getCreditAmountByProductId(newProductId);
 
         console.log(
           "amountPaid",
@@ -161,7 +161,7 @@ export const handleCompletedCheckout = async (
     );
     const planId = subscription.data[0].price?.product as string;
     try {
-      const creditAmount = getCreditAmount(planId);
+      const creditAmount = await getCreditAmountByProductId(planId);
       await updateUserCreditsByAdmin(userId, {
         credits: creditAmount
       });
@@ -174,7 +174,7 @@ export const handleCompletedCheckout = async (
     const payment = await stripe.checkout.sessions.listLineItems(checkout.id);
     const planId = payment.data[0].price?.product as string;
     try {
-      const creditAmount = getCreditAmount(planId);
+      const creditAmount = await getCreditAmountByProductId(planId);
       await updateUserCreditsByAdmin(userId, {
         oneTimeCredits: creditAmount
       });

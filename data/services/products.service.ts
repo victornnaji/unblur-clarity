@@ -8,6 +8,30 @@ import { createProductsRepository } from "@/data/repositories/products.repositor
 import { createServiceRoleClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 
+export const getProductById = async (productId: string) => {
+  const supabase = createClient();
+  const productsRepository = await createProductsRepository();
+  try {
+    const { data, error } = await productsRepository.getProductById(
+      supabase,
+      productId
+    );
+    if (error) {
+      console.error(error);
+      throw new CustomError(error.message, 500, {
+        cause: error.message,
+        context: {
+          productId
+        }
+      });
+    }
+    return data as ProductDto;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const upsertProduct = async (product: Stripe.Product) => {
   const supabaseAdmin = createServiceRoleClient();
   const productsRepository = await createProductsRepository();

@@ -9,6 +9,7 @@ import { showToast } from "../HotToast";
 import useSWR from "swr";
 import { getUserTotalCredits } from "@/data/services/credits.service";
 import { CREDITS_PER_UNBLUR } from "@/config";
+import { Tooltip } from "../Tooltip";
 
 const SidebarButton = () => {
   const { data: credits } = useSWR("credits", getUserTotalCredits);
@@ -34,11 +35,16 @@ const SidebarButton = () => {
   const buttonText =
     model === "image_upscaling" ? "Upscale Image" : "Restore Image";
 
+  const toolTipText =
+    model === "image_upscaling" ? "Upscaling image" : "Restoring image";
+
+  const CREDITS_TO_WITHDRAW = CREDITS_PER_UNBLUR[model];
+
   const startPrediction = useCallback(async () => {
     setAppStatus({ status: "processing", message: "Gathering image data..." });
 
     try {
-      if (!credits || credits < CREDITS_PER_UNBLUR) {
+      if (!credits || credits < CREDITS_TO_WITHDRAW) {
         setAppStatus({
           status: "error",
           message: `Not enough credits to ${buttonText}`,
@@ -128,7 +134,13 @@ const SidebarButton = () => {
         radius="none"
         className="uppercase sm:w-fit lg:w-full"
       >
-        {buttonText}
+        <Tooltip
+          content={`${toolTipText} will cost ${CREDITS_TO_WITHDRAW} credit(s)`}
+        >
+          <span>
+            {buttonText} {`(💰${CREDITS_TO_WITHDRAW})`}
+          </span>
+        </Tooltip>
       </Button>
     </div>
   );

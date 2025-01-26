@@ -52,16 +52,19 @@ interface InputProps {
 }
 
 const defaultWebhookUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
+  ? `https://${process.env.NEXT_PUBLIC_SITE_URL}`
   : process.env.NGROK_URL || "";
 
 export async function initiatePrediction(payload: PayloadProps) {
+  const { image_url, model, image_name } = payload;
+  const CREDITS_TO_WITHDRAW = CREDITS_PER_UNBLUR[model];
+
   try {
     const user = await getAuthUser();
 
     const credits = await getUserTotalCreditsByUserId(user.id);
 
-    if (credits <= 12) {
+    if (credits <= CREDITS_TO_WITHDRAW) {
       throw new CustomError("Not enough credits", 400, {
         cause: "Not enough credits",
         context: {
@@ -69,8 +72,6 @@ export async function initiatePrediction(payload: PayloadProps) {
         }
       });
     }
-
-    const { image_url, model, image_name } = payload;
 
     const { url: secure_url } = await uploadImageToCloudinary(image_url);
 
@@ -123,7 +124,7 @@ export async function initiatePrediction(payload: PayloadProps) {
         throw new Error("Invalid model");
     }
 
-    await withdrawCredits(user.id, CREDITS_PER_UNBLUR);
+    await withdrawCredits(user.id, CREDITS_TO_WITHDRAW);
 
     const prediction = await queueReplicatePrediction({
       ...modelConfig,
@@ -160,9 +161,9 @@ export async function initiatePrediction(payload: PayloadProps) {
     const user = await getAuthUser();
     const { credits } = await getUserCredits();
     await updateUserCredits(user.id, {
-      credits: credits + CREDITS_PER_UNBLUR
+      credits: credits + CREDITS_TO_WITHDRAW
     });
-    console.log("credits updated", credits + CREDITS_PER_UNBLUR);
+    console.log("credits updated", credits + CREDITS_TO_WITHDRAW);
     throw error;
   }
 }
