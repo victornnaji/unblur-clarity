@@ -27,16 +27,16 @@ export const productsFaq = [
     answer:
       "Face Restoration is our enhancement type used to remove blurriness from a photo with human faces in it. This is a special model due to the complexity of human faces and so, is only specialized in faces and nothing else. For other image types, please see General Image Restoration or Image Upscaling."
   },
-  {
-    question: "What is General Image Restoration?",
-    answer:
-      "General Image Restoration is our enhancement type used to remove blurriness from your image. This model is useful for removing blurriness from images of animals, objects, and other non-human subjects such as cars, and paintings. This model is not specialized in faces and so, is not recommended for face restoration."
-  },
-  {
-    question: "What is Text Sharpening?",
-    answer:
-      "Text Sharpening is our enhancement type used to make text in your image more clear and readable. The texts that can successfully be sharpened are text that there is possibility to make out the letters. For example, if the letters are very blurry that you can't determine what the letters are, this enhancement will not work."
-  },
+  // {
+  //   question: "What is General Image Restoration?",
+  //   answer:
+  //     "General Image Restoration is our enhancement type used to remove blurriness from your image. This model is useful for removing blurriness from images of animals, objects, and other non-human subjects such as cars, and paintings. This model is not specialized in faces and so, is not recommended for face restoration."
+  // },
+  // {
+  //   question: "What is Text Sharpening?",
+  //   answer:
+  //     "Text Sharpening is our enhancement type used to make text in your image more clear and readable. The texts that can successfully be sharpened are text that there is possibility to make out the letters. For example, if the letters are very blurry that you can't determine what the letters are, this enhancement will not work."
+  // },
   {
     question: "How long does it take to enhance an image?",
     answer:
