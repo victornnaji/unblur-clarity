@@ -29,7 +29,7 @@ const InProgress = () => {
               alt: prediction.image_name ?? "Original Image"
             }}
             footer={
-              <div className="flex flex-col">
+              <div className="flex flex-col items-start">
                 <span className="text-background text-sm">
                   {shortenFileName(prediction.image_name!)}
                 </span>
