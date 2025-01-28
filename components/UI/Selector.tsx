@@ -69,7 +69,7 @@ const Selector = ({
   };
 
   return (
-    <div className="block mx-auto mt-8 ">
+    <div className="block mx-auto mt-8 w-full">
       <label
         htmlFor={appliedId}
         className="mb-2 text-zink flex items-center gap-2"

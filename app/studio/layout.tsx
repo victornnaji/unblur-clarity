@@ -9,7 +9,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
       <section className="col-span-1 lg:col-span-3 order-first row-span-1 lg:row-[1,2] lg:order-none lg:mb-3">
         <Credits />
       </section>
-      <section className="mb-8 lg:mb-0 col-span-1 lg:col-span-3 order-last row-span-1 lg:row-[2/-1] lg:order-none">
+      <section className="mb-8 lg:mb-0 col-span-1 lg:col-span-3 order-last row-span-1 lg:row-[2/-1] lg:order-none flex flex-col w-full justify-evenly">
         <SidebarContainer />
       </section>
       <section className="col-span-1 lg:col-span-9 row-span-1 lg:row-span-2 lg:order-none">

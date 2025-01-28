@@ -51,8 +51,8 @@ interface InputProps {
   codeformer_fidelity?: number;
 }
 
-const defaultWebhookUrl = process.env.VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_SITE_URL}`
+const defaultWebhookUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
   : process.env.NGROK_URL || "";
 
 export async function initiatePrediction(payload: PayloadProps) {

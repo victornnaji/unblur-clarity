@@ -1,7 +1,8 @@
+import { getURL } from "@/utils/helpers";
 
 export const metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL(getURL()),
   title: "Unblur Photos",
   description:
-    "Unblur Photo: AI-powered photo restoration app. Remove blur, upscale your favorite photos, and achieve professional results at home. Transform your photos now."
+    "Unblur Photos: AI-powered photo restoration app. Remove blur, upscale your favorite photos, and achieve professional results at home. Transform your photos now."
 };

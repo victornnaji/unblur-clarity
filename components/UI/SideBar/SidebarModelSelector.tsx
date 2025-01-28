@@ -27,6 +27,7 @@ const SidebarModelSelector = () => {
     <Selector
       label="Unblur Type"
       options={unblurOptions}
+      className="w-full"
       defaultOption={selectedOption}
       id="unblurType"
       name="unblurType"
