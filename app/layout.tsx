@@ -8,6 +8,7 @@ import Footer from "@/components/UI/Footer";
 import { InterFont } from "@/styles/fonts";
 import { clsx } from "@/utils/clsx";
 import { getURL } from "@/utils/helpers";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = {
   metadataBase: getURL(),
@@ -39,6 +40,7 @@ export default function RootLayout({
         <Suspense>
           <HotToast />
         </Suspense>
+        <Analytics />
       </body>
     </html>
   );

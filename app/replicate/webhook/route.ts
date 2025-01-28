@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/utils/supabase/admin";
-import { mapReplicateResponseToPredictionDto } from "@/utils/api-helpers/client";
 import invariant from "tiny-invariant";
 import { uploadImageToCloudinary } from "@/utils/api-helpers/server";
 import { validateWebhook } from "replicate";
@@ -70,9 +69,19 @@ export async function POST(req: Request) {
   }
 
   try {
-    const response = mapReplicateResponseToPredictionDto(body);
+    const response = {
+      id: body.id,
+      status: body.status,
+      error: "An error happened with the AI model provider",
+      created_at: body.created_at,
+      started_at: body.started_at || null,
+      completed_at: body.completed_at || null,
+      predict_time: body.metrics?.predict_time?.toString() || "0"
+    };
 
-    console.log("response", response, body);
+    if (response.status === "processing") {
+      return NextResponse.json({ success: true, status: 201 });
+    }
 
     if (response.status === "failed") {
       // return back their credits
@@ -114,6 +123,7 @@ export async function POST(req: Request) {
     if (error instanceof CloudinaryError) {
       return NextResponse.json({ error }, { status: 500 });
     }
+    console.log("error updating prediction", error);
     return NextResponse.json({ error }, { status: 500 });
   }
 }
