@@ -13,7 +13,10 @@ import { Analytics } from "@vercel/analytics/next";
 export const metadata = {
   metadataBase: getURL(),
   title: metadataConfig.title,
-  description: metadataConfig.description
+  description: metadataConfig.description,
+  verification: {
+    google: "J_2zVRu0558okalwh3L3uOS7sisKOVV2Dajw0rx3JOg"
+  }
 };
 
 export default function RootLayout({
