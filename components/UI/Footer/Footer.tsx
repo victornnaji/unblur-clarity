@@ -53,12 +53,12 @@ const Footer = () => {
               title="Resources"
               items={[
                 {
-                  href: FooterLinks.contact.path,
+                  href: "#",
                   label: FooterLinks.contact.label
                 },
                 {
-                  href: "#",
-                  label: ""
+                  href: FooterLinks.Privacy.path,
+                  label: FooterLinks.Privacy.label
                 },
                 {
                   href: "##",
