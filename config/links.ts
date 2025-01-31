@@ -36,7 +36,7 @@ export const links = {
   }
 };
 
-export const FooterLinks = { 
+export const FooterLinks = {
   billing: {
     path: "/account",
     label: "Billing",
@@ -46,6 +46,11 @@ export const FooterLinks = {
     path: "/signin",
     label: "Sign In",
     key: "signin"
+  },
+  Privacy: {
+    path: "/privacy-policy",
+    label: "Privacy Policy",
+    key: "privacy-policy"
   },
   contact: {
     path: "/conny",
