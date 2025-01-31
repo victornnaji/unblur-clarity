@@ -44,23 +44,23 @@ const Hero = () => {
 
       <div className="grid w-full md:w-4/6 mx-auto place-items-center h-full">
         <div className="hero-image grid grid-cols-2 lg:gap-4 gap-2 size-full">
-          <div className="relative w-full lg:h-[600px] h-half-screen">
-            <ImageContainer src={ClearParrot} alt="Clear Parrot" withGradient />
-            <div className="absolute hidden lg:block top-4 left-[-20%] transform rotate-12">
-              <div className="w-20">
-                <CurvedArrow />
-                <p className={clsx(HandwritingFont.className, "text-2xl")}>
-                  Enhanced by Unblur Photos 🔥
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="relative w-full lg:h-[600px] h-half-screen">
+        <div className="relative w-full lg:h-[600px] h-half-screen">
             <ImageContainer
               src={BlurryParrot}
               alt="Blurry Parrot"
               withGradient
             />
+          </div>
+          <div className="relative w-full lg:h-[600px] h-half-screen">
+            <ImageContainer src={ClearParrot} alt="Clear Parrot" withGradient />
+            <div className="absolute hidden lg:block top-4 right-[-22%] transform rotate-[200deg]">
+              <div className="w-20">
+                <CurvedArrow />
+                <p className={clsx(HandwritingFont.className, "text-xl rotate-[180deg]")}>
+                  Enhanced by Unblur Photos 🔥
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -85,7 +85,7 @@ const InteractiveSliders = () => {
 
       <div
         className={clsx(
-          "flex items-center justify-center w-full mt-6 text-4xl",
+          "flex items-center justify-center w-full mt-6 lg:text-4xl",
           HandwritingFont.className
         )}
       >
