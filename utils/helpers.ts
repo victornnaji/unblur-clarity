@@ -8,10 +8,6 @@ export const getURL = (path: string = "") => {
     process?.env?.NEXT_PUBLIC_SITE_URL &&
     process.env.NEXT_PUBLIC_SITE_URL.trim() !== ""
       ? process.env.NEXT_PUBLIC_SITE_URL
-      : // If not set, check for NEXT_PUBLIC_VERCEL_URL, which is automatically set by Vercel.
-      process?.env?.NEXT_PUBLIC_VERCEL_URL &&
-        process.env.NEXT_PUBLIC_VERCEL_URL.trim() !== ""
-      ? process.env.NEXT_PUBLIC_VERCEL_URL
       : // If neither is set, default to localhost for local development.
         "http://localhost:3000/";
 
@@ -32,7 +28,7 @@ export const getToastRedirect = ({
   toastTitle,
   toastDescription = "",
   disableButton = false,
-  arbitraryParams = "",
+  arbitraryParams = ""
 }: {
   path: string;
   toastType: ToastVariants;
@@ -73,7 +69,7 @@ export const getErrorRedirect = (
     toastTitle: errorName,
     toastDescription: errorDescription,
     disableButton,
-    arbitraryParams,
+    arbitraryParams
   });
 };
 
@@ -91,7 +87,7 @@ export const getStatusRedirect = (
     toastTitle: statusName,
     toastDescription: statusDescription,
     disableButton,
-    arbitraryParams,
+    arbitraryParams
   });
 };
 
@@ -115,16 +111,16 @@ export function shortenFileName(
 
 export async function downloadPhoto(photoUrl: string, name: string) {
   if (!photoUrl) return;
-  
+
   const response = await fetch(photoUrl);
   const blob = await response.blob();
-  
+
   const fileExtension = blob.type.split("/")[1];
-  
+
   const baseName = name.replace(/\.[^/.]+$/, "");
-  
+
   const filename = `${baseName}_unblur-photos.${fileExtension}`;
-  
+
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -132,7 +128,7 @@ export async function downloadPhoto(photoUrl: string, name: string) {
   document.body.appendChild(link);
   link.click();
   link.remove();
-  
+
   window.URL.revokeObjectURL(url);
 }
 
@@ -144,11 +140,11 @@ export const toDateTime = (secs: number) => {
 
 export const formatTime = (time: string) => {
   return moment(time).fromNow();
-}
+};
 
 export const formatName = (name: string) => {
   return name.replace(/[_\.\-\s]+/g, " ");
-}
+};
 
 export function isValidEmail(email: string) {
   var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -164,16 +160,19 @@ export function calculateFairUpgradeCredits(
 ): number {
   // Calculate the proportion of the new plan paid for
   const proportionPaid = (originalPlanPrice + upgradeCost) / newPlanPrice;
-  
+
   // Calculate remaining credits from the old plan
   const remainingOldPlanCredits = unusedCredits;
-  
+
   // Calculate new credits based on the proportion of the new plan paid for
   const newCredits = Math.round(newPlanCredits * proportionPaid);
-  
+
   // Sum up the credits, but cap at the maximum allowed by the new plan
-  let fairCredits = Math.min(remainingOldPlanCredits + newCredits, newPlanCredits);
-  
+  let fairCredits = Math.min(
+    remainingOldPlanCredits + newCredits,
+    newPlanCredits
+  );
+
   return Math.max(fairCredits, 0);
 }
 
