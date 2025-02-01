@@ -3,13 +3,15 @@ import { ToastVariants } from "@/types";
 import moment from "moment";
 
 export const getURL = (path: string = "") => {
-  // Check if NEXT_PUBLIC_SITE_URL is set and non-empty. Set this to your site URL in production env.
+  // Use NEXT_PUBLIC_SITE_URL in production, localhost in development
   let url =
-    process?.env?.NEXT_PUBLIC_SITE_URL &&
-    process.env.NEXT_PUBLIC_SITE_URL.trim() !== ""
+    process.env.NODE_ENV === "production"
       ? process.env.NEXT_PUBLIC_SITE_URL
-      : // If neither is set, default to localhost for local development.
-        "http://localhost:3000/";
+      : "http://localhost:3000";
+
+  if (!url) {
+    url = "http://localhost:3000";
+  }
 
   // Trim the URL and remove trailing slash if exists.
   url = url.replace(/\/+$/, "");
