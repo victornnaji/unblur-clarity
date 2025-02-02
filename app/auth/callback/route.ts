@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
   const error_description = requestUrl.searchParams.get("error_description");
   const redirectTo = requestUrl.searchParams.get("redirectTo") || links.studio.path;
 
+  console.log({ requestUrl, origin: requestUrl.origin})
+
   if (error) {
     return NextResponse.redirect(
       getErrorRedirect(
