@@ -13,16 +13,12 @@ export const getURL = (path: string = "") => {
     url = "http://localhost:3000";
   }
 
-  console.log({ url, env: process.env.NODE_ENV, site: process.env.NEXT_PUBLIC_SITE_URL });
-
   // Trim the URL and remove trailing slash if exists.
   url = url.replace(/\/+$/, "");
   // Make sure to include `https://` when not localhost.
   url = url.includes("http") ? url : `https://${url}`;
   // Ensure path starts without a slash to avoid double slashes in the final URL.
   path = path.replace(/^\/+/, "");
-
-  console.log({ path })
 
   // Concatenate the URL and the path.
   return path ? `${url}/${path}` : url;
